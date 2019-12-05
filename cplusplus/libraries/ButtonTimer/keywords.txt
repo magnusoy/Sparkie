@@ -1,0 +1,21 @@
+#######################################
+# Syntax Coloring Map For Timer Library
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+ButtonTimer	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+isSwitchOn	KEYWORD2
+buttonTimerHasExpired	KEYWORD2
+startButtonTimer	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################

@@ -1,0 +1,22 @@
+#######################################
+# Syntax Coloring Map For SerialHandler Library
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+SerialHandler	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+initialize	KEYWORD2
+flush	KEYWORD2
+read	KEYWORD2
+write	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################

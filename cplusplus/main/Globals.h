@@ -1,0 +1,75 @@
+#ifndef _GLOBALS_H_
+#define _GLOBALS_H_
+#include "Constants.h"
+
+uint8_t currentState = S_IDLE;
+uint8_t currentErrors[3] = {NONE};
+uint8_t currentWarnings[3] = {NONE};
+
+/** IMU structure */
+typedef struct {
+    float yaw;
+    float pitch;
+    float roll;
+} IMU;
+
+/** Accelerometer structure */
+typedef struct {
+    float x;
+    float y;
+    float z;
+} Accelerometer;
+
+/** Gyroscope structure */
+typedef struct {
+    float x;
+    float y;
+    float z;
+} Gyroscope;
+
+/** Error codes */
+enum errors {
+    NONE,
+    SERIAL_ERROR,
+    MOTOR_FRONT_LEFT_1_ERROR,
+    MOTOR_FRONT_LEFT_2_ERROR,
+    MOTOR_FRONT_RIGHT_1_ERROR,
+    MOTOR_FRONT_RIGHT_2_ERROR,
+    MOTOR_BACK_LEFT_1_ERROR,
+    MOTOR_BACK_LEFT_2_ERROR,
+    MOTOR_BACK_RIGHT_1_ERROR,
+    MOTOR_BACK_RIGHT_2_ERROR,
+    ENCODER_FRONT_LEFT_1_ERROR,
+    ENCODER_FRONT_LEFT_2_ERROR,
+    ENCODER_FRONT_RIGHT_1_ERROR,
+    ENCODER_FRONT_RIGHT_2_ERROR,
+    ENCODER_BACK_LEFT_1_ERROR,
+    ENCODER_BACK_LEFT_2_ERROR,
+    ENCODER_BACK_RIGHT_1_ERROR,
+    ENCODER_BACK_RIGHT_2_ERROR,
+};
+
+/** Warning codes */
+enum warnings {
+    NONE,
+
+};
+
+/** Operation states */
+enum states{
+    S_IDLE,
+    S_CALIBRATE,
+    S_READY,
+    S_PAUSE,
+    S_JUMP,
+    S_AUTONOMOUS,
+    S_MANUAL,
+    S_BACKFLIP,
+    S_CONFIGURE,
+    S_WARNING,
+    S_ERROR,
+    
+};
+
+
+#endif // _GLOBALS_H_

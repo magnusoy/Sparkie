@@ -1,0 +1,19 @@
+{
+  "name": "Button Timer",
+  "keywords": "Button, Timer",
+  "description": "The button has to be active for a given period of time.",
+  "url": "https://github.com/magnusoy/Sparkie-Quadruped-Robot",
+  "include": "ButtonTimer",
+  "authors":
+  [
+    {
+      "name": "Magnus Kvendseth Øye"
+    }
+  ],
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/magnusoy/Sparkie-Quadruped-Robot.git"
+  },
+  "frameworks": "arduino"
+}

@@ -1,0 +1,9 @@
+name=Timer
+version=1.0.0
+author=Magnus Kvendseth Øye
+maintainer=Magnus Kvendseth Øye
+sentence=Timer on delay
+paragraph=Time management.
+category=Uncategorized
+url=https://github.com/magnusoy/Sparkie-Quadruped-Robot
+architectures=* 

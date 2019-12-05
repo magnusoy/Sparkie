@@ -1,0 +1,19 @@
+{
+    "name": "SerialHandler",
+    "keywords": "Serial, UART, JSON",
+    "description": "Serial communication with JSON objects",
+    "url": "https://github.com/magnusoy/Sparkie-Quadruped-Robot",
+    "include": "SerialHandler",
+    "authors":
+    [
+      {
+        "name": "Magnus Kvendseth Øye"
+      }
+    ],
+    "repository":
+    {
+      "type": "git",
+      "url": "https://github.com/magnusoy/Sparkie-Quadruped-Robot.git"
+    },
+    "frameworks": "arduino"
+  }

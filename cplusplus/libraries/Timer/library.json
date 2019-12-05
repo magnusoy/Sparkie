@@ -1,0 +1,19 @@
+{
+    "name": "Timer",
+    "keywords": "Timer",
+    "description": "Arduino on delay timer, without freezing the program.",
+    "url": "https://github.com/magnusoy/Sparkie-Quadruped-Robot",
+    "include": "Timer",
+    "authors":
+    [
+      {
+        "name": "Magnus Kvendseth Øye"
+      }
+    ],
+    "repository":
+    {
+      "type": "git",
+      "url": "https://github.com/magnusoy/Sparkie-Quadruped-Robot.git"
+    },
+    "frameworks": "arduino"
+  }
