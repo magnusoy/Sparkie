@@ -2,3 +2,6 @@ numpy
 cv2
 pyserial
 odrive
+pyrealsense2
+pyglet
+pygame

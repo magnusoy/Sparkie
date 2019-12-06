@@ -13,8 +13,6 @@ Description coming...
 
 ## Built With
 
-* [Java](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) - Java
-
 * [C++](http://www.cplusplus.com/) - C++
 
 * [Arduino](https://www.arduino.cc/) - Arduino
