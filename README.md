@@ -1,5 +1,5 @@
 # Sparkie, Quadruped Robot
-Description coming...
+In development ...
 
 ## Demo, coming
 
