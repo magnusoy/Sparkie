@@ -21,8 +21,11 @@ from PyQt5 import QtGui
 
 # Importing local source
 from widgets.login import LoginWindow
+from widgets.welcome import WelcomeWindow
 from widgets.configure import ConfigureWindow
-from widgets.main import MainWindow
+from widgets.autonomous import AutonomousWindow
+from widgets.manual import ManualWindow
+from widgets.interact import InteractWindow
 
 class Controller:
     """A class used to control the switching between windows
@@ -37,12 +40,25 @@ class Controller:
 
     def showLoginWindow(self):
         """Displayes the login window, leads to the
-        welcome window if event it triggered."""
+        welcome window if event is triggered."""
         self.login = LoginWindow()
         self.login.setWindowIcon(QtGui.QIcon(self.icon))
         self.login.setFixedSize(623, 411)
-        self.login.switchToMainWindow.connect(self.showMainWindow)
+        self.login.switchToWelcomeWindow.connect(self.showWelcomeWindow)
         self.login.show()
+    
+    def showWelcomeWindow(self):
+        """Displayes the welcome window, leads to the
+        different mode windows if event is triggered."""
+        self.welcome = WelcomeWindow()
+        self.welcome.setWindowIcon(QtGui.QIcon(self.icon))
+        self.welcome.setFixedSize(623, 411)
+        self.welcome.switchToAutonomousWindow.connect(self.showAutonomousWindow)
+        #self.welcome.switchToManualWindow.connect(self.showManualWindow)
+        #self.welcome.switchToInteractWindow.connect(self.showInteractWindow)
+        #self.welcome.switchToConfigureWindow.connect(self.showConfigureWindow)
+        self.login.close()
+        self.welcome.show()
     
     def showConfigureWindow(self):
         """Displays the welcome window, leads to multiple windows,
@@ -52,11 +68,10 @@ class Controller:
         self.configure.setFixedSize(720, 400)
         self.welcome.show()
     
-    def showMainWindow(self):
+    def showAutonomousWindow(self):
         """Displays the main window."""
-        self.main = MainWindow()
-        self.main.setWindowIcon(QtGui.QIcon(self.icon))
-        self.main.setFixedSize(1920, 1080)
-        self.login.close()
-        self.main.showMaximized()
+        self.autonomous = AutonomousWindow()
+        self.autonomous.setWindowIcon(QtGui.QIcon(self.icon))
+        self.autonomous.setFixedSize(1920, 1080)
+        self.autonomous.showMaximized()
     

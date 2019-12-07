@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Sparkie - Login</string>
   </property>
+  <property name="windowOpacity">
+   <double>0.900000000000000</double>
+  </property>
   <widget class="QLineEdit" name="usernameField">
    <property name="geometry">
     <rect>

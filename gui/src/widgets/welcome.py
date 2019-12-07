@@ -16,10 +16,15 @@ __status__ = "Development"
 
 from PyQt5 import QtWidgets, uic, QtCore
 
-class MainWindow(QtWidgets.QMainWindow):
+class WelcomeWindow(QtWidgets.QDialog):
     """doc"""
 
+    switchToAutonomousWindow = QtCore.pyqtSignal()
+    switchToManualWindow = QtCore.pyqtSignal()
+    switchToInteractWindow = QtCore.pyqtSignal()
+    switchToConfigureWindow = QtCore.pyqtSignal()
+
     def __init__(self):
-        super(MainWindow, self).__init__()
-        self.ui = '../forms/main.ui'
+        super(WelcomeWindow, self).__init__()
+        self.ui = '../forms/welcome.ui'
         uic.loadUi(self.ui, self)

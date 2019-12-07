@@ -38,7 +38,7 @@ class Server(Thread):
         """doc"""
         addr = (host, port)
         self.socket.bind(addr)
-        self.socket.listen(1)
+        self.socket.listen(10)
         self.connection, self.addr = self.socket.accept()
     
     def isConnected(self):

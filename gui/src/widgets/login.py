@@ -19,7 +19,7 @@ from PyQt5 import QtWidgets, uic, QtCore
 class LoginWindow(QtWidgets.QDialog):
     """doc"""
 
-    switchToMainWindow = QtCore.pyqtSignal()
+    switchToWelcomeWindow = QtCore.pyqtSignal()
 
     def __init__(self):
         super(LoginWindow, self).__init__()
@@ -43,7 +43,7 @@ class LoginWindow(QtWidgets.QDialog):
     def login(self):
         """doc"""
         if self.usernameField.text() == 'admin' and self.passwordField.text() == 'sparkie':
-            self.switchToMainWindow.emit()
+            self.switchToWelcomeWindow.emit()
         else:
             choice = QtWidgets.QMessageBox.question(self, 'Error', 'Wrong password, please try again.', QtWidgets.QMessageBox.Ok)
             if choice == QtWidgets.QMessageBox.Ok:
