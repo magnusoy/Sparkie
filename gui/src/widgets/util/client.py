@@ -22,6 +22,7 @@ import time
 
 class Client(Thread):
     """doc"""
+    
     def __init__(self, host='127.0.0.1', port=5056, rate=0.2):
         Thread.__init__(self)
         self.address = (host, port)

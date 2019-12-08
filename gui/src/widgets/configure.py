@@ -14,7 +14,9 @@ __email__ = "magnus.oye@gmail.com"
 __status__ = "Development"
 """
 
+# Importing packages
 from PyQt5 import QtWidgets, uic, QtCore
+
 
 class ConfigureWindow(QtWidgets.QDialog):
     """doc"""

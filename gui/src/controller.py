@@ -16,7 +16,7 @@ __status__ = "Development"
 """
 
 
-# Importing PyQT
+# Importing packages
 from PyQt5 import QtGui
 
 # Importing local source
@@ -26,6 +26,7 @@ from widgets.configure import ConfigureWindow
 from widgets.autonomous import AutonomousWindow
 from widgets.manual import ManualWindow
 from widgets.interact import InteractWindow
+from widgets.testing import TestingWindow
 
 class Controller:
     """A class used to control the switching between windows
@@ -39,8 +40,7 @@ class Controller:
         self.showLoginWindow()
 
     def showLoginWindow(self):
-        """Displayes the login window, leads to the
-        welcome window if event is triggered."""
+        """doc"""
         self.login = LoginWindow()
         self.login.setWindowIcon(QtGui.QIcon(self.icon))
         self.login.setFixedSize(623, 411)
@@ -48,30 +48,50 @@ class Controller:
         self.login.show()
     
     def showWelcomeWindow(self):
-        """Displayes the welcome window, leads to the
-        different mode windows if event is triggered."""
+        """doc"""
         self.welcome = WelcomeWindow()
         self.welcome.setWindowIcon(QtGui.QIcon(self.icon))
         self.welcome.setFixedSize(623, 411)
         self.welcome.switchToAutonomousWindow.connect(self.showAutonomousWindow)
-        #self.welcome.switchToManualWindow.connect(self.showManualWindow)
-        #self.welcome.switchToInteractWindow.connect(self.showInteractWindow)
-        #self.welcome.switchToConfigureWindow.connect(self.showConfigureWindow)
+        self.welcome.switchToManualWindow.connect(self.showManualWindow)
+        self.welcome.switchToInteractWindow.connect(self.showInteractWindow)
+        self.welcome.switchToTestingWindow.connect(self.showTestingWindow)
+        self.welcome.switchToConfigureWindow.connect(self.showConfigureWindow)
         self.login.close()
         self.welcome.show()
     
-    def showConfigureWindow(self):
-        """Displays the welcome window, leads to multiple windows,
-        depending on the triggers."""
-        self.configure = ConfigureWindow()
-        self.configure.setWindowIcon(QtGui.QIcon(self.icon))
-        self.configure.setFixedSize(720, 400)
-        self.welcome.show()
-    
     def showAutonomousWindow(self):
-        """Displays the main window."""
+        """doc"""
         self.autonomous = AutonomousWindow()
         self.autonomous.setWindowIcon(QtGui.QIcon(self.icon))
         self.autonomous.setFixedSize(1920, 1080)
         self.autonomous.showMaximized()
+    
+    def showManualWindow(self):
+        """doc"""
+        self.manual = ManualWindow()
+        self.manual.setWindowIcon(QtGui.QIcon(self.icon))
+        self.manual.setFixedSize(1920, 1080)
+        self.manual.showMaximized()
+
+    def showInteractWindow(self):
+        """doc"""
+        self.interact = InteractWindow()
+        self.interact.setWindowIcon(QtGui.QIcon(self.icon))
+        self.interact.setFixedSize(1920, 1080)
+        self.interact.showMaximized()
+
+    def showTestingWindow(self):
+        """doc"""
+        self.testing = TestingWindow()
+        self.testing.setWindowIcon(QtGui.QIcon(self.icon))
+        self.testing.setFixedSize(623, 411)
+        self.testing.show()
+    
+    def showConfigureWindow(self):
+        """doc"""
+        self.configure = ConfigureWindow()
+        self.configure.setWindowIcon(QtGui.QIcon(self.icon))
+        self.configure.setFixedSize(720, 400)
+        self.configure.show()
     

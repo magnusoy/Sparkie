@@ -14,7 +14,9 @@ __email__ = "magnus.oye@gmail.com"
 __status__ = "Development"
 """
 
+# Importing packages
 from PyQt5 import QtWidgets, uic, QtCore
+
 
 class LoginWindow(QtWidgets.QDialog):
     """doc"""
@@ -48,3 +50,7 @@ class LoginWindow(QtWidgets.QDialog):
             choice = QtWidgets.QMessageBox.question(self, 'Error', 'Wrong password, please try again.', QtWidgets.QMessageBox.Ok)
             if choice == QtWidgets.QMessageBox.Ok:
                 pass
+    
+    def rememberMe(self):
+        """doc"""
+        pass
