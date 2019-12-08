@@ -14,6 +14,10 @@ __email__ = "magnus.oye@gmail.com"
 __status__ = "Development"
 """
 
+# Importing packages
+import configparser
+
+# Importing from local source
 from communication.server import Server
 from communication.serial_handler import SerialCommunication
 
@@ -21,13 +25,23 @@ class StorageBox(object):
     """doc"""
 
     def __init__(self):
+        self.config = configparser.ConfigParser()
+        self.updateParameters()
         self.server = Server()
-        self.teensy = SerialCommunication('COM3', 115200)
+        self.teensy = SerialCommunication(self.port, self.baudrate)
         #self.server.start()
-        self.teensy.stat()
+        self.teensy.start()
         self.content = {}
     
-    def initialized(self):
+    def updateParameters(self):
+        """doc"""
+        self.config.read('static/Config.ini')
+        self.port = self.config['Serial']['port']
+        self.baudrate = self.config['Serial']['baudrate']
+
+
+    def isInitialized(self):
+        """doc"""
         return self.teensy.isConnected() and self.server.isConnected()
 
     def put(self, key, content):

@@ -13,12 +13,25 @@ __status__ = "Development"
 """
 
 
+# Importing packages
+from threading import Thread
 
 
-class ActionHandler():
+class ActionHandler(Thread):
 
-    def __init__(self):
-        self.event = None
+    def __init__(self, resource):
+        Thread.__init__(self)
+        self.action = None
+        self.resource = resource
     
     def listen(self):
-        pass
+        """doc"""
+        if 'Action' in self.resource.content.keys():
+            self.action = self.resource.content['Action']
+        else:
+            self.action = None
+    
+    def run():
+        """doc"""
+        while self.resource.isInitialized():
+            self.listen()

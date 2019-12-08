@@ -12,23 +12,21 @@ __email__ = "magnus.oye@gmail.com"
 __status__ = "Development"
 """
 
-
 # Importing packages
 from threading import Thread
 
 
-class EventHandler(Thread):
-    """doc"""
+class WarningHandler(Thread):
 
     def __init__(self, resource):
         Thread.__init__(self)
-        self.event = None
         self.resource = resource
+        self.warnings = None
     
     def listen(self):
         """doc"""
-        if 'Event' in self.resource.content.keys():
-            self.event = self.resource.content['Event']
+        if 'Warning' in self.resource.content.keys():
+            self.warnings = self.resource.content['Warning']
         else:
-            self.event = None
-
+            self.warnings = None
+    

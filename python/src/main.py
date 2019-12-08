@@ -14,24 +14,27 @@ __status__ = "Development"
 
 # Importing from local source
 from robot import Sparkie
-from communication.serial_handler import SerialCommunication
-from communication.server import Server
+from resources import StorageBox
 from util.event_handler import EventHandler
 from util.action_handler import ActionHandler
+from util.messages import startUpMsg, waitingMsg
 
+# Importing packages
+import time
 
 sparkie = Sparkie()
-server = Server()
-teensy = SerialCommunication(port='COM3', baudrate=115200)
-teensy.start()
-server.start()
+sb = StorageBox()
+
 
 # Running application
 if __name__ == "__main__":
-    while not teensy.isConnected():
-        
-        while teensy.isConnected() and server.isConnected():
+    startUpMsg()
+    while True:
+        while sb.isInitialized():
             if event_handler.incoming:
                 sparkie.onEvent(event_handler.event)
             if action_handler.incoming:
                 sparkie.onAction(action_handler.event)
+        waitingMsg()
+        time.sleep(5)
+        
