@@ -15,12 +15,14 @@ __status__ = "Development"
 """
 
 
+# Importing from local source
 from states.state_interface import State
 
-# Start of our states
+
+# Start of the states
 class InitState(State):
     """
-    The state which indicates that there are limited device capabilities.
+    The state which indicates that ...
     """
 
     def onEvent(self, event):
@@ -36,12 +38,26 @@ class InitState(State):
         """
         
         return self
+    
+    def onWarning(self, warningEvent):
+        """
+        docstring
+        """
+
+        return self
+    
+    def onError(self, errorWarning):
+        """
+        docstring
+        """
+
+        return self
+
 
 
 class StandbyState(State):
     """
-    The state which indicates that there are no limitations on device
-    capabilities.
+    The state which indicates that ...
     """
 
     def onEvent(self, event):
@@ -59,11 +75,24 @@ class StandbyState(State):
 
         return self
 
+    def onWarning(self, warningEvent):
+        """
+        docstring
+        """
+
+        return self
+    
+    def onError(self, errorWarning):
+        """
+        docstring
+        """
+
+        return self
+
 
 class RunningState(State):
     """
-    The state which indicates that there are no limitations on device
-    capabilities.
+    The state which indicates that ...
     """
 
     def onEvent(self, event):
@@ -74,6 +103,20 @@ class RunningState(State):
         return self
     
     def onAction(self, actionEvent):
+        """
+        docstring
+        """
+
+        return self
+    
+    def onWarning(self, warningEvent):
+        """
+        docstring
+        """
+
+        return self
+    
+    def onError(self, errorWarning):
         """
         docstring
         """

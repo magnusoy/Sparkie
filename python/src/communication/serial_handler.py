@@ -21,7 +21,7 @@ from time import sleep
 from threading import Thread
 
 
-class SerialCommunication(Thread):
+class Serial(Thread):
     """doc"""
 
     __slots__ = ['port', 'baudrate']
@@ -94,5 +94,5 @@ class SerialCommunication(Thread):
 
 # Example of usage
 if __name__ == "__main__":
-    se = SerialCommunication("COM3", 115200).start()
-    #se.start()
+    se = Serial("COM3", 115200)
+    se.start()

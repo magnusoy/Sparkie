@@ -22,7 +22,7 @@ import time
 
 class Client(Thread):
     """doc"""
-    def __init__(self, host='127.0.0.1', port=5056, rate=0.2):
+    def __init__(self, host='localhost', port=8089, rate=0.2):
         Thread.__init__(self)
         self.address = (host, port)
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -41,7 +41,7 @@ class Client(Thread):
         try:
             self.socket.connect(self.address)
         except OSError:
-            yield 'Unable to connect'
+            print('Unable to connect')
         finally:
             self.isConnected = True
     
@@ -63,5 +63,8 @@ class Client(Thread):
 
 # Example of usage
 if __name__ == "__main__":
-    c1 = Client().start()
-    c2 = Client().start()
+    c1 = Client()
+    c1.connect()
+    while c1.isConnected:
+        c1.write('Hello')
+    c1.disconnect()

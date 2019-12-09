@@ -15,26 +15,33 @@ __status__ = "Development"
 # Importing from local source
 from robot import Sparkie
 from resources import StorageBox
-from util.event_handler import EventHandler
-from util.action_handler import ActionHandler
+from util.listeners import EventListener, ActionListener, WarningListener, ErrorListener
 from util.messages import startUpMsg, waitingMsg
 
 # Importing packages
 import time
 
+
 sparkie = Sparkie()
 sb = StorageBox()
+
+# Listeners
+events = EventListener(sb).start()
+actions = ActionListener(sb).start()
+warnings = WarningListener(sb).start()
+errors = ErrorListener(sb).start()
 
 
 # Running application
 if __name__ == "__main__":
     startUpMsg()
     while True:
-        while sb.isInitialized():
-            if event_handler.incoming:
-                sparkie.onEvent(event_handler.event)
-            if action_handler.incoming:
-                sparkie.onAction(action_handler.event)
+        while sb.isRunning():
+            sparkie.onEvent(sb.get('Event'))
+            sparkie.onAction(sb.get('Action'))
+            sparkie.onWarning(sb.get('Warning'))
+            sparkie.onError(sb.get('Error'))
+
         waitingMsg()
         time.sleep(5)
         

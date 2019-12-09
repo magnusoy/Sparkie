@@ -15,7 +15,9 @@ __status__ = "Development"
 """
 
 
+# Importing from local source
 from states.states import InitState
+
 
 class Sparkie(object):
     """ 
@@ -37,7 +39,7 @@ class Sparkie(object):
         assigned as the new state.
         """
 
-        # The next state will be the result of the on_event function.
+        # The next state will be the result of the onEvent function.
         self.state = self.state.onEvent(event)
     
     def onAction(self, actionEvent):
@@ -47,3 +49,19 @@ class Sparkie(object):
         """
 
         self.action = self.state.onAction(actionEvent)
+    
+    def onWarning(self, warningEvent):
+        """
+        Incoming warning events are delegated to the given states
+        which then handle the warning.
+        """
+
+        self.warning = self.state.onWarning(warningEvent)
+    
+    def onError(self, errorEvent):
+        """
+        Incoming error events are delegated to the given states
+        which then handle the error.
+        """
+
+        self.error = self.state.onWarning(errorEvent)

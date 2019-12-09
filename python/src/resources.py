@@ -19,7 +19,7 @@ import configparser
 
 # Importing from local source
 from communication.server import Server
-from communication.serial_handler import SerialCommunication
+from communication.serial_handler import Serial
 
 class StorageBox(object):
     """doc"""
@@ -27,10 +27,10 @@ class StorageBox(object):
     def __init__(self):
         self.config = configparser.ConfigParser()
         self.updateParameters()
-        self.server = Server()
-        self.teensy = SerialCommunication(self.port, self.baudrate)
+        #self.server = Server()
+        #self.teensy = Serial(self.port, self.baudrate)
         #self.server.start()
-        self.teensy.start()
+        #self.teensy.start()
         self.content = {}
     
     def updateParameters(self):
@@ -40,9 +40,10 @@ class StorageBox(object):
         self.baudrate = self.config['Serial']['baudrate']
 
 
-    def isInitialized(self):
+    def isRunning(self):
         """doc"""
-        return self.teensy.isConnected() and self.server.isConnected()
+        #return self.teensy.isConnected() and self.server.isConnected()
+        return True
 
     def put(self, key, content):
         """doc"""
@@ -50,11 +51,18 @@ class StorageBox(object):
 
     def get(self, key):
         """doc"""
-        return self.content[key]
+        content = None
+        try:
+            content = self.content[key]
+        except KeyError:
+            print(f'Key: {key}, is not present')
+        return content
 
 
+# Example of usage
 if __name__ == "__main__":
     sb = StorageBox()
-    while True:
-        pass
+    while sb.isRunning():
+        sb.put('Event', 0)
+        print(sb.get('Event'))
     

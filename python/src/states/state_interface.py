@@ -17,7 +17,7 @@ __status__ = "Development"
 
 class State(object):
     """
-    We define a state object which provides some utility functions for the
+    Define a state object which provides some utility functions for the
     individual states within the state machine.
     """
 
@@ -34,6 +34,20 @@ class State(object):
     def onAction(self, actionEvent):
         """
         Handle action events that are delegated to this state.
+        """
+
+        pass
+
+    def onWarning(self, warningEvent):
+        """
+        Handle warning events that are delegated to this state.
+        """
+
+        pass
+
+    def onError(self, errorEvent):
+        """
+        Handle error events that are delegated to this state.
         """
 
         pass

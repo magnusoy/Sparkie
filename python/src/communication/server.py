@@ -15,31 +15,50 @@ __status__ = "Development"
 """
 
 # Import packages
-import pickle
 import socket
-import struct
 from threading import Thread
 
 
 class Server(Thread):
     """doc"""
-    def __init__(self, host="0.0.0.0", port=8089):
+
+    __slots__ = ['host', 'port']
+
+    def __init__(self, host='localhost', port=8089):
         Thread.__init__(self)
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.host = host
+        self.port = port
         self.connection = None
-        self.addr = None
-        self.initialize(host, port)
+        self.content = None
     
     def run(self):
         """doc"""
-        pass
+        self.initialize()
+        while True:
+            while self.isConnected():
+                self.read()
+            self.content = None
     
-    def initialize(self, host="0.0.0.0", port=8089):
+    def close(self):
         """doc"""
-        addr = (host, port)
+        self.connection.close()
+    
+    def read(self):
+        """doc"""
+        self.content = self.connection.recv(4096).decode('latin-1')
+            
+    def initialize(self):
+        """doc"""
+        addr = (self.host, self.port)
         self.socket.bind(addr)
         self.socket.listen(10)
-        self.connection, self.addr = self.socket.accept()
+        self.connection, self.address = self.socket.accept()
+    
+    def disconnect(self):
+        """doc"""
+        self.connection.close()
+        self.connection = None
     
     def isConnected(self):
         """doc"""
@@ -49,3 +68,7 @@ class Server(Thread):
 # Example of usage
 if __name__ == "__main__":
     server = Server()
+    #server.start()
+    server.initialize()
+    while server.isConnected():
+        pass    

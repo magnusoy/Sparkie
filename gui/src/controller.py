@@ -43,7 +43,7 @@ class Controller:
         """doc"""
         self.login = LoginWindow()
         self.login.setWindowIcon(QtGui.QIcon(self.icon))
-        self.login.setFixedSize(623, 411)
+        self.login.setFixedSize(623, 411) 
         self.login.switchToWelcomeWindow.connect(self.showWelcomeWindow)
         self.login.show()
     
