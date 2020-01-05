@@ -26,7 +26,7 @@ class Sparkie(object):
 
     def __init__(self):
         """ 
-        Initialize the components.
+        Initialize the components.W
         """
 
         # Start with a default state.
@@ -39,7 +39,6 @@ class Sparkie(object):
         assigned as the new state.
         """
 
-        # The next state will be the result of the onEvent function.
         self.state = self.state.onEvent(event)
     
     def onAction(self, actionEvent):

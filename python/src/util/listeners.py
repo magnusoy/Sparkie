@@ -53,7 +53,7 @@ class EventListener(Listener):
             self.event = None
 
 
-class ActionHandler(Listener):
+class ActionListener(Listener):
     """doc"""
 
     def __init__(self, resource):
@@ -74,7 +74,7 @@ class ActionHandler(Listener):
             self.action = None
 
 
-class WarningHandler(Listener):
+class WarningListener(Listener):
     """doc"""
 
     def __init__(self, resource):
@@ -95,7 +95,7 @@ class WarningHandler(Listener):
             self.warnings = None
 
 
-class ErrorHandler(Listener):
+class ErrorListener(Listener):
     """doc"""
 
     def __init__(self, resource):
