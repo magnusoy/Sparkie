@@ -17,11 +17,26 @@ __status__ = "Development"
 from threading import Thread
 
 
-class EventListener(Thread):
+class Listener(Thread):
+    """doc"""
+
+    def __init__(self):
+        Thread.__init__(self)
+
+    def run(self):
+        """doc"""
+        yield NotImplementedError
+    
+    def listen(self):
+        """doc"""
+        yield NotImplementedError
+
+
+class EventListener(Listener):
     """doc"""
 
     def __init__(self, resource):
-        Thread.__init__(self)
+        Listener.__init__(self)
         self.event = None
         self.resource = resource
     
@@ -38,11 +53,11 @@ class EventListener(Thread):
             self.event = None
 
 
-class ActionHandler(Thread):
+class ActionHandler(Listener):
     """doc"""
 
     def __init__(self, resource):
-        Thread.__init__(self)
+        Listener.__init__(self)
         self.action = None
         self.resource = resource
 
@@ -59,11 +74,11 @@ class ActionHandler(Thread):
             self.action = None
 
 
-class WarningHandler(Thread):
+class WarningHandler(Listener):
     """doc"""
 
     def __init__(self, resource):
-        Thread.__init__(self)
+        Listener.__init__(self)
         self.resource = resource
         self.warnings = None
 
@@ -80,11 +95,11 @@ class WarningHandler(Thread):
             self.warnings = None
 
 
-class ErrorHandler(Thread):
+class ErrorHandler(Listener):
     """doc"""
 
     def __init__(self, resource):
-        Thread.__init__(self)
+        Listener.__init__(self)
         self.errors = None
         self.resources = resource
 
