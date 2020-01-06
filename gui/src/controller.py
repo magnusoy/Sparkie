@@ -28,6 +28,7 @@ from widgets.manual import ManualWindow
 from widgets.interact import InteractWindow
 from widgets.testing import TestingWindow
 
+
 class Controller:
     """A class used to control the switching between windows
      within the program. Constrains the windowsizes and assign a Icon to
@@ -36,11 +37,14 @@ class Controller:
     def __init__(self):
         """Static icon location, and assigns the login window
         as the first window to be presented."""
+
         self.icon = '../static/img/favicon/favicon.png'
         self.showLoginWindow()
 
     def showLoginWindow(self):
-        """doc"""
+        """Creates a new login window, and connects an
+            emitter to open the welcome window."""
+
         self.login = LoginWindow()
         self.login.setWindowIcon(QtGui.QIcon(self.icon))
         self.login.setFixedSize(623, 411) 
@@ -48,7 +52,9 @@ class Controller:
         self.login.show()
     
     def showWelcomeWindow(self):
-        """doc"""
+        """Creates a new welcome window, and connects multiple
+            emitters to open different windows."""
+
         self.welcome = WelcomeWindow()
         self.welcome.setWindowIcon(QtGui.QIcon(self.icon))
         self.welcome.setFixedSize(623, 411)
@@ -61,35 +67,43 @@ class Controller:
         self.welcome.show()
     
     def showAutonomousWindow(self):
-        """doc"""
+        """Creates a new autonomous window in a 
+            maximized window."""
+
         self.autonomous = AutonomousWindow()
         self.autonomous.setWindowIcon(QtGui.QIcon(self.icon))
         self.autonomous.setFixedSize(1920, 1080)
         self.autonomous.showMaximized()
     
     def showManualWindow(self):
-        """doc"""
+        """Creates a new manual window in a 
+            maximized window."""
+
         self.manual = ManualWindow()
         self.manual.setWindowIcon(QtGui.QIcon(self.icon))
         self.manual.setFixedSize(1920, 1080)
         self.manual.showMaximized()
 
     def showInteractWindow(self):
-        """doc"""
+        """Creates a new interact window in a 
+            maximized window."""
+
         self.interact = InteractWindow()
         self.interact.setWindowIcon(QtGui.QIcon(self.icon))
         self.interact.setFixedSize(1920, 1080)
         self.interact.showMaximized()
 
     def showTestingWindow(self):
-        """doc"""
+        """Creates a new autonomous window."""
+
         self.testing = TestingWindow()
         self.testing.setWindowIcon(QtGui.QIcon(self.icon))
         self.testing.setFixedSize(623, 411)
         self.testing.show()
     
     def showConfigureWindow(self):
-        """doc"""
+        """Creates a new autonomous window."""
+
         self.configure = ConfigureWindow()
         self.configure.setWindowIcon(QtGui.QIcon(self.icon))
         self.configure.setFixedSize(720, 400)

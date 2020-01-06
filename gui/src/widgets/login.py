@@ -16,6 +16,7 @@ __status__ = "Development"
 
 # Importing packages
 from PyQt5 import QtWidgets, uic, QtCore
+import configparser
 
 
 class LoginWindow(QtWidgets.QDialog):
@@ -43,8 +44,11 @@ class LoginWindow(QtWidgets.QDialog):
 
 
     def login(self):
-        """doc"""
-        if self.usernameField.text() == 'admin' and self.passwordField.text() == 'sparkie':
+        """Checks the given username and password agains the correct values.
+            Will give an error notification if wrong credentials is tried,
+            otherwise redirected to the welcome window."""
+
+        if self.usernameField.text() == '' and self.passwordField.text() == '':
             self.switchToWelcomeWindow.emit()
         else:
             choice = QtWidgets.QMessageBox.question(self, 'Error', 'Wrong password, please try again.', QtWidgets.QMessageBox.Ok)
@@ -53,4 +57,5 @@ class LoginWindow(QtWidgets.QDialog):
     
     def rememberMe(self):
         """doc"""
+
         pass
