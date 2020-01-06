@@ -5,7 +5,7 @@
 This interface ...
 
 __author__ = "Magnus Kvendseth Øye"
-__copyright__ = "Copyright 2019, Sparkie Quadruped Robot"
+__copyright__ = "Copyright 2020, Sparkie Quadruped Robot"
 __credits__ = ["Magnus Kvendseth Øye", "Petter Drønnen", "Vegard Solheim"]
 __version__ = "1.0.0"
 __license__ = "MIT"

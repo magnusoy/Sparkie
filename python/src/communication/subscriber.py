@@ -1,9 +1,29 @@
+# #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+This module ...
+
+__author__ = "Magnus Kvendseth Øye"
+__copyright__ = "Copyright 2020, Sparkie Quadruped Robot"
+__credits__ = ["Magnus Kvendseth Øye", "Petter Drønnen", "Vegard Solheim"]
+__version__ = "1.0.0"
+__license__ = "MIT"
+__maintainer__ = "Magnus Kvendseth Øye"
+__email__ = "magnus.oye@gmail.com"
+__status__ = "Development"
+"""
+
+
+# Importing packages
 import zmq
 from multiprocessing import Process
 
 
 class Subscriber(Process):
     """docstring"""
+
+    __slots__ = ['ip', 'port', 'filter']
 
     def __init__(self, ip, port, _filter):
         Process.__init__(self)
@@ -50,10 +70,10 @@ class Worker(Subscriber):
     def run(self):
         """docstring"""
 
-        Subscriber.initialize(self)
+        self.initialize()
         
         while self.running:
-            Subscriber.read(self)
+            self.read()
             print(self.msg)
             
         

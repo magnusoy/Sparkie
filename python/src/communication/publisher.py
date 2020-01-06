@@ -1,20 +1,29 @@
+# #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+This module ...
+
+__author__ = "Magnus Kvendseth Øye"
+__copyright__ = "Copyright 2020, Sparkie Quadruped Robot"
+__credits__ = ["Magnus Kvendseth Øye", "Petter Drønnen", "Vegard Solheim"]
+__version__ = "1.0.0"
+__license__ = "MIT"
+__maintainer__ = "Magnus Kvendseth Øye"
+__email__ = "magnus.oye@gmail.com"
+__status__ = "Development"
+"""
+
+
+# Importing packages
 import zmq
 from multiprocessing import Process
 
-"""
-context = zmq.Context()
-socket = context.socket(zmq.PUB)
-socket.bind("tcp://*:5556")
 
-while True:
-    zipcode = 10001
-    temperature = randrange(-80, 135)
-    relhumidity = randrange(10, 60)
-
-    socket.send_string("%i %i %i" % (zipcode, temperature, relhumidity))
-"""
 class Publisher(Process):
     """docstring"""
+
+    __slots__ = ['ip', 'port', 'filter']
 
     def __init__(self, ip, port, _filter):
         Process.__init__(self)
@@ -55,12 +64,12 @@ class Worker(Publisher):
     """docstring"""
 
     def __init__(self, ip, port, _filter):
-        Publisher.__init__(self, ip, port, _filter)
+        self.__init__(self, ip, port, _filter)
     
     def run(self):
         """docstring"""
 
-        Publisher.initialize(self)
+        self.initialize(self)
         
         while self.running:
             Publisher.send(self)
