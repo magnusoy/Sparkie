@@ -5,3 +5,5 @@ odrive
 pyrealsense2
 pyglet
 pygame
+qdarkstyle
+PyQt5

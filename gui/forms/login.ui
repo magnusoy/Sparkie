@@ -131,7 +131,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QCheckBox" name="remeberMeCheckBox">
+  <widget class="QCheckBox" name="rememberMeCheckBox">
    <property name="geometry">
     <rect>
      <x>210</x>

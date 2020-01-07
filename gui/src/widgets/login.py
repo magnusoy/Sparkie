@@ -18,11 +18,13 @@ __status__ = "Development"
 from PyQt5 import QtWidgets, uic, QtCore
 import configparser
 
-
 class LoginWindow(QtWidgets.QDialog):
     """doc"""
 
     switchToWelcomeWindow = QtCore.pyqtSignal()
+    config = configparser.ConfigParser()
+    config.read('../instance/config.ini')
+    
 
     def __init__(self):
         super(LoginWindow, self).__init__()
@@ -42,14 +44,24 @@ class LoginWindow(QtWidgets.QDialog):
         # Button click functions
         self.loginBtn.clicked.connect(self.login)
 
+        # Remember function
+        self.usernameField.setText(self.config.get('Login','username'))
+        if self.config.getboolean('Login','rememberMeBox'):
+            self.rememberMeBox.setChecked(True)
+
 
     def login(self):
         """Checks the given username and password agains the correct values.
             Will give an error notification if wrong credentials is tried,
             otherwise redirected to the welcome window."""
+        
+       
+        self.rememberMe()
+         
 
-        if self.usernameField.text() == '' and self.passwordField.text() == '':
+        if self.usernameField.text() == 'admin' and self.passwordField.text() == '':
             self.switchToWelcomeWindow.emit()
+
         else:
             choice = QtWidgets.QMessageBox.question(self, 'Error', 'Wrong password, please try again.', QtWidgets.QMessageBox.Ok)
             if choice == QtWidgets.QMessageBox.Ok:
@@ -57,5 +69,16 @@ class LoginWindow(QtWidgets.QDialog):
     
     def rememberMe(self):
         """doc"""
-
+        if self.rememberMeBox.isChecked():
+            self.config.set('Login','username',self.usernameField.text())
+            self.config.set('Login','rememberMeBox','true')
+        else:
+            self.config.set('Login','username','')
+            self.config.set('Login','rememberMeBox','false')
+        self.writeToConfig()
         pass
+        
+
+    def writeToConfig(self):
+        with open('../instance/config.ini', "w+") as configfile:
+                self.config.write(configfile)
