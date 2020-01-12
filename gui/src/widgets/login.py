@@ -55,10 +55,7 @@ class LoginWindow(QtWidgets.QDialog):
             Will give an error notification if wrong credentials is tried,
             otherwise redirected to the welcome window."""
         
-       
         self.rememberMe()
-         
-
         if self.usernameField.text() == 'admin' and self.passwordField.text() == '':
             self.switchToWelcomeWindow.emit()
 

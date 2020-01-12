@@ -23,13 +23,13 @@ from multiprocessing import Process
 class Publisher(Process):
     """docstring"""
 
-    __slots__ = ['ip', 'port', 'filter']
+    __slots__ = ['ip', 'port', 'topic']
 
-    def __init__(self, ip, port, _filter):
+    def __init__(self, ip, port, topic):
         Process.__init__(self)
         self.ip = ip
         self.port = port
-        self.filter = _filter
+        self.topic = topic
         self.running = True
         self.msg = ''
 
@@ -52,7 +52,7 @@ class Publisher(Process):
     def send(self, msg):
         """docstring"""
         
-        self.socket.send_string('%i %s' % (self.filter, msg))
+        self.socket.send_string('%i %s' % (self.topic, msg))
 
     def stop(self):
         """docstring"""
@@ -63,8 +63,8 @@ class Publisher(Process):
 class Worker(Publisher):
     """docstring"""
 
-    def __init__(self, ip, port, _filter):
-        self.__init__(self, ip, port, _filter)
+    def __init__(self, ip, port, topic):
+        self.__init__(self, ip, port, topic)
     
     def run(self):
         """docstring"""

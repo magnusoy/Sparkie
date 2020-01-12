@@ -23,13 +23,13 @@ from multiprocessing import Process
 class Subscriber(Process):
     """docstring"""
 
-    __slots__ = ['ip', 'port', 'filter']
+    __slots__ = ['ip', 'port', 'topic']
 
-    def __init__(self, ip, port, _filter):
+    def __init__(self, ip, port, topic):
         Process.__init__(self)
         self.ip = ip
         self.port = port
-        self.filter = _filter
+        self.topic = topic
         self.running = True
         self.msg = ''
     
@@ -48,7 +48,7 @@ class Subscriber(Process):
         self.address = 'tcp://%s:%s' % (self.ip, self.port)
         self.socket = self.context.socket(zmq.SUB)
         self.socket.connect(self.address)
-        self.socket.setsockopt_string(zmq.SUBSCRIBE, self.filter)
+        self.socket.setsockopt_string(zmq.SUBSCRIBE, self.topic)
     
     def read(self):
         """docstring"""
@@ -64,8 +64,8 @@ class Subscriber(Process):
 class Worker(Subscriber):
     """docstring"""
 
-    def __init__(self, ip, port, _filter):
-        Subscriber.__init__(self, ip, port, _filter)
+    def __init__(self, ip, port, topic):
+        Subscriber.__init__(self, ip, port, topic)
     
     def run(self):
         """docstring"""
