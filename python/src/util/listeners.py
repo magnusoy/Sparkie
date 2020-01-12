@@ -14,14 +14,14 @@ __status__ = "Development"
 
 
 # Importing packages
-from threading import Thread
+from communication.subscriber import Subscriber
 
 
-class Listener(Thread):
+class Listener(Subscriber):
     """doc"""
 
-    def __init__(self):
-        Thread.__init__(self)
+    def __init__(self, ip, port, topic):
+        Subscriber.__init__(self, ip, port, topic)
 
     def run(self):
         """doc"""

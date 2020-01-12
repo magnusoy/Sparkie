@@ -14,15 +14,4 @@ __status__ = "Development"
 
 import json
 
-class Joystick:
-    """doc"""
-
-    def __init__(self):
-        """doc"""
-        self.content = None
-    
-    def fetch_data(self, data):
-        """doc"""
-        self.content = json.dumps(data[17:])
-    
 

@@ -93,18 +93,13 @@ class SerialThread(Thread):
 
 
 class SerialProcess(Publisher):
-    """doc"""
+    """SerialProcess is a class that extends from Publisher.
+    This makes the readInputStream from serial accessible for everyone
+    subscribing to the given topic."""
 
     __slots__ = ['port', 'baudrate']
 
     def __init__(self, usb_port, baudrate, ip, port, topic):
-        """
-        Establishes a connection to the given port.
-        @port : where your device is connected
-        @baudrate : the specified connection speed
-                    (9600, 19200, 28800, 57600, 115200)
-        """
-
         Publisher.__init__(self, ip, port, topic)
         self.usb_port = usb_port
         self.baudrate = baudrate
@@ -116,13 +111,19 @@ class SerialProcess(Publisher):
             self.connect()
             sleep(2)
         
-        self.initialize(self)
+        self.initialize()
         while self.running:
             msg = self.readInputStream()
-            Publisher.send(msg)
+            self.send(msg)
     
     def connect(self):
-        """doc"""
+        """
+        Establishes a connection to the given port.
+        @usb_port : where your device is connected
+        @baudrate : the specified connection speed
+                    (9600, 19200, 28800, 57600, 115200)
+        """
+
         try:
             self.connection = serial.Serial(self.usb_port, self.baudrate)
             sleep(2)
@@ -152,7 +153,9 @@ class SerialProcess(Publisher):
     def sendOutputStream(self, data):
         """
         Send data trough Serial.
+        @data : msg to be sent out
         """
+
         content = data + '\n'
         self.connection.write(content.encode())
 
@@ -167,7 +170,5 @@ class SerialProcess(Publisher):
 
 # Example of usage
 if __name__ == "__main__":
-    #se = SerialThread("COM3", 115200)
-    #se.start()
     se = SerialProcess("COM3", 115200, '*', 5556, 'serial')
     se.start()

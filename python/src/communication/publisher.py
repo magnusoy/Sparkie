@@ -52,7 +52,7 @@ class Publisher(Process):
     def send(self, msg):
         """docstring"""
         
-        self.socket.send_string('%i %s' % (self.topic, msg))
+        self.socket.send_string('%s %s' % (self.topic, msg))
 
     def stop(self):
         """docstring"""
@@ -77,5 +77,5 @@ class Worker(Publisher):
 
 # Example of usage
 if __name__ == "__main__":
-    pub = Publisher('*', 5556, 0)
+    pub = Publisher('*', 5556, '0')
     pub.start()
