@@ -80,5 +80,5 @@ class Worker(Subscriber):
         
 # Example of usage
 if __name__ == "__main__":
-    sub = Worker('localhost', 5556, 'serial')
+    sub = Worker('localhost', 5556, '0')
     sub.start()

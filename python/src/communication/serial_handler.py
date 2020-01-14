@@ -20,7 +20,7 @@ import serial
 from time import sleep
 from threading import Thread
 from multiprocessing import Process
-from publisher import Publisher
+from .publisher import Publisher
 import zmq
 
 
@@ -187,20 +187,42 @@ class SerialProcess(Process):
         self.connection = None
         self.running = True
         
+        # Subscriber
+        self.sub_ip = 'localhost'
+        self.sub_port = 5556
+        self.sub_topic = 'serial'
+        
+        # Publisher
+        self.pub_ip = '*'
+        self.pub_port = 5556
+        self.pub_topic = 'serial'
+    
+    def init_subscriber(self, ip, port, topic):
+        """doc"""
+        self.sub_ip = ip
+        self.sub_port = port
+        self.sub_topic = topic
+    
+    def init_publisher(self, ip, port, topic):
+        """doc"""
+        self.pub_ip = ip
+        self.pub_port = port
+        self.pub_topic = topic
+    
     def run(self):
         """doc"""
         while not self.isConnected():
             self.connect()
             sleep(2)
-        sub_thread = Thread(target=self.subscriber, args=('localhost', 5556, 'serial'), daemon=True)
-        pub_thread = Thread(target=self.publisher, args=('*', 5556, 'serial'), daemon=True)
+        sub_thread = Thread(target=self.subscriber, args=(self.sub_ip, self.sub_port, self.sub_topic), daemon=True)
+        pub_thread = Thread(target=self.publisher, args=(self.pub_ip, self.pub_port, self.pub_topic), daemon=True)
         pub_thread.start()
         sub_thread.start()
         while self.running:
             pass
-            
-    
+           
     def subscriber(self, ip, port, topic):
+        """doc"""
         contex = zmq.Context.instance()
         address = 'tcp://%s:%s' % (ip, port)
         sub = contex.socket(zmq.SUB)
@@ -210,11 +232,10 @@ class SerialProcess(Process):
         while True:
             msg = sub.recv_string()
             #TODO: Preprocessing
-            #self.sendOutputStream(msg)
-            print(msg)
-            
-            
+            self.sendOutputStream(msg)
+                   
     def publisher(self, ip, port, topic):
+        """doc"""
         contex = zmq.Context.instance()
         address = 'tcp://%s:%s' % (ip, port)
         pub = contex.socket(zmq.PUB)
@@ -225,8 +246,6 @@ class SerialProcess(Process):
             # TODO: Postprocessing
             pub.send_string(f'{topic}, {msg}')
         
-        
-    
     def connect(self):
         """
         Establishes a connection to the given port.
@@ -237,7 +256,7 @@ class SerialProcess(Process):
 
         try:
             self.connection = serial.Serial(self.usb_port, self.baudrate)
-            sleep(2)
+            sleep(1)
             print(f'Established connection to {self.usb_port}')
         except serial.SerialException as se:
             print(f'Cant establish connection to {self.usb_port}')

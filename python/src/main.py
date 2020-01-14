@@ -16,7 +16,6 @@ __status__ = "Development"
 # Importing from local source
 from robot import Sparkie
 from util.listeners import EventListener, ActionListener, WarningListener, ErrorListener
-from util.messages import startUpMsg, waitingMsg
 from communication.serial_handler import SerialProcess
 
 # Importing packages
@@ -25,9 +24,9 @@ import time
 
 
 sparkie = Sparkie()
-serial = SerialProcess()
+serial = SerialProcess("COM5", 115200)
 
 
 # Running application
 if __name__ == "__main__":
-    startUpMsg()
+    serial.start()
