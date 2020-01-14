@@ -54,6 +54,7 @@ class Subscriber(Process):
         """docstring"""
 
         self.msg = self.socket.recv_string()
+        print(self.msg)
     
     def stop(self):
         """docstring"""
@@ -79,5 +80,5 @@ class Worker(Subscriber):
         
 # Example of usage
 if __name__ == "__main__":
-    sub = Worker('localhost', 5556, '0')
+    sub = Worker('localhost', 5556, 'serial')
     sub.start()

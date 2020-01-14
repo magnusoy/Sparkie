@@ -17,7 +17,7 @@ __status__ = "Development"
 from robot import Sparkie
 from util.listeners import EventListener, ActionListener, WarningListener, ErrorListener
 from util.messages import startUpMsg, waitingMsg
-from experimental.pub_sub import Worker
+from communication.serial_handler import SerialProcess
 
 # Importing packages
 import time
@@ -25,8 +25,8 @@ import time
 
 
 sparkie = Sparkie()
+serial = SerialProcess()
 
-worker = Worker('localhost', 5556, '*', 5556, '0')
 
 # Running application
 if __name__ == "__main__":
