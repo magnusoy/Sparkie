@@ -22,14 +22,17 @@ class LoginWindow(QtWidgets.QDialog):
     """doc"""
 
     switchToWelcomeWindow = QtCore.pyqtSignal()
-    config = configparser.ConfigParser()
-    config.read('../instance/config.ini')
+    
     
 
     def __init__(self):
         super(LoginWindow, self).__init__()
         self.ui = '../forms/login.ui'
         uic.loadUi(self.ui, self)
+
+        #Read config file
+        self.config = configparser.ConfigParser()
+        self.config.read('../instance/config.ini')
 
         #Button
         self.loginBtn = self.findChild(QtWidgets.QPushButton, 'loginBtn')
@@ -63,9 +66,11 @@ class LoginWindow(QtWidgets.QDialog):
             choice = QtWidgets.QMessageBox.question(self, 'Error', 'Wrong password, please try again.', QtWidgets.QMessageBox.Ok)
             if choice == QtWidgets.QMessageBox.Ok:
                 pass
-    
+            
+                    
     def rememberMe(self):
-        """doc"""
+        """Checks if the remember me box is checked and then write the corresponding 
+        username and valvue of the rememberMeBox to the config file"""
         if self.rememberMeBox.isChecked():
             self.config.set('Login','username',self.usernameField.text())
             self.config.set('Login','rememberMeBox','true')
@@ -73,9 +78,7 @@ class LoginWindow(QtWidgets.QDialog):
             self.config.set('Login','username','')
             self.config.set('Login','rememberMeBox','false')
         self.writeToConfig()
-        pass
         
-
     def writeToConfig(self):
         with open('../instance/config.ini', "w+") as configfile:
                 self.config.write(configfile)

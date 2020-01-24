@@ -47,7 +47,7 @@ class Controller:
 
         self.login = LoginWindow()
         self.login.setWindowIcon(QtGui.QIcon(self.icon))
-        self.login.setFixedSize(623, 411) 
+        self.login.setFixedSize(732, 440) 
         self.login.switchToWelcomeWindow.connect(self.showWelcomeWindow)
         self.login.show()
     
