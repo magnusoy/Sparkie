@@ -18,6 +18,8 @@ __status__ = "Development"
 # Importing packages
 import zmq
 from multiprocessing import Process
+import time
+import random
 
 
 class Publisher(Process):
@@ -45,9 +47,11 @@ class Publisher(Process):
         """docstring"""
         
         self.initialize()
-
+        
         while self.running:
+            self.msg = f'{random.randint(0, 1)}'
             self.send(self.msg)
+            time.sleep(0.01)
 
     def send(self, msg):
         """docstring"""
