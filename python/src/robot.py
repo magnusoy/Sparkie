@@ -26,7 +26,7 @@ class Sparkie(object):
 
     def __init__(self):
         """ 
-        Initialize the components.W
+        Initialize the components.
         """
 
         # Start with a default state.

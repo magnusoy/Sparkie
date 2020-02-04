@@ -1,13 +1,29 @@
+# -*- coding: utf-8 -*-
 
+"""
+__author__ = "Magnus Kvendseth Øye"
+__copyright__ = "Copyright 2020, Sparkie Quadruped Robot"
+__credits__ = ["Magnus Kvendseth Øye", "Petter Drønnen", "Vegard Solheim"]
+__version__ = "1.0.0"
+__license__ = "MIT"
+__maintainer__ = "Magnus Kvendseth Øye"
+__email__ = "magnus.oye@gmail.com"
+__status__ = "Development"
+"""
 
 import cv2
+import time
 import numpy as np
 import pyrealsense2 as rs
 
+# Importing from local source
+from ..communication.publisher import Publisher
 
-class DepthCamera(object):
 
-    def __init__(self, color=False):
+class DepthCamera(Publisher):
+
+    def __init__(self, color=False, ip, port, topic):
+        self.__init__(self, ip, port, topic)
          self.pipe = rs.pipeline()
          cfg = rs.config()
          cfg.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
@@ -46,9 +62,6 @@ class DepthCamera(object):
             texcoords = np.asanyarray(t).view(np.float32).reshape(-1, 2)  # uv
             print(verts)
 
-            
-            
-
             cv2.imshow('img',texcoords)
             cv2.waitKey(1)
             
@@ -57,6 +70,14 @@ class DepthCamera(object):
             print(e)
             return
     
+    def run(self):
+
+        self.initialize(self)
+
+        while self.running:
+            pass
+    
+
 if __name__ == "__main__":
     dc = DepthCamera()
     while True:

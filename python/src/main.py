@@ -17,6 +17,8 @@ __status__ = "Development"
 from robot import Sparkie
 from util.listeners import EventListener, ActionListener, WarningListener, ErrorListener
 from communication.serial_handler import SerialProcess
+from vision.tracking_camera import TrackingCamera
+from vision.depth_camera import DepthCamera
 
 # Importing packages
 import time
@@ -24,9 +26,8 @@ import time
 
 
 sparkie = Sparkie()
-serial = SerialProcess("COM5", 115200)
 
 
 # Running application
 if __name__ == "__main__":
-    serial.start()
+    pass

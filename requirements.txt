@@ -7,3 +7,5 @@ pyglet
 pygame
 qdarkstyle
 PyQt5
+zmq
+open3d-python
