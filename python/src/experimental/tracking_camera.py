@@ -31,7 +31,7 @@ class TrackingCamera:
         try:
             frames = self.pipe.wait_for_frames()
         except Exception as e:
-            print(e)
+            #print(e)
             return
 
         if self.image_output:
@@ -45,7 +45,7 @@ class TrackingCamera:
             self.pos = data.translation
             self.vel = data.velocity
             self.acc = data.acceleration
-            print('realsense pos(%f, %f, %f)' % (self.pos.x, self.pos.y, self.pos.z))
+            #print('realsense pos(%f, %f, %f)' % (self.pos.x, self.pos.y, self.pos.z))
 
     def update(self):
         while self.running:
@@ -66,10 +66,10 @@ class TrackingCamera:
 
 # Example of usage
 if __name__ == "__main__":
-    camera = TrackingCamera()
+    camera = TrackingCamera(True)
     
     while True:
-        pos, vel, acc = camera.run()
-        print(pos)
+        pos, vel, acc, img = camera.run()
+        print(img)
         time.sleep(0.1)
     c.shutdown()
