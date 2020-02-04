@@ -12,12 +12,11 @@ const uint8_t ERROR_LED = 10;
 const uint8_t WARNING_LED = 11;
 
 /** Hardware serials for Odrive */
-struct Odrive{
-    #define FRONT_LEFT Serial1  // RX, TX (0, 1)
-    #define FRONT_RIGHT Serial2 // RX, TX (7, 8)
-    #define BACK_LEFT Serial3   // RX, TX (15, 14)
-    #define BACK_RIGHT Serial4  // RX, TX (21, 20)
-};
+
+#define FRONT_LEFT Serial1  // RX, TX (0, 1)
+#define FRONT_RIGHT Serial2 // RX, TX (7, 8)
+#define BACK_LEFT Serial3   // RX, TX (15, 14)
+#define BACK_RIGHT Serial4  // RX, TX (21, 20)
 
 /** JSON Serial */
 #define BAUDRATE 115200 // Bits per second
