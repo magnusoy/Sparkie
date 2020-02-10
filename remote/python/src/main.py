@@ -2,11 +2,18 @@
 # -*- coding: utf-8 -*-
 
 """
-This script combines the TCP/IP Server and the CNN model.
-It pares the received input from the client, and sends it
-over to the CNN to do its computations before it saves the
-result in an file.
+This module ...
+
+__author__ = "Magnus Kvendseth Øye"
+__copyright__ = "Copyright 2020, Sparkie Quadruped Robot"
+__credits__ = ["Magnus Kvendseth Øye", "Petter Drønnen", "Vegard Solheim"]
+__version__ = "1.0.0"
+__license__ = "MIT"
+__maintainer__ = "Magnus Kvendseth Øye"
+__email__ = "magnus.oye@gmail.com"
+__status__ = "Development"
 """
+
 
 # Import packages
 import cv2

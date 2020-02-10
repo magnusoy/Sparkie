@@ -6,13 +6,15 @@
   ArduinoJSON - https://github.com/bblanchon/ArduinoJson
   -----------------------------------------------------------
   Code by: Magnus Kvendseth Øye, Vegard Solheim, Petter Drønnen
-  Date: 06.01-2020
-  Version: 0.1
+  Date: 10.02-2020
+  Version: 0.2
   Website: https://github.com/magnusoy/Sparkie
 */
 
+
 // Including libraries and headers
 #include <ODriveArduino.h>
+#include <ArduinoJson.h>
 //#include <SerialHandler.h>
 //#include <Timer.h>
 //#include <ButtonTimer.h>
@@ -21,9 +23,10 @@
 #include "OdriveParameters.h"
 
 
-//SerialHandler serial(BAUDRATE, CAPACITY);
 
-//HardwareSerial* hwSerials[4] ={&FRONT_LEFT, &FRONT_RIGHT, &BACK_LEFT, &BACK_RIGHT};
+/*Serial connection for each odrive*/
+HardwareSerial hwSerials[4] = {FRONT_LEFT, FRONT_RIGHT, BACK_LEFT, BACK_RIGHT};
+
 /*Odrive motordrivers, one Odrive per foot*/
 ODriveArduino odriveFrontLeft(FRONT_LEFT);
 ODriveArduino odriveFrontRight(FRONT_RIGHT);
@@ -35,12 +38,16 @@ ODriveArduino odrives[4] = {odriveFrontLeft, odriveFrontRight, odriveBackLeft, o
 
 
 void setup() {
+  Serial.begin(BAUDRATE);
+  
   initializeIO();
-  //serial.initialize();
+  initializeOdrives();
+  //setOdrivesInControlMode(odrives);
 }
 
 void loop() {
-  setOdrivesInControlMode(odrives);
+
+  readOdriveMotorPositions(hwSerials, odrives);
 
   switch (currentState) {
     case S_IDLE:
@@ -104,4 +111,50 @@ void initializeIO() {
   for (int i = 9; i < 12; i++) {
     pinMode(i, OUTPUT);
   }
+}
+
+/**
+  Initialize the four Odrives.
+*/
+void initializeOdrives() {
+  for (int i = 0; i < 5; ++i) {
+    hwSerials[i].begin(BAUDRATE);
+  }
+}
+
+/**
+  Generate a JSON document and sends it
+  over Serial.
+*/
+void sendJSONDocumentToSerial() {
+  DynamicJsonDocument doc(220);
+  doc["state"] = currentState;
+  serializeJson(doc, Serial);
+  Serial.print("\n");
+}
+
+
+/**
+  Reads content sent from the Teensy and
+  flushes it, as it is for no use.
+*/
+void flushSerial() {
+  if (Serial.available() > 0) {
+    const size_t capacity = 15 * JSON_ARRAY_SIZE(2) + JSON_ARRAY_SIZE(10) + 11 * JSON_OBJECT_SIZE(3) + 520;
+    DynamicJsonDocument doc(capacity);
+    DeserializationError error = deserializeJson(doc, Serial);
+    if (error) {
+      return;
+    }
+    JsonObject obj = doc.as<JsonObject>();
+  }
+}
+
+/**
+   Change the state of the statemachine to the new state
+   given by the parameter newState
+   @param newState The new state to set the statemachine to
+*/
+void changeStateTo(int newState) {
+  currentState = newState;
 }

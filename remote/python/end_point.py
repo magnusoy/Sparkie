@@ -2,13 +2,23 @@
 # -*- coding: utf-8 -*-
 
 """
-This script is the REST/API, that reads from the
-file that stores the CNN output. Then pulls it up
-where anyone can access the data.
+This module ...
+
+__author__ = "Magnus Kvendseth Øye"
+__copyright__ = "Copyright 2020, Sparkie Quadruped Robot"
+__credits__ = ["Magnus Kvendseth Øye", "Petter Drønnen", "Vegard Solheim"]
+__version__ = "1.0.0"
+__license__ = "MIT"
+__maintainer__ = "Magnus Kvendseth Øye"
+__email__ = "magnus.oye@gmail.com"
+__status__ = "Development"
 """
+
+
 
 # Importing Flask components
 from flask import Flask, jsonify
+
 # Importing util
 from utils.file_handler import FileHandler
 
