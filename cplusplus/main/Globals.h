@@ -57,6 +57,8 @@ enum states {
   S_CALIBRATE,
   S_READY,
   S_PAUSE,
+  S_WALK,
+  S_RUN,
   S_JUMP,
   S_AUTONOMOUS,
   S_MANUAL,

@@ -39,7 +39,7 @@ ODriveArduino odrives[4] = {odriveFrontLeft, odriveFrontRight, odriveBackLeft, o
 
 void setup() {
   Serial.begin(BAUDRATE);
-  
+
   initializeIO();
   initializeOdrives();
   //setOdrivesInControlMode(odrives);
@@ -63,6 +63,15 @@ void loop() {
       break;
 
     case S_PAUSE:
+
+      break;
+
+    case S_WALK:
+
+      break;
+      transitionTo(S_RUN)
+
+    case S_RUN:
 
       break;
 
