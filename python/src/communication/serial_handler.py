@@ -17,7 +17,7 @@ __status__ = "Development"
 
 # Importing packages
 import serial
-from time import sleep
+import time
 from threading import Thread
 from multiprocessing import Process
 from .publisher import Publisher
@@ -178,10 +178,12 @@ class SerialProcess(Process):
     This makes the readInputStream from serial accessible for everyone
     subscribing to the given topic."""
 
-    __slots__ = ['port', 'baudrate']
+    __slots__ = ['port', 'baudrate', 'interval']
 
-    def __init__(self, usb_port, baudrate):
+    def __init__(self, usb_port, baudrate, interval):
         Process.__init__(self)
+        self.interval = interval
+        self.lastUpdate = self.millis(self)
         self.usb_port = usb_port
         self.baudrate = baudrate
         self.connection = None
@@ -189,13 +191,23 @@ class SerialProcess(Process):
         
         # Subscriber
         self.sub_ip = 'localhost'
-        self.sub_port = 5556
+        self.sub_port = 5000
         self.sub_topic = 'serial'
         
         # Publisher
         self.pub_ip = '*'
-        self.pub_port = 5556
+        self.pub_port = 6000
         self.pub_topic = 'serial'
+    
+    @staticmethod
+    def millis(self):
+        """Returns the current time in milliseconds
+        Returns
+        -------
+        current time in milliseconds
+        """
+
+        return int(round(time.time() * 1000))
     
     def init_subscriber(self, ip, port, topic):
         """doc"""
@@ -242,9 +254,13 @@ class SerialProcess(Process):
         pub.bind(address)
         
         while True:
-            msg = self.readInputStream()
-            # TODO: Postprocessing
-            pub.send_string(f'{topic}, {msg}')
+            now = self.millis(self)
+            timeDifference = now - self.lastUpdate
+            if timeDifference >= self.interval:
+                msg = self.readInputStream()
+                # TODO: Postprocessing
+                pub.send_string(f'{topic}, {msg}')
+                self.lastUpdate = now
         
     def connect(self):
         """

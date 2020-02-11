@@ -14,8 +14,9 @@ __status__ = "Development"
 
 
 # Importing from local source
+from globals import *
 from robot import Sparkie
-from util.listeners import EventListener, ActionListener, WarningListener, ErrorListener
+#from util.listeners import EventListener, ActionListener, WarningListener, ErrorListener
 from communication.serial_handler import SerialProcess
 from vision.tracking_camera import TrackingCamera
 from vision.depth_camera import DepthCamera
@@ -24,10 +25,14 @@ from vision.depth_camera import DepthCamera
 import time
 
 
-
 sparkie = Sparkie()
+serial = SerialProcess(port=SERIAL_PORT, baudrate=SERIAL_BAUDRATE, interval=100)
+tracking_camera = TrackingCamera(image_output=False, ip='*', port=5556, topic='', interval=100)  # topic is blank because of mulitple topics
+depth_camera = DepthCamera(color=False, ip='*', port=5558, topic='', interval=100)  # topic is blank because of mulitple topics
 
 
 # Running application
 if __name__ == "__main__":
-    pass
+    serial.start()
+    tracking_camera.start()
+    depth_camera.start()

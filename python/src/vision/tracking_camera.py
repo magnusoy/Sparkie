@@ -23,18 +23,18 @@ from .communication.publisher import Publisher
 
 class TrackingCamera(Publisher):
 
-    def __init__(self, image_output, ip, port, topic):
+    def __init__(self, image_output, ip, port, topic, interval):
         self.__init__(self, ip, port, topic)
-        self.image_output = image_output
+        self.image_output = False
+        self.interval = interval
+        self.lastUpdate = self.millis(self)
 
         # Declare RealSense pipeline, encapsulating the actual device and sensors
         self.pipe = rs.pipeline()
         cfg = rs.config()
         cfg.enable_stream(rs.stream.pose)
 
-        if self.image_output:
-            cfg.enable_stream(rs.stream.fisheye, 1) # Left camera
-            cfg.enable_stream(rs.stream.fisheye, 2) # Right camera
+        self.enable_image_output(image_output)
 
         # Start streaming with requested config
         self.pipe.start(cfg)
@@ -45,6 +45,23 @@ class TrackingCamera(Publisher):
         self.vel = zero_vec
         self.acc = zero_vec
         self.img = None
+    
+    @staticmethod
+    def millis(self):
+        """Returns the current time in milliseconds
+        Returns
+        -------
+        current time in milliseconds
+        """
+
+        return int(round(time.time() * 1000))
+    
+    def enable_image_output(self, enable):
+        if enable:
+            cfg.enable_stream(rs.stream.fisheye, 1) # Left camera
+            cfg.enable_stream(rs.stream.fisheye, 2) # Right camera
+            self.image_output = True
+            self.pipe.start(cfg)
 
     def poll(self):
         try:
@@ -64,7 +81,7 @@ class TrackingCamera(Publisher):
             self.pos = self.data.translation
             self.vel = self.data.velocity
             self.acc = self.data.acceleration
-            print('realsense pos(%f, %f, %f)' % (self.pos.x, self.pos.y, self.pos.z))
+            #print('realsense pos(%f, %f, %f)' % (self.pos.x, self.pos.y, self.pos.z))
 
     def update(self):
         while self.running:
@@ -78,9 +95,13 @@ class TrackingCamera(Publisher):
         self.initialize(self)
 
         while self.running:
-            self.poll()
-            self.publish_img()
-            self.publish_data()
+            now = self.millis(self)
+            timeDifference = now - self.lastUpdate
+            if timeDifference >= self.interval:
+                self.poll()
+                self.publish_img()
+                self.publish_data()
+                self.lastUpdate = now
         
     def publish_img(self):
         Publisher.topic = 'img'
