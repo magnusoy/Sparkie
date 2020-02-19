@@ -65,7 +65,7 @@
     </size>
    </property>
   </widget>
-  <widget class="QPushButton" name="exitAutowalkBtn">
+  <widget class="QPushButton" name="changeModeBtn">
    <property name="geometry">
     <rect>
      <x>100</x>
@@ -80,7 +80,7 @@
     </font>
    </property>
    <property name="text">
-    <string>ROBOT CAMERAS</string>
+    <string>JOYSTICK ONLY MODE</string>
    </property>
    <property name="icon">
     <iconset>
@@ -105,7 +105,7 @@
    <property name="styleSheet">
     <string notr="true">border-color: rgb(68, 68, 68);
 selection-color: rgb(100, 100, 100);
-background-color: rgba(255, 255, 255, 0);</string>
+background-color: rgb(0, 170, 0);</string>
    </property>
    <property name="text">
     <string/>
@@ -358,8 +358,8 @@ border-color: rgb(255, 0, 0);</string>
   <widget class="QSlider" name="speedSlider">
    <property name="geometry">
     <rect>
-     <x>133</x>
-     <y>899</y>
+     <x>141</x>
+     <y>936</y>
      <width>351</width>
      <height>31</height>
     </rect>
@@ -377,8 +377,8 @@ border-color: rgb(255, 0, 0);</string>
   <widget class="QSlider" name="heightSlider">
    <property name="geometry">
     <rect>
-     <x>7</x>
-     <y>670</y>
+     <x>10</x>
+     <y>649</y>
      <width>41</width>
      <height>231</height>
     </rect>
@@ -401,8 +401,8 @@ border-color: rgb(255, 0, 0);</string>
   <widget class="QLabel" name="label_3">
    <property name="geometry">
     <rect>
-     <x>58</x>
-     <y>899</y>
+     <x>66</x>
+     <y>936</y>
      <width>71</width>
      <height>31</height>
     </rect>
@@ -419,14 +419,14 @@ border-color: rgb(255, 0, 0);</string>
     <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
    </property>
    <property name="text">
-    <string> | SPEED</string>
+    <string>SPEED</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
      <x>2</x>
-     <y>899</y>
+     <y>887</y>
      <width>71</width>
      <height>31</height>
     </rect>
@@ -449,8 +449,8 @@ border-color: rgb(255, 0, 0);</string>
   <widget class="QPushButton" name="standBtn">
    <property name="geometry">
     <rect>
-     <x>60</x>
-     <y>949</y>
+     <x>73</x>
+     <y>981</y>
      <width>201</width>
      <height>51</height>
     </rect>
@@ -472,8 +472,8 @@ border-color: rgb(255, 0, 0);</string>
   <widget class="QPushButton" name="walkBtn">
    <property name="geometry">
     <rect>
-     <x>280</x>
-     <y>949</y>
+     <x>293</x>
+     <y>981</y>
      <width>201</width>
      <height>51</height>
     </rect>
@@ -495,7 +495,7 @@ border-color: rgb(255, 0, 0);</string>
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QToolButton" name="leftBtn">
+  <widget class="QToolButton" name="turnRobotLeft">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -518,7 +518,7 @@ border-color: rgb(255, 0, 0);</string>
     </size>
    </property>
   </widget>
-  <widget class="QToolButton" name="leftBtn_2">
+  <widget class="QToolButton" name="turnRobotRight">
    <property name="geometry">
     <rect>
      <x>1790</x>
@@ -604,10 +604,52 @@ border-color: rgba(255, 255, 255, 0);</string>
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
+  <widget class="Line" name="line_2">
+   <property name="geometry">
+    <rect>
+     <x>-30</x>
+     <y>970</y>
+     <width>541</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="Line" name="line_3">
+   <property name="geometry">
+    <rect>
+     <x>-30</x>
+     <y>630</y>
+     <width>101</width>
+     <height>461</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Vertical</enum>
+   </property>
+  </widget>
+  <widget class="Line" name="line_4">
+   <property name="geometry">
+    <rect>
+     <x>-40</x>
+     <y>930</y>
+     <width>551</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
   <zorder>videoFrame</zorder>
+  <zorder>line_3</zorder>
+  <zorder>line_4</zorder>
+  <zorder>line_2</zorder>
   <zorder>line</zorder>
   <zorder>menuBtn</zorder>
-  <zorder>exitAutowalkBtn</zorder>
+  <zorder>changeModeBtn</zorder>
   <zorder>powerBtn</zorder>
   <zorder>batteryBtn</zorder>
   <zorder>healthBtn</zorder>
@@ -623,8 +665,8 @@ border-color: rgba(255, 255, 255, 0);</string>
   <zorder>label_4</zorder>
   <zorder>standBtn</zorder>
   <zorder>walkBtn</zorder>
-  <zorder>leftBtn</zorder>
-  <zorder>leftBtn_2</zorder>
+  <zorder>turnRobotLeft</zorder>
+  <zorder>turnRobotRight</zorder>
   <zorder>exitBtn</zorder>
   <zorder>label_5</zorder>
   <zorder>label_6</zorder>

@@ -20,6 +20,9 @@ import sys
 import time
 from PyQt5 import QtWidgets, uic, QtCore, QtGui
 
+# Importing from local source
+from globals import *
+
 class ManualWindow(QtWidgets.QDialog):
     """doc"""
     
@@ -32,16 +35,39 @@ class ManualWindow(QtWidgets.QDialog):
         self.ui = '../forms/manual.ui'
         uic.loadUi(self.ui, self)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        
+        self.mode = JOYSTICK_ONLY_MODE
+        
+        self.change_mode_btn = self.findChild(QtWidgets.QPushButton, 'changeModeBtn')
+        self.turn_left = self.findChild(QtWidgets.QToolButton, 'turnRobotLeft')
+        self.turn_right = self.findChild(QtWidgets.QToolButton, 'turnRobotRight')
         self.video_frame = self.findChild(QtWidgets.QLabel, 'videoFrame')
         self.exitBtn = self.findChild(QtWidgets.QPushButton, 'exitBtn')
         self.powerBtn = self.findChild(QtWidgets.QPushButton, 'powerBtn')
+        self.emergencyBtn = self.findChild(QtWidgets.QPushButton, 'emergencyBtn')
+        self.emergencyBtn.clicked.connect(self.turn_robot_off)
         self.powerBtn.clicked.connect(self.power_on)
         self.exitBtn.setShortcut("Ctrl+Q")
-        self.exitBtn.clicked.connect(self.closeWindow)
+        self.exitBtn.clicked.connect(self.close_window)
+        
+        self.change_mode_btn.clicked.connect(self.change_mode)
         
         self.powerBtn.setStyleSheet("QPushButton#powerBtn:checked {color:black; background-color: red;}")
-        
         self.initUI()
+    
+    def change_mode(self):
+        if self.mode < MAX_MODES:
+            self.mode += 1
+        else:
+            self.mode = JOYSTICK_ONLY_MODE
+        self.update_mode_label()
+    
+    def update_mode_label(self):
+        if self.mode == 0:
+            self.change_mode_btn.setText("JOYSTICK ONLY MODE")
+        elif self.mode == 1:
+            self.change_mode_btn.setText("ROBOT CAMERAS")
+            
     
     @QtCore.pyqtSlot(QtGui.QImage)
     def set_image(self, image):
@@ -59,10 +85,13 @@ class ManualWindow(QtWidgets.QDialog):
         self.video_stream.start()
         self.show()
     
-    def closeWindow(self):
+    def close_window(self):
         self.stop_video_stream.emit()
         self.video_stream.stop()
         self.close()
+    
+    def turn_robot_off(self):
+        pass
 
 
 class VideoThread(QtCore.QThread):
