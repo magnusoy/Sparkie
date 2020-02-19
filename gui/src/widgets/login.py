@@ -59,7 +59,7 @@ class LoginWindow(QtWidgets.QDialog):
             otherwise redirected to the welcome window."""
         
         self.rememberMe()
-        if self.usernameField.text() == 'admin' and self.passwordField.text() == '':
+        if self.usernameField.text() == '' and self.passwordField.text() == '':
             self.switchToWelcomeWindow.emit()
 
         else:
