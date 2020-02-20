@@ -39,7 +39,7 @@ class Controller:
         as the first window to be presented."""
 
         self.icon = '../static/img/favicon/favicon.png'
-        self.showLoginWindow()
+        self.showManualWindow()
 
     def showLoginWindow(self):
         """Creates a new login window, and connects an

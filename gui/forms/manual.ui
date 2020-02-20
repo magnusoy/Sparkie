@@ -80,7 +80,7 @@
     </font>
    </property>
    <property name="text">
-    <string>JOYSTICK ONLY MODE</string>
+    <string>JOYSTICK ONLY</string>
    </property>
    <property name="icon">
     <iconset>
@@ -222,7 +222,7 @@ background-color: rgba(255, 255, 255, 0);</string>
     <rect>
      <x>910</x>
      <y>15</y>
-     <width>171</width>
+     <width>181</width>
      <height>71</height>
     </rect>
    </property>
@@ -266,8 +266,11 @@ background-color: rgba(255, 255, 255, 0);</string>
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
   </widget>
-  <widget class="QPushButton" name="signalBtn_2">
+  <widget class="QPushButton" name="controllerBatteryBtn">
    <property name="geometry">
     <rect>
      <x>1390</x>
@@ -300,9 +303,9 @@ background-color: rgba(255, 255, 255, 0);</string>
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>1270</x>
+     <x>1267</x>
      <y>15</y>
-     <width>111</width>
+     <width>121</width>
      <height>71</height>
     </rect>
    </property>
@@ -449,8 +452,8 @@ border-color: rgb(255, 0, 0);</string>
   <widget class="QPushButton" name="standBtn">
    <property name="geometry">
     <rect>
-     <x>73</x>
-     <y>981</y>
+     <x>10</x>
+     <y>980</y>
      <width>201</width>
      <height>51</height>
     </rect>
@@ -468,12 +471,15 @@ border-color: rgb(255, 0, 0);</string>
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
   </widget>
   <widget class="QPushButton" name="walkBtn">
    <property name="geometry">
     <rect>
-     <x>293</x>
-     <y>981</y>
+     <x>210</x>
+     <y>980</y>
      <width>201</width>
      <height>51</height>
     </rect>
@@ -492,7 +498,7 @@ border-color: rgb(255, 0, 0);</string>
     <bool>true</bool>
    </property>
    <property name="checked">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
   </widget>
   <widget class="QToolButton" name="turnRobotLeft">
@@ -604,49 +610,139 @@ border-color: rgba(255, 255, 255, 0);</string>
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="Line" name="line_2">
+  <widget class="QLabel" name="xboxcontrollerFrame">
    <property name="geometry">
     <rect>
-     <x>-30</x>
-     <y>970</y>
-     <width>541</width>
-     <height>131</height>
+     <x>456</x>
+     <y>140</y>
+     <width>1000</width>
+     <height>800</height>
     </rect>
    </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
+   <property name="font">
+    <font>
+     <family>Verdana Pro Semibold</family>
+     <pointsize>30</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>../static/img/xbox_cotroller_grey.png</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="Line" name="line_3">
+  <widget class="QPushButton" name="mediumBtn">
    <property name="geometry">
     <rect>
-     <x>-30</x>
-     <y>630</y>
-     <width>101</width>
-     <height>461</height>
+     <x>1511</x>
+     <y>980</y>
+     <width>201</width>
+     <height>51</height>
     </rect>
    </property>
-   <property name="orientation">
-    <enum>Qt::Vertical</enum>
+   <property name="font">
+    <font>
+     <pointsize>15</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Medium</string>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
    </property>
   </widget>
-  <widget class="Line" name="line_4">
+  <widget class="QPushButton" name="fastBtn">
    <property name="geometry">
     <rect>
-     <x>-40</x>
-     <y>930</y>
-     <width>551</width>
-     <height>41</height>
+     <x>1711</x>
+     <y>980</y>
+     <width>201</width>
+     <height>51</height>
     </rect>
    </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
+   <property name="font">
+    <font>
+     <pointsize>15</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Fast</string>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
    </property>
   </widget>
+  <widget class="QPushButton" name="slowBtn">
+   <property name="geometry">
+    <rect>
+     <x>1311</x>
+     <y>980</y>
+     <width>201</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>15</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Slow</string>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="stairsBtn">
+   <property name="geometry">
+    <rect>
+     <x>410</x>
+     <y>980</y>
+     <width>201</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>15</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Stairs</string>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <zorder>xboxcontrollerFrame</zorder>
   <zorder>videoFrame</zorder>
-  <zorder>line_3</zorder>
-  <zorder>line_4</zorder>
-  <zorder>line_2</zorder>
   <zorder>line</zorder>
   <zorder>menuBtn</zorder>
   <zorder>changeModeBtn</zorder>
@@ -656,7 +752,7 @@ border-color: rgba(255, 255, 255, 0);</string>
   <zorder>eyeBtn</zorder>
   <zorder>label</zorder>
   <zorder>signalBtn</zorder>
-  <zorder>signalBtn_2</zorder>
+  <zorder>controllerBatteryBtn</zorder>
   <zorder>label_2</zorder>
   <zorder>emergencyBtn</zorder>
   <zorder>speedSlider</zorder>
@@ -670,6 +766,10 @@ border-color: rgba(255, 255, 255, 0);</string>
   <zorder>exitBtn</zorder>
   <zorder>label_5</zorder>
   <zorder>label_6</zorder>
+  <zorder>mediumBtn</zorder>
+  <zorder>fastBtn</zorder>
+  <zorder>slowBtn</zorder>
+  <zorder>stairsBtn</zorder>
  </widget>
  <resources/>
  <connections/>

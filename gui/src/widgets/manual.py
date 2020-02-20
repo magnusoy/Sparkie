@@ -38,21 +38,50 @@ class ManualWindow(QtWidgets.QDialog):
         
         self.mode = JOYSTICK_ONLY_MODE
         
+        # Buttons
         self.change_mode_btn = self.findChild(QtWidgets.QPushButton, 'changeModeBtn')
         self.turn_left = self.findChild(QtWidgets.QToolButton, 'turnRobotLeft')
         self.turn_right = self.findChild(QtWidgets.QToolButton, 'turnRobotRight')
-        self.video_frame = self.findChild(QtWidgets.QLabel, 'videoFrame')
-        self.exitBtn = self.findChild(QtWidgets.QPushButton, 'exitBtn')
+        self.stand_btn = self.findChild(QtWidgets.QPushButton, 'standBtn')
+        self.walk_btn = self.findChild(QtWidgets.QPushButton, 'walkBtn')
+        self.stairs_btn = self.findChild(QtWidgets.QPushButton, 'stairsBtn')
+        self.exit_btn = self.findChild(QtWidgets.QPushButton, 'exitBtn')
         self.powerBtn = self.findChild(QtWidgets.QPushButton, 'powerBtn')
-        self.emergencyBtn = self.findChild(QtWidgets.QPushButton, 'emergencyBtn')
-        self.emergencyBtn.clicked.connect(self.turn_robot_off)
+        self.emergency_btn = self.findChild(QtWidgets.QPushButton, 'emergencyBtn')
+        self.slow_btn = self.findChild(QtWidgets.QPushButton, 'slowBtn')
+        self.medium_btn = self.findChild(QtWidgets.QPushButton, 'mediumBtn')
+        self.fast_btn = self.findChild(QtWidgets.QPushButton, 'fastBtn')
+        
+        # Status indicators
+        self.signal_btn = self.findChild(QtWidgets.QPushButton, 'signalBtn')
+        self.controller_battery_btn = self.findChild(QtWidgets.QPushButton, 'controllerBatteryBtn')
+        self.battery_btn = self.findChild(QtWidgets.QPushButton, 'batteryBtn')
+        self.health_btn = self.findChild(QtWidgets.QPushButton, 'healthBtn')
+        
+        # Button connections
+        self.emergency_btn.clicked.connect(self.turn_robot_off)
         self.powerBtn.clicked.connect(self.power_on)
-        self.exitBtn.setShortcut("Ctrl+Q")
-        self.exitBtn.clicked.connect(self.close_window)
-        
+        self.exit_btn.clicked.connect(self.close_window)
         self.change_mode_btn.clicked.connect(self.change_mode)
+        self.stand_btn.clicked.connect(self.set_stand_btn)
+        self.walk_btn.clicked.connect(self.set_walk_btn)
+        self.stairs_btn.clicked.connect(self.set_stairs_btn)
+        self.slow_btn.clicked.connect(self.set_slow_btn)
+        self.medium_btn.clicked.connect(self.set_medium_btn)
+        self.fast_btn.clicked.connect(self.set_fast_btn)
         
+        #Button shortcuts
+        self.exit_btn.setShortcut("Ctrl+Q")
+        
+        # Mode Layouts
+        self.video_frame = self.findChild(QtWidgets.QLabel, 'videoFrame')
+        self.xbox_controller_frame = self.findChild(QtWidgets.QLabel, 'xboxcontrollerFrame')
+        self.video_frame.hide()
+        
+        # Stylesheets
         self.powerBtn.setStyleSheet("QPushButton#powerBtn:checked {color:black; background-color: red;}")
+        #self.signal_btn.setStyleSheet("QPushButton#signalBtn:checked {color:black; background-color: green;}")
+        
         self.initUI()
     
     def change_mode(self):
@@ -64,10 +93,43 @@ class ManualWindow(QtWidgets.QDialog):
     
     def update_mode_label(self):
         if self.mode == 0:
-            self.change_mode_btn.setText("JOYSTICK ONLY MODE")
+            self.change_mode_btn.setText("JOYSTICK ONLY")
+            self.video_frame.hide()
+            self.xbox_controller_frame.show()
         elif self.mode == 1:
             self.change_mode_btn.setText("ROBOT CAMERAS")
-            
+            self.xbox_controller_frame.hide()
+            self.video_frame.show()
+    
+    def set_walk_btn(self):
+        if self.walk_btn.isChecked():
+            self.stand_btn.setChecked(False)
+            self.stairs_btn.setChecked(False)
+    
+    def set_stand_btn(self):
+        if self.stand_btn.isChecked():
+            self.walk_btn.setChecked(False)
+            self.stairs_btn.setChecked(False)
+    
+    def set_stairs_btn(self):
+        if self.stairs_btn.isChecked():
+            self.walk_btn.setChecked(False)
+            self.stand_btn.setChecked(False)
+    
+    def set_slow_btn(self):
+        if self.slow_btn.isChecked():
+            self.fast_btn.setChecked(False)
+            self.medium_btn.setChecked(False)
+    
+    def set_medium_btn(self):
+        if self.medium_btn.isChecked():
+            self.slow_btn.setChecked(False)
+            self.fast_btn.setChecked(False)
+    
+    def set_fast_btn(self):
+        if self.fast_btn.isChecked():
+            self.slow_btn.setChecked(False)
+            self.medium_btn.setChecked(False)
     
     @QtCore.pyqtSlot(QtGui.QImage)
     def set_image(self, image):
@@ -127,3 +189,13 @@ class VideoThread(QtCore.QThread):
             key = cv2.waitKey(1)
         cap.release()
         cv2.destroyAllWindows()
+
+
+class StatusThread(QtCore.QThread):
+    
+    threadactive = True
+    
+    def run(self):
+        while self.threadactive:
+            pass
+            
