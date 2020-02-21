@@ -22,6 +22,7 @@ from PyQt5 import QtWidgets, uic, QtCore, QtGui
 
 # Importing from local source
 from globals import *
+from .util.subscriber import Subscriber
 
 class ManualWindow(QtWidgets.QDialog):
     """doc"""
@@ -145,6 +146,9 @@ class ManualWindow(QtWidgets.QDialog):
         self.activate.connect(self.video_stream.activate)
         self.stop_video_stream.connect(self.video_stream.stop)
         self.video_stream.start()
+        
+        self.sub_test = SubscriberThread(self)
+        self.sub_test.start()
         self.show()
     
     def close_window(self):
@@ -198,4 +202,16 @@ class StatusThread(QtCore.QThread):
     def run(self):
         while self.threadactive:
             pass
+
+
+class SubscriberThread(QtCore.QThread):
+    
+    threadactive = True
+    subscriber = Subscriber(ip=SUBSCRIBER_IP, port=SUBSCRIBER_PORT, topic=DEPTH_IMG_TOPIC)
+    
+    def run(self):
+        self.subscriber.initialize()
+        while self.threadactive:
+            data = self.subscriber.read()
+            print(data)
             

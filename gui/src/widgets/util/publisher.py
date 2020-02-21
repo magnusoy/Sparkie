@@ -18,9 +18,11 @@ __status__ = "Development"
 # Importing packages
 import zmq
 from multiprocessing import Process
+import time
+import random
 
 
-class Subscriber(Process):
+class Publisher(Process):
     """docstring"""
 
     __slots__ = ['ip', 'port', 'topic']
@@ -32,53 +34,52 @@ class Subscriber(Process):
         self.topic = topic
         self.running = True
         self.msg = ''
-    
-    def run(self):
-        """docstring"""
 
-        self.initialize()
-
-        while self.running:
-            self.read()
-    
     def initialize(self):
         """docstring"""
-
+        
         self.context = zmq.Context()
         self.address = 'tcp://%s:%s' % (self.ip, self.port)
-        self.socket = self.context.socket(zmq.SUB)
-        self.socket.connect(self.address)
-        self.socket.setsockopt_string(zmq.SUBSCRIBE, self.topic)
-    
-    def read(self):
-        """docstring"""
+        self.socket = self.context.socket(zmq.PUB)
+        self.socket.bind(self.address)
 
-        self.msg = self.socket.recv_string()
-        #print(self.msg)
-    
-    def stop(self):
-        """docstring"""
-
-        self.running = False
-
-
-class Worker(Subscriber):
-    """docstring"""
-
-    def __init__(self, ip, port, topic):
-        Subscriber.__init__(self, ip, port, topic)
-    
     def run(self):
         """docstring"""
-
+        
         self.initialize()
         
         while self.running:
-            self.read()
-            print(self.msg)
-            
-            
+            self.msg = f'{random.randint(0, 1)}'
+            self.send(self.msg)
+            time.sleep(0.01)
+
+    def send(self, msg):
+        """docstring"""
+        
+        self.socket.send_string('%s %s' % (self.topic, msg))
+
+    def stop(self):
+        """docstring"""
+        
+        self.running = False
+
+
+class Worker(Publisher):
+    """docstring"""
+
+    def __init__(self, ip, port, topic):
+        self.__init__(self, ip, port, topic)
+    
+    def run(self):
+        """docstring"""
+
+        self.initialize(self)
+        
+        while self.running:
+            Publisher.send(self)
+
+
 # Example of usage
 if __name__ == "__main__":
-    sub = Worker('localhost', 5556, '0')
-    sub.start()
+    pub = Publisher('*', 5556, '0')
+    pub.start()

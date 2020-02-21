@@ -99,8 +99,6 @@ class DepthCamera(Publisher):
                 self.publish_color_frame()
                 self.publish_depth_colormap()
                 self.lastUpdate = now
-            
-    
     
     def publish_depth_frame(self):
         Publisher.topic = 'depth'
