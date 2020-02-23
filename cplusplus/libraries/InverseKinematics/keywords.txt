@@ -1,0 +1,23 @@
+#######################################
+# Syntax Coloring Map For InverseKinematics Library
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+InverseKinematics	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+compute	KEYWORD2
+stepX	KEYWORD2
+stepY	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+INNER	LITERAL1
+OUTER	LITERAL1

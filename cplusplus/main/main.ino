@@ -147,7 +147,7 @@ void loop() {
 */
 void initializeIO() {
   for (int i = 2; i < 5; i++) {
-    pinMode(i, INPUT);
+    pinMode(i, INPUT_PULLUP);
   }
   for (int i = 9; i < 12; i++) {
     pinMode(i, OUTPUT);

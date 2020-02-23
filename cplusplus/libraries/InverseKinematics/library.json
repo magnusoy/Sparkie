@@ -1,0 +1,19 @@
+{
+    "name": "InverseKinematics",
+    "keywords": "InverseKinematics",
+    "description": "InverseKinematics - Controller for systems.",
+    "url": "https://github.com/magnusoy/Sparkie-Quadruped-Robot",
+    "include": "InverseKinematics",
+    "authors":
+    [
+      {
+        "name": "Magnus Kvendseth Øye"
+      }
+    ],
+    "repository":
+    {
+      "type": "git",
+      "url": "https://github.com/magnusoy/Sparkie-Quadruped-Robot.git"
+    },
+    "frameworks": "arduino"
+  }
