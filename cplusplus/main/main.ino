@@ -47,10 +47,9 @@ ODriveArduino odrives[4] = {odriveFrontLeft, odriveFrontRight, odriveBackLeft, o
 void setup() {
   Serial.begin(BAUDRATE);
   initializeButtons();
-  //initializeLights();
-  //initializeIO();
-  initializeOdrives();
-  calibreateMotors();
+  initializeLights();
+  //initializeOdrives(); uncomment
+  //calibreateMotors(); uncomment
   //setOdrivesInControlMode(odrives);
   Serial.println("Setup complete");
 
@@ -62,8 +61,8 @@ void loop() {
 
   switch (currentState) {
     case S_IDLE:
-      blinkLight(RUNNING_LED);
-      Serial.println("State Idle");
+      blinkLight(GREEN_LED);
+
       break;
 
     case S_CALIBRATE:
@@ -75,18 +74,18 @@ void loop() {
       break;
 
     case S_PAUSE:
-
+      blinkLight(RED_LED);
       break;
 
     case S_WALK:
       //for (int j = 0; j < 5; j++) {
       //(time,amplitude,step lenght, frequency)
-      double x = stepX(n, 20, 30, 2);
-      double y = stepY(n, 20, 30, 2);
+      double x = stepX(n, 20, 120, 2);
+      double y = stepY(n, 20, 200, 2);
       Serial.print("X: ");
       Serial.println(x);
-      Serial.print("Y: ");
-      Serial.println(y);
+      //      Serial.print("Y: ");
+      //      Serial.println(y);
       for (int i = 0; i < 2; i++) {
         double angle = inverseKinematicsLeg(x, y, i);
         Serial.print("angle: ");
@@ -94,11 +93,11 @@ void loop() {
         double motorCount = map(angle, -180, 180, -4096, 4096);
         Serial.print("Motor count: ");
         Serial.println(motorCount);
-        setMotorPosition(0, i, motorCount);
+        //setMotorPosition(0, i, motorCount); uncomment
       }
       //}
-      //delay(2000);
-      n += 1;
+      //delay(200);
+      n += 3;
       break;
 
     case S_RUN:
@@ -122,15 +121,16 @@ void loop() {
       break;
 
     case S_CONFIGURE:
-
+      Serial.println("configure");
       break;
 
     case S_WARNING:
-      blinkLight(WARNING_LED);
+      Serial.println("warning");
+      blinkLight(ORANGE_LED);
       break;
 
     case S_ERROR:
-      blinkLight(ERROR_LED);
+      Serial.println("error");
       break;
 
     default:
@@ -139,19 +139,6 @@ void loop() {
 
   }
   readButtons();
-}
-
-/**
-   Initialize buttons {2, 3, 4} as inputs.
-   Initialize leds {9, 10, 11} as outputs.
-*/
-void initializeIO() {
-  for (int i = 2; i < 5; i++) {
-    pinMode(i, INPUT_PULLUP);
-  }
-  for (int i = 9; i < 12; i++) {
-    pinMode(i, OUTPUT);
-  }
 }
 
 /**
@@ -164,15 +151,17 @@ void initializeOdrives() {
 }
 
 void initializeButtons() {
-  pinMode(START_BTN, INPUT);
-  pinMode(STOP_BTN, INPUT_PULLUP);
-  pinMode(RESET_BTN, INPUT_PULLUP);
+  pinMode(RED_BTN, INPUT_PULLDOWN);
+  pinMode(BLUE_BTN, INPUT_PULLDOWN);
+  pinMode(GREEN_BTN, INPUT_PULLDOWN);
+  pinMode(ORANGE_BTN, INPUT_PULLDOWN);
 }
 
 void initializeLights() {
-  pinMode(RUNNING_LED, OUTPUT);
-  pinMode(ERROR_LED, OUTPUT);
-  pinMode(WARNING_LED, OUTPUT);
+  pinMode(GREEN_LED, OUTPUT);
+  pinMode(BLUE_LED, OUTPUT);
+  pinMode(RED_LED, OUTPUT);
+  pinMode(ORANGE_LED, OUTPUT);
 }
 
 void blinkLight(int pin) {
@@ -196,23 +185,23 @@ void blinkLight(int pin) {
 }
 
 void readButtons() {
-  int btnState1 = digitalRead(START_BTN);
-  //int btnState2 = digitalRead(STOP_BTN);
-  //int btnState3 = digitalRead(RESET_BTN);
-  //  if (btnState2) {
-  //    changeStateTo(S_PAUSE);
-  //  }
-  //
-  //  else if (btnState3) {
-  //    changeStateTo(S_WARNING);
-  //  }
-  //  else if (btnState1) {
-  //    changeStateTo(S_WALK);
-  //  }
+  int green = digitalRead(GREEN_BTN);
+  int red = digitalRead(RED_BTN);
+  int blue = digitalRead(BLUE_BTN);
+  int orange = digitalRead(ORANGE_BTN);
 
-  if (btnState1) {
-    changeStateTo(S_WALK);
+  if (red) {
+    changeStateTo(S_PAUSE);
   }
+
+  else if (orange) {
+    changeStateTo(S_WARNING);
+  }
+  else if (green) {
+    changeStateTo(S_WALK);
+    digitalWrite(GREEN_LED, HIGH);
+  }
+
 }
 
 void setMotorPosition(const int odriveNumber, const int motorNumber, double pos) {
@@ -225,7 +214,7 @@ double inverseKinematicsLeg(double x, double y, int motor) {
   double r = sqrt((x * x) + (y * y));
   double theta = atan(y / x);
   double gamma = acos((8100 + (r * r) - 25600) / (180 * r));
-  double gammaInDegrees = gamma * 57.296;
+  //double gammaInDegrees = gamma * 57.296;
 
   if (x < 0) {
     theta = theta - 3.14;
@@ -244,8 +233,8 @@ double stepX(unsigned long t, int amp, int lenght, int f) {
   double x = lenght / 2 * sin(2 * 3.14 * f * t);
   return x;
 }
-double stepY(double t, int amp, int height, int f) {
-  double y = -height + amp * cos(2 * 3.14 * f * t);
+double stepY(unsigned long t, int amp, int legHeight, int f) {
+  double y = -legHeight + amp * cos(2 * 3.14 * f * t);
   return y;
 }
 
@@ -300,11 +289,19 @@ void calibreateMotors() {
   delay(1000);
 }
 
+void turnOffAllLights() {
+  digitalWrite(GREEN_LED, LOW);
+  digitalWrite(BLUE_LED, LOW);
+  digitalWrite(RED_LED, LOW);
+  digitalWrite(ORANGE_LED, LOW);
+}
+
 /**
    Change the state of the statemachine to the new state
    given by the parameter newState
    @param newState The new state to set the statemachine to
 */
 void changeStateTo(int newState) {
+  turnOffAllLights();
   currentState = newState;
 }
