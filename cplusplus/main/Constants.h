@@ -2,14 +2,16 @@
 #define _CONSTANTS_H_
 
 /** BUTTONS */
-const uint8_t START_BTN = 10;//20
-const uint8_t STOP_BTN = 19;
-const uint8_t RESET_BTN = 18;
+const uint8_t RED_BTN = 21;
+const uint8_t BLUE_BTN = 20;
+const uint8_t GREEN_BTN = 19;
+const uint8_t ORANGE_BTN = 18;
 
 /** LED indicators */
-const uint8_t RUNNING_LED = 9; 
-const uint8_t ERROR_LED = 10; 
-const uint8_t WARNING_LED = 11;
+const uint8_t GREEN_LED = 12; 
+const uint8_t BLUE_LED = 11; 
+const uint8_t RED_LED = 10;
+const uint8_t ORANGE_LED = 9;
 
 /** Hardware serials for Odrive */
 
