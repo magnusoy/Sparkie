@@ -24,6 +24,7 @@ from .publisher import Publisher
 import zmq
 
 
+
 class SerialThread(Thread):
     """doc"""
 
@@ -46,13 +47,13 @@ class SerialThread(Thread):
         """doc"""
         while not self.isConnected():
             self.connect()
-            sleep(2)
+            time.sleep(2)
     
     def connect(self):
         """doc"""
         try:
             self.connection = serial.Serial(self.port, self.baudrate)
-            sleep(2)
+            time.sleep(2)
             print(f'Established connection to {self.port}')
         except serial.SerialException as se:
             print(f'Cant establish connection to {self.port}')
@@ -112,7 +113,7 @@ class SerialPublisher(Publisher):
         """doc"""
         while not self.isConnected():
             self.connect()
-            sleep(2)
+            time.sleep(2)
         
         self.initialize()
         while self.running:
@@ -130,7 +131,7 @@ class SerialPublisher(Publisher):
 
         try:
             self.connection = serial.Serial(self.usb_port, self.baudrate)
-            sleep(2)
+            time.sleep(2)
             print(f'Established connection to {self.usb_port}')
         except serial.SerialException as se:
             print(f'Cant establish connection to {self.usb_port}')
@@ -178,7 +179,7 @@ class SerialProcess(Process):
     This makes the readInputStream from serial accessible for everyone
     subscribing to the given topic."""
 
-    __slots__ = ['port', 'baudrate', 'interval']
+    __slots__ = ['usb_port', 'baudrate', 'interval']
 
     def __init__(self, usb_port, baudrate, interval):
         Process.__init__(self)
@@ -191,12 +192,12 @@ class SerialProcess(Process):
         
         # Subscriber
         self.sub_ip = 'localhost'
-        self.sub_port = 5000
+        self.sub_port = 6000
         self.sub_topic = 'serial'
         
         # Publisher
         self.pub_ip = '*'
-        self.pub_port = 6000
+        self.pub_port = 5000
         self.pub_topic = 'serial'
     
     @staticmethod
@@ -206,7 +207,6 @@ class SerialProcess(Process):
         -------
         current time in milliseconds
         """
-
         return int(round(time.time() * 1000))
     
     def init_subscriber(self, ip, port, topic):
@@ -225,13 +225,13 @@ class SerialProcess(Process):
         """doc"""
         while not self.isConnected():
             self.connect()
-            sleep(2)
+            time.sleep(2)
         sub_thread = Thread(target=self.subscriber, args=(self.sub_ip, self.sub_port, self.sub_topic), daemon=True)
         pub_thread = Thread(target=self.publisher, args=(self.pub_ip, self.pub_port, self.pub_topic), daemon=True)
         pub_thread.start()
         sub_thread.start()
         while self.running:
-            pass
+            time.sleep(10)
            
     def subscriber(self, ip, port, topic):
         """doc"""
@@ -244,7 +244,9 @@ class SerialProcess(Process):
         while True:
             msg = sub.recv_string()
             #TODO: Preprocessing
-            self.sendOutputStream(msg)
+            #self.sendOutputStream(msg)
+            print(msg)
+            #time.sleep(10)
                    
     def publisher(self, ip, port, topic):
         """doc"""
@@ -254,13 +256,16 @@ class SerialProcess(Process):
         pub.bind(address)
         
         while True:
-            now = self.millis(self)
-            timeDifference = now - self.lastUpdate
-            if timeDifference >= self.interval:
-                msg = self.readInputStream()
-                # TODO: Postprocessing
-                pub.send_string(f'{topic}, {msg}')
-                self.lastUpdate = now
+            #now = self.millis(self)
+            #timeDifference = now - self.lastUpdate
+            #if timeDifference >= self.interval:
+            #    msg = self.readInputStream()
+            #    # TODO: Postprocessing
+            #    pub.send_string(f'{topic}, {msg}')
+            #    self.lastUpdate = now
+            msg = self.readInputStream()
+            pub.send_string(f'{topic}, {msg}')
+            time.sleep(self.interval//1000)
         
     def connect(self):
         """
@@ -272,7 +277,7 @@ class SerialProcess(Process):
 
         try:
             self.connection = serial.Serial(self.usb_port, self.baudrate)
-            sleep(1)
+            time.sleep(1)
             print(f'Established connection to {self.usb_port}')
         except serial.SerialException as se:
             print(f'Cant establish connection to {self.usb_port}')
@@ -317,5 +322,5 @@ class SerialProcess(Process):
 
 # Example of usage
 if __name__ == "__main__":
-    se = SerialProcess("COM5", 115200)
+    se = SerialProcess("COM5", 115200, 1000)
     se.start()

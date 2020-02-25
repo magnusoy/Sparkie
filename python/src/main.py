@@ -26,13 +26,13 @@ import time
 
 
 sparkie = Sparkie()
-serial = SerialProcess(port=SERIAL_PORT, baudrate=SERIAL_BAUDRATE, interval=100)
+serial = SerialProcess(usb_port=SERIAL_PORT, baudrate=SERIAL_BAUDRATE, interval=100)
 tracking_camera = TrackingCamera(image_output=False, ip='*', port=5556, topic='', interval=100)  # topic is blank because of mulitple topics
-depth_camera = DepthCamera(color=False, ip='*', port=5558, topic='', interval=100)  # topic is blank because of mulitple topics
+#depth_camera = DepthCamera(color=False, ip='*', port=5558, topic='', interval=100)  # topic is blank because of mulitple topics
 
 
 # Running application
 if __name__ == "__main__":
-    serial.start()
-    tracking_camera.start()
-    depth_camera.start()
+    #serial.start()
+    tracking_camera.run()
+    #depth_camera.start()

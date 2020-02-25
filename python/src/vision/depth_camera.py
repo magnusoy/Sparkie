@@ -25,7 +25,7 @@ from communication.publisher import Publisher
 class DepthCamera(Publisher):
 
     def __init__(self, color, ip, port, topic, interval):
-        self.__init__(self, ip, port, topic)
+        Publisher.__init__(self, ip, port, topic)
         self.interval = interval
         self.lastUpdate = self.millis(self)
 
@@ -69,7 +69,7 @@ class DepthCamera(Publisher):
             self.depth_colormap = np.asanyarray(self.colorizer.colorize(depth_frame).get_data())
             
             if self.color:
-                mapped_frame, color_source = color_frame, color_image
+                mapped_frame, color_source = color_frame, color_img
             else:
                 mapped_frame, color_source = depth_frame, depth_colormap
             
@@ -91,14 +91,15 @@ class DepthCamera(Publisher):
         self.initialize(self)
 
         while self.running:
-            now = self.millis(self)
-            timeDifference = now - self.lastUpdate
-            if timeDifference >= self.interval:
-                self.poll()
-                self.publish_depth_frame()
-                self.publish_color_frame()
-                self.publish_depth_colormap()
-                self.lastUpdate = now
+            #now = self.millis(self)
+            #timeDifference = now - self.lastUpdate
+            #if timeDifference >= self.interval:
+            self.poll()
+            self.publish_depth_frame()
+            self.publish_color_frame()
+            self.publish_depth_colormap()
+            time.sleep(self.interval//1000)
+            #    self.lastUpdate = now
     
     def publish_depth_frame(self):
         Publisher.topic = 'depth'
