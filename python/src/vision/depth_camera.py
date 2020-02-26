@@ -1,5 +1,3 @@
-
-
 # -*- coding: utf-8 -*-
 
 """
@@ -74,7 +72,6 @@ class DepthCamera(Publisher):
         
     def poll(self):
         try:
-            print("Hell")
             frames = self.pipe.wait_for_frames()
             self.depth_frame = frames.get_depth_frame()
             self.color_frame = frames.get_color_frame()

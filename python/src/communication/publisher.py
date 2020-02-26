@@ -56,7 +56,8 @@ class Publisher(Process):
     def send(self, msg):
         """docstring"""
         
-        self.socket.send_string('%s %s' % (self.topic, msg))
+        #self.socket.send_string('%s %s' % (self.topic, msg))
+        self.socket.send(msg)
 
     def stop(self):
         """docstring"""
