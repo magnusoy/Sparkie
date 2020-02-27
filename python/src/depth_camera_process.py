@@ -22,6 +22,8 @@ from communication.publisher import Publisher
 from globals import *
 
 
+INTERVAL_TIME = 0.1
+
 class Preset(IntEnum):
     Custom = 0
     Default = 1
@@ -71,6 +73,7 @@ decimate = rs.decimation_filter()
 decimate.set_option(rs.option.filter_magnitude, 2 ** state.decimate)
 colorizer = rs.colorizer()
 
+i = 0
 
 if __name__ == "__main__":
     
@@ -111,17 +114,17 @@ if __name__ == "__main__":
         msg = depth_image
         pub.topic = 'depth'
         pub.send(msg)
+        print(msg)
 
         msg = color_image
         pub.topic = 'img'
         pub.send(msg)
-        print(msg)
-
+        
         msg = depth_colormap
         pub.topic = 'colormap'
         pub.send(msg)
 
-        time.sleep(DEPTH_TRANSMISSION_INTERVAL)
+        time.sleep(INTERVAL_TIME)
     
 # Stop streaming
 pipe.stop()

@@ -21,6 +21,8 @@ from communication.publisher import Publisher
 from globals import *
 
 
+INTERVAL_TIME = 0.1
+
 # Publisher
 pub = Publisher(ip=TRACKING_IP, port=TRACKING_PORT, topic='')   # topic is blank because of mulitple topics
 pub.initialize()
@@ -73,7 +75,7 @@ if __name__ == "__main__":
             pub.topic = 'pose'
             pub.send(position)
 
-            time.sleep(TRACKING_TRANSMISSION_INTERVAL)
+            time.sleep(INTERVAL_TIME)
         except Exception as e:
             print(e)
             raise

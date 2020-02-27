@@ -184,7 +184,6 @@ class SerialProcess(Process):
     def __init__(self, usb_port, baudrate, interval):
         Process.__init__(self)
         self.interval = interval
-        self.lastUpdate = self.millis(self)
         self.usb_port = usb_port
         self.baudrate = baudrate
         self.connection = None
@@ -256,16 +255,10 @@ class SerialProcess(Process):
         pub.bind(address)
         
         while True:
-            #now = self.millis(self)
-            #timeDifference = now - self.lastUpdate
-            #if timeDifference >= self.interval:
-            #    msg = self.readInputStream()
-            #    # TODO: Postprocessing
-            #    pub.send_string(f'{topic}, {msg}')
-            #    self.lastUpdate = now
+
             msg = self.readInputStream()
             pub.send_string(f'{topic}, {msg}')
-            time.sleep(self.interval//1000)
+            time.sleep(self.interval)
         
     def connect(self):
         """
