@@ -13,12 +13,12 @@
 // Including libraries and headers
 #include <ODriveArduino.h>
 #include <ArduinoJson.h>
-#include <SerialHandler.h>
-#include <LegMovment.h>
+//#include <SerialHandler.h>
+//#include <LegMovment.h>
 
 //TODO make the dependency correct 
-//#include "libraries/SerialHandler/SerialHandler.h"
-//#include "libraries/LegMovment/LegMovment.h"
+#include "src/libraries/SerialHandler/SerialHandler.h"
+#include "src/libraries/LegMovment/LegMovment.h"
 
 #include "Globals.h"
 #include "Constants.h"

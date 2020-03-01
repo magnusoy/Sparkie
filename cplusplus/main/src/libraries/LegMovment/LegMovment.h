@@ -1,5 +1,5 @@
-#ifndef _LegMovment_H_
-#define _LegMovment_H_
+#ifndef _LEGMOVMENT_H_
+#define _LEGMOVMENT_H_
 
 #if (ARDUINO >= 100)
 #include "Arduino.h"
@@ -7,7 +7,7 @@
 #include "WProgram.h"
 #endif
 
-class LegMovment
+class LegMovment 
 {
 
 public:
@@ -21,4 +21,4 @@ public:
 
 };
 
-#endif // _LegMovment_H_
+#endif // _LEGMOVMENT_H_

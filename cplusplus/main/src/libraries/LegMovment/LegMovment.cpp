@@ -19,9 +19,7 @@ double LegMovment::compute(double x, double y, uint8_t motor)
   double r = sqrt((x * x) + (y * y));
   double theta = atan(x / y);
   double gamma = acos((8100 + (r * r) - 25600) / (180 * r));
-  if (x < 0) {
-    theta = theta + 3.14;
-  }
+
   if (motor == INNER) {
     alpha = -gamma - theta;
   } else if (motor == OUTER) {
