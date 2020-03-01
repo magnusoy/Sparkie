@@ -1,5 +1,5 @@
 numpy
-cv2
+opencv-python
 pyserial
 odrive
 pyrealsense2

@@ -21,7 +21,7 @@ import time
 from PyQt5 import QtWidgets, uic, QtCore, QtGui
 
 # Importing from local source
-from globals import *
+from config import *
 from .util.subscriber import Subscriber
 
 class ManualWindow(QtWidgets.QDialog):
@@ -207,7 +207,7 @@ class StatusThread(QtCore.QThread):
 class SubscriberThread(QtCore.QThread):
     
     threadactive = True
-    subscriber = Subscriber(ip=SUBSCRIBER_IP, port=SUBSCRIBER_PORT, topic=DEPTH_IMG_TOPIC)
+    subscriber = Subscriber(ip=SUBSCRIBER_IP, port=SUBSCRIBER_PORT, topic=TRACKING_POSE_TOPIC)
     
     def run(self):
         self.subscriber.initialize()

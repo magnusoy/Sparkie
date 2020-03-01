@@ -1,3 +1,4 @@
 #!/bin/sh
-echo "Starting Sparkie"
-# Do startup sequence ...
+type sparkie.txt
+
+@echo off

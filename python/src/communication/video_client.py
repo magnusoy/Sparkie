@@ -22,6 +22,9 @@ from subscriber import Subscriber
 
 
 class VideoClient(Subscriber):
+
+    __slots__ = ['sub_ip', 'sub_port', 'sub_topic', 'host', 'port']
+
     def __init__(self, sub_ip, sub_port, sub_topic, host, port):
         Subscriber.__init__(self, sub_port, sub_topic, sub_topic)
         self.address = (host, port)

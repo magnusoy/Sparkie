@@ -19,7 +19,7 @@ import pyrealsense2 as rs
 
 # Importing from local source
 from communication.publisher import Publisher
-from globals import *
+from config import *
 
 
 INTERVAL_TIME = 0.1
