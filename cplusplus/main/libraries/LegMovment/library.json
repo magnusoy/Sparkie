@@ -1,9 +1,9 @@
 {
-    "name": "InverseKinematics",
-    "keywords": "InverseKinematics",
-    "description": "InverseKinematics - Controller for systems.",
+    "name": "LegMovment",
+    "keywords": "LegMovment",
+    "description": "LegMovment - Controller for systems.",
     "url": "https://github.com/magnusoy/Sparkie-Quadruped-Robot",
-    "include": "InverseKinematics",
+    "include": "LegMovment",
     "authors":
     [
       {

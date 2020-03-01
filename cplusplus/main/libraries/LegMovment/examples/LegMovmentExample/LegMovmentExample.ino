@@ -1,6 +1,6 @@
-#include <InverseKinematics.h>
+#include <LegMovment.h>
 
-InverseKinematics IK_FrontLeftLeg;
+LegMovment LM_LegMovment;
 
 /* Parameters */
 double AMPLITUDE = 20.0f;
@@ -19,11 +19,11 @@ void setup()
 
 void loop()
 {
-  double x = IK_FrontLeftLeg.stepX(n, LENGHT, FREQUENCY);
-  double y = IK_FrontLeftLeg.stepY(n, AMPLITUDE, HEIGHT, FREQUENCY);
+  double x = LM_LegMovment.stepX(n, LENGHT, FREQUENCY);
+  double y = LM_LegMovment.stepY(n, AMPLITUDE, HEIGHT, FREQUENCY);
   for (int m = 0; m < 2; ++m)
   {
-    double angle = IK_FrontLeftLeg.compute(x, y, m);
+    double angle = LM_LegMovment.compute(x, y, m);
     Serial.print("M: ");
     Serial.print(m);
     Serial.print(" | ");

@@ -1,12 +1,12 @@
 #######################################
-# Syntax Coloring Map For InverseKinematics Library
+# Syntax Coloring Map For LegMovment Library
 #######################################
 
 #######################################
 # Datatypes (KEYWORD1)
 #######################################
 
-InverseKinematics	KEYWORD1
+LegMovment	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)

@@ -64,6 +64,7 @@ enum states {
   S_MANUAL,
   S_BACKFLIP,
   S_CONFIGURE,
+  S_RESET,
   S_WARNING,
   S_ERROR,
 
@@ -73,5 +74,9 @@ uint8_t currentState = S_IDLE;
 uint8_t currentErrors[3] = {NONE};
 uint8_t currentWarnings[3] = {NONE};
 
-
+/* Parameters for leg movment*/
+double AMPLITUDE = 20.0f;
+double LENGHT = 30.0f;
+double HEIGHT = 200.0f;
+double FREQUENCY = 2.0f;
 #endif // _GLOBALS_H_

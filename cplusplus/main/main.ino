@@ -6,63 +6,46 @@
   -----------------------------------------------------------
   Code by: Magnus Kvendseth Øye, Vegard Solheim, Petter Drønnen
   Date: 10.02-2020
-  Version: 0.3
+  Version: 0.4
   Website: https://github.com/magnusoy/Sparkie
 */
 
-
 // Including libraries and headers
 #include <ODriveArduino.h>
-#include<math.h>
 #include <ArduinoJson.h>
-//#include <SerialHandler.h>
-//#include <Timer.h>
-//#include <ButtonTimer.h>
+#include <SerialHandler.h>
+#include <LegMovment.h>
+
+//TODO make the dependency correct 
+//#include "libraries/SerialHandler/SerialHandler.h"
+//#include "libraries/LegMovment/LegMovment.h"
+
 #include "Globals.h"
 #include "Constants.h"
 #include "OdriveParameters.h"
+#include "IO.h"
 
-/*  Variables used for blinking a led without delay*/
-int ledState = LOW;
-unsigned long previousMillis = 0;
-const long interval = 1000;
+SerialHandler serial(BAUDRATE, CAPACITY);
+LegMovment legMovment;
 
 /* Variable for storing time for leg tracjetory */
 unsigned long n = 1;
 
-
-/*Serial connection for each odrive*/
-HardwareSerial hwSerials[4] = {FRONT_LEFT, FRONT_RIGHT, BACK_LEFT, BACK_RIGHT};
-
-/*Odrive motordrivers, one Odrive per foot*/
-ODriveArduino odriveFrontLeft(FRONT_LEFT);
-ODriveArduino odriveFrontRight(FRONT_RIGHT);
-ODriveArduino odriveBackLeft(BACK_LEFT);
-ODriveArduino odriveBackRight(BACK_RIGHT);
-
-ODriveArduino odrives[4] = {odriveFrontLeft, odriveFrontRight, odriveBackLeft, odriveBackRight};
-
-
-
 void setup() {
-  Serial.begin(BAUDRATE);
+  serial.initialize();
   initializeButtons();
   initializeLights();
-  //initializeOdrives(); uncomment
-  //calibreateMotors(); uncomment
-  //setOdrivesInControlMode(odrives);
-  Serial.println("Setup complete");
-
+  initializeOdrives();
+  calibrateOdriveMotors(odrives);
 }
 
 void loop() {
 
-  //readOdriveMotorPositions(hwSerials, odrives);
+  readOdriveMotorPositions(hwSerials, odrives);
 
   switch (currentState) {
     case S_IDLE:
       blinkLight(GREEN_LED);
-
       break;
 
     case S_CALIBRATE:
@@ -78,26 +61,16 @@ void loop() {
       break;
 
     case S_WALK:
-      //for (int j = 0; j < 5; j++) {
-      //(time,amplitude,step lenght, frequency)
-      double x = stepX(n, 20, 120, 2);
-      double y = stepY(n, 20, 200, 2);
-      Serial.print("X: ");
-      Serial.println(x);
-      //      Serial.print("Y: ");
-      //      Serial.println(y);
-      for (int i = 0; i < 2; i++) {
-        double angle = inverseKinematicsLeg(x, y, i);
-        Serial.print("angle: ");
-        Serial.println(angle);
-        double motorCount = map(angle, -180, 180, -4096, 4096);
-        Serial.print("Motor count: ");
-        Serial.println(motorCount);
-        //setMotorPosition(0, i, motorCount); uncomment
+      for (int Odrive = 0; Odrive < 5; Odrive++) {
+        double x = legMovment.stepX(n, LENGHT, FREQUENCY);
+        double y = legMovment.stepY(n, AMPLITUDE, HEIGHT, FREQUENCY);
+        for (int motor = 0; motor < 2; motor++) {
+          double angle = legMovment.compute(x, y, motor);
+          double motorCount = map(angle, -180, 180, -4096, 4096);
+          setMotorPosition(Odrive, motor, motorCount);
+        }
       }
-      //}
-      //delay(200);
-      n += 3;
+      n += 1;
       break;
 
     case S_RUN:
@@ -121,16 +94,18 @@ void loop() {
       break;
 
     case S_CONFIGURE:
-      Serial.println("configure");
+      break;
+
+    case S_RESET:
+      turnOffAllLights();
+      changeStateTo(S_IDLE);
       break;
 
     case S_WARNING:
-      Serial.println("warning");
       blinkLight(ORANGE_LED);
       break;
 
     case S_ERROR:
-      Serial.println("error");
       break;
 
     default:
@@ -139,105 +114,8 @@ void loop() {
 
   }
   readButtons();
+  serial.flush();
 }
-
-/**
-  Initialize the four Odrives.
-*/
-void initializeOdrives() {
-  for (int i = 0; i < 1; ++i) {
-    hwSerials[i].begin(BAUDRATE);
-  }
-}
-
-void initializeButtons() {
-  pinMode(RED_BTN, INPUT_PULLDOWN);
-  pinMode(BLUE_BTN, INPUT_PULLDOWN);
-  pinMode(GREEN_BTN, INPUT_PULLDOWN);
-  pinMode(ORANGE_BTN, INPUT_PULLDOWN);
-}
-
-void initializeLights() {
-  pinMode(GREEN_LED, OUTPUT);
-  pinMode(BLUE_LED, OUTPUT);
-  pinMode(RED_LED, OUTPUT);
-  pinMode(ORANGE_LED, OUTPUT);
-}
-
-void blinkLight(int pin) {
-
-  unsigned long currentMillis = millis();
-
-  if (currentMillis - previousMillis >= interval) {
-    // save the last time you blinked the LED
-    previousMillis = currentMillis;
-
-    // if the LED is off turn it on and vice-versa:
-    if (ledState == LOW) {
-      ledState = HIGH;
-    } else {
-      ledState = LOW;
-    }
-
-    // set the LED with the ledState of the variable:
-    digitalWrite(pin, ledState);
-  }
-}
-
-void readButtons() {
-  int green = digitalRead(GREEN_BTN);
-  int red = digitalRead(RED_BTN);
-  int blue = digitalRead(BLUE_BTN);
-  int orange = digitalRead(ORANGE_BTN);
-
-  if (red) {
-    changeStateTo(S_PAUSE);
-  }
-
-  else if (orange) {
-    changeStateTo(S_WARNING);
-  }
-  else if (green) {
-    changeStateTo(S_WALK);
-    digitalWrite(GREEN_LED, HIGH);
-  }
-
-}
-
-void setMotorPosition(const int odriveNumber, const int motorNumber, double pos) {
-  odrives[odriveNumber].SetPosition(motorNumber, pos);
-}
-
-
-double inverseKinematicsLeg(double x, double y, int motor) {
-  double alpha;
-  double r = sqrt((x * x) + (y * y));
-  double theta = atan(y / x);
-  double gamma = acos((8100 + (r * r) - 25600) / (180 * r));
-  //double gammaInDegrees = gamma * 57.296;
-
-  if (x < 0) {
-    theta = theta - 3.14;
-  }
-  if (motor == INNER) {
-    alpha = gamma - theta;
-  } else if (motor == OUTER) {
-    alpha = gamma + theta;
-  }
-  alpha = alpha * 57.296;
-  return alpha;
-
-}
-
-double stepX(unsigned long t, int amp, int lenght, int f) {
-  double x = lenght / 2 * sin(2 * 3.14 * f * t);
-  return x;
-}
-double stepY(unsigned long t, int amp, int legHeight, int f) {
-  double y = -legHeight + amp * cos(2 * 3.14 * f * t);
-  return y;
-}
-
 
 /**
   Generate a JSON document and sends it
@@ -245,63 +123,17 @@ double stepY(unsigned long t, int amp, int legHeight, int f) {
 */
 void sendJSONDocumentToSerial() {
   DynamicJsonDocument doc(220);
+  //TODO make correct JSON
   doc["state"] = currentState;
-  serializeJson(doc, Serial);
-  Serial.print("\n");
-}
-
-
-/**
-  Reads content sent from the Teensy and
-  flushes it, as it is for no use.
-*/
-void flushSerial() {
-  if (Serial.available() > 0) {
-    const size_t capacity = 15 * JSON_ARRAY_SIZE(2) + JSON_ARRAY_SIZE(10) + 11 * JSON_OBJECT_SIZE(3) + 520;
-    DynamicJsonDocument doc(capacity);
-    DeserializationError error = deserializeJson(doc, Serial);
-    if (error) {
-      return;
-    }
-    JsonObject obj = doc.as<JsonObject>();
-  }
+  serial.write(doc);
 }
 
 /**
-  Calibreates motors.
-  Be aware the motors will move during this process!
+  Reads a JSON document from serial
+  and decode it.
 */
-void calibreateMotors() {
-  int requested_state;
-  requested_state = ODriveArduino::AXIS_STATE_MOTOR_CALIBRATION;
-  odrives[0].run_state(INNER, requested_state, true);
-  requested_state = ODriveArduino::AXIS_STATE_ENCODER_OFFSET_CALIBRATION;
-  odrives[0].run_state(INNER, requested_state, true);
-  requested_state = ODriveArduino::AXIS_STATE_CLOSED_LOOP_CONTROL;
-  odrives[0].run_state(INNER, requested_state, false); // don't wait
-  delay(1000);
-  requested_state = ODriveArduino::AXIS_STATE_MOTOR_CALIBRATION;
-  odrives[0].run_state(OUTER, requested_state, true);
-  requested_state = ODriveArduino::AXIS_STATE_ENCODER_OFFSET_CALIBRATION;
-  odrives[0].run_state(OUTER, requested_state, true);
-  requested_state = ODriveArduino::AXIS_STATE_CLOSED_LOOP_CONTROL;
-  odrives[0].run_state(OUTER, requested_state, false); // don't wait
-  delay(1000);
-}
-
-void turnOffAllLights() {
-  digitalWrite(GREEN_LED, LOW);
-  digitalWrite(BLUE_LED, LOW);
-  digitalWrite(RED_LED, LOW);
-  digitalWrite(ORANGE_LED, LOW);
-}
-
-/**
-   Change the state of the statemachine to the new state
-   given by the parameter newState
-   @param newState The new state to set the statemachine to
-*/
-void changeStateTo(int newState) {
-  turnOffAllLights();
-  currentState = newState;
+void readJSONDocumentFromSerial() {
+  JsonObject obj = serial.read();
+  //TODO decode JSON
+  //recCommand = obj["command"];
 }

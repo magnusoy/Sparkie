@@ -2,7 +2,7 @@
 
 #define BAUDRATE 9600
 #define CAPACITY 255
-Serialhandler serial(BAUDRATE, CAPACITY);
+SerialHandler serial(BAUDRATE, CAPACITY);
 
 void setup() {
     serial.initialize();
