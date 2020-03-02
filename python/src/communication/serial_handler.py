@@ -191,12 +191,12 @@ class SerialProcess(Process):
         
         # Subscriber
         self.sub_ip = 'localhost'
-        self.sub_port = 6000
+        self.sub_port = 5562
         self.sub_topic = 'serial'
         
         # Publisher
         self.pub_ip = '*'
-        self.pub_port = 5000
+        self.pub_port = 5560
         self.pub_topic = 'serial'
     
     @staticmethod

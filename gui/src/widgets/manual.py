@@ -23,6 +23,7 @@ from PyQt5 import QtWidgets, uic, QtCore, QtGui
 # Importing from local source
 from config import *
 from .util.subscriber import Subscriber
+from .util.client import Client
 
 class ManualWindow(QtWidgets.QDialog):
     """doc"""
@@ -138,6 +139,8 @@ class ManualWindow(QtWidgets.QDialog):
     
     def power_on(self):
         active = self.powerBtn.isChecked()
+        self.client = ClientThread(self)
+        self.client.start()
         self.activate.emit(active)
 
     def initUI(self):
@@ -146,9 +149,6 @@ class ManualWindow(QtWidgets.QDialog):
         self.activate.connect(self.video_stream.activate)
         self.stop_video_stream.connect(self.video_stream.stop)
         self.video_stream.start()
-        
-        self.sub_test = SubscriberThread(self)
-        self.sub_test.start()
         self.show()
     
     def close_window(self):
@@ -214,4 +214,45 @@ class SubscriberThread(QtCore.QThread):
         while self.threadactive:
             data = self.subscriber.read()
             print(data)
+
+
+class ClientThread(QtCore.QThread):
+
+    no_input = QtCore.pyqtSignal()
+    
+    HOST = '10.10.10.219'
+    PORT = 8089
+    RATE = 0.1
+
+    threadactive = True
+    client = Client(host=HOST, port=PORT, rate=RATE)
+    
+    def run(self):
+        self.client.connect()
+        while self.threadactive:
+            data = self.client.read()
+            if data is False:
+                self.no_input.emit()
+                self.threadactive = False
+            print(data)
             
+            
+class ClientSenderThread(QtCore.QThread):
+
+    send_input = QtCore.pyqtSignal()
+    
+    HOST = '10.10.10.219'
+    PORT = 8089
+    RATE = 0.1
+
+    threadactive = True
+    client = Client(host=HOST, port=PORT, rate=RATE)
+    
+    def run(self):
+        self.client.connect()
+        while self.threadactive:
+            data = self.client.read()
+            if data is False:
+                self.no_input.emit()
+                self.threadactive = False
+            print(data)

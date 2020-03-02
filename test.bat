@@ -22,6 +22,10 @@ timeout 2 >nul
 
 echo Starting Cloud service
 start "Cloud service" /min python python/src/cloud_process.py
+timeout 2 >nul
+
+echo Internal server service
+start "Internal server service" /min python python/src/gui_server.py
 
 
 echo Pressing any key will close all of the above applications ...

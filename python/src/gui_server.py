@@ -11,24 +11,58 @@ __email__ = "magnus.oye@gmail.com"
 __status__ = "Development"
 """
 
-import time
+from time import sleep
+from enum import IntEnum
 
 # Importing from local source
 from communication.subscriber import Subscriber
 from communication.server import Server
-from config import *
 
 
-sub = Subscriber(ip='localhost', port=5556, topic='pose')
-sub.initialize()
+class State(IntEnum):
+    NULL = 0
+    Default = 1
+    Hand = 2
+    HighAccuracy = 3
+    HighDensity = 4
+    MediumDensity = 5
 
-server = Server(host='0.0.0.0', port=8089)
+
+# Subscribers
+IP = 'localhost'
+TRACKING_PORT = 5556
+DEPTH_PORT = 5558
+SERIAL_PORT = 5560
+
+# Server
+HOST = '0.0.0.0'
+PORT = 8089
+
+# Tracking camera
+tracking_camera_sub = Subscriber(ip=IP, port=TRACKING_PORT, topic='pose')
+tracking_camera_sub.initialize()
+
+# Depth camera
+depth_camera_sub = Subscriber(ip=IP, port=DEPTH_PORT, topic='img')
+depth_camera_sub.initialize()
+
+# Serial connection
+serial_sub = Subscriber(ip=IP, port=SERIAL_PORT, topic='serial')
+serial_sub.initialize()
+
+# Internal server
+server = Server(host=HOST, port=PORT)
 server.initialize()
 
-msg = ""
+# States
+state = State()
+
 
 if __name__ == "__main__":
     while True:
-        sub.read()
-
-        server.send(sub.msg)
+        tracking_camera_sub.read()
+        server.send(tracking_camera_sub.msg)
+        depth_camera_sub.read()
+        server.send(depth_camera_sub.msg)
+        serial_sub.read()
+        server.send(serial_sub.msg)

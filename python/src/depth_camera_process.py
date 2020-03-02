@@ -19,9 +19,10 @@ import pyrealsense2 as rs
 
 # Importing from local source
 from communication.publisher import Publisher
-from config import *
 
 
+DEPTH_IP = '*'
+DEPTH_PORT = 5558
 INTERVAL_TIME = 0.1
 
 class Preset(IntEnum):

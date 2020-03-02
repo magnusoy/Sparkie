@@ -53,8 +53,11 @@ class Client(Thread):
     
     def read(self):
         """doc"""
-        payload = self.socket.recv(4096)
-        return payload.decode('latin-1')
+        try:
+            payload = self.socket.recv(4096)
+            return payload.decode('latin-1')
+        except OSError:
+            return False
     
     def write(self, payload):
         """doc"""
@@ -64,7 +67,7 @@ class Client(Thread):
 
 # Example of usage
 if __name__ == "__main__":
-    c1 = Client('10.10.10.111', 8089, 0.2)
+    c1 = Client('10.10.10.219', 8089, 0.2)
     c1.connect()
     while c1.isConnected:
         c1.write('Hello')

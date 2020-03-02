@@ -21,10 +21,12 @@ from communication.publisher import Publisher
 from config import *
 
 
+TRACKING_IP = '*'
+TRACKING_PORT = 5556
 INTERVAL_TIME = 0.1
 
 # Publisher
-pub = Publisher(ip='*', port=5556, topic='')   # topic is blank because of mulitple topics
+pub = Publisher(ip=TRACKING_IP, port=TRACKING_PORT, topic='')   # topic is blank because of mulitple topics
 pub.initialize()
 
 # Tracking camera

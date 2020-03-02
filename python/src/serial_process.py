@@ -14,6 +14,7 @@ __status__ = "Development"
 
 from communication.serial_handler import SerialProcess
 
+
 SERIAL_PORT = "COM3"
 SERIAL_BAUDRATE = 115200
 SERIAL_INTERVAL = 0.1
