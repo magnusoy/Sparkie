@@ -56,8 +56,8 @@ class Publisher(Process):
     def send(self, msg):
         """docstring"""
         
-        #self.socket.send_string('%s %s' % (self.topic, msg))
-        self.socket.send(msg)
+        self.socket.send_string('%s %s' % (self.topic, msg))
+        #self.socket.send(msg)
 
     def stop(self):
         """docstring"""
@@ -77,7 +77,7 @@ class Worker(Publisher):
         self.initialize(self)
         
         while self.running:
-            Publisher.send(self)
+            Publisher.send('Horonson')
 
 
 # Example of usage

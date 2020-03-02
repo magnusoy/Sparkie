@@ -46,7 +46,13 @@ class Server(Thread):
     
     def read(self):
         """doc"""
-        self.content = self.connection.recv(4096).decode('latin-1')
+        if self.connection is not None:
+            self.content = self.connection.recv(4096).decode('latin-1')
+    
+    def send(self, msg):
+        """doc"""
+        if self.connection is not None and msg is not None:
+            self.connection.send(msg.encode())
             
     def initialize(self):
         """doc"""
