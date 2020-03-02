@@ -64,5 +64,7 @@ class Client(Thread):
 
 # Example of usage
 if __name__ == "__main__":
-    c1 = Client().start()
-    c2 = Client().start()
+    c1 = Client('10.10.10.111', 8089, 0.2)
+    c1.connect()
+    while c1.isConnected:
+        c1.write('Hello')

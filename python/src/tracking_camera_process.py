@@ -24,7 +24,7 @@ from config import *
 INTERVAL_TIME = 0.1
 
 # Publisher
-pub = Publisher(ip=TRACKING_IP, port=TRACKING_PORT, topic='')   # topic is blank because of mulitple topics
+pub = Publisher(ip='*', port=8089, topic='pose')   # topic is blank because of mulitple topics
 pub.initialize()
 
 # Tracking camera
@@ -63,7 +63,7 @@ if __name__ == "__main__":
                 pos = data.translation
                 vel = data.velocity
                 acc = data.acceleration
-                #print('realsense pos(%f, %f, %f)' % (pos.x, pos.y, pos.z))
+                print('realsense pos(%f, %f, %f)' % (pos.x, pos.y, pos.z))
 
             msg = img
             pub.topic = 'img'

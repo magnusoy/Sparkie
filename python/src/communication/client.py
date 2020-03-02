@@ -22,7 +22,7 @@ import time
 
 class Client(Thread):
     """doc"""
-    def __init__(self, host='localhost', port=8089, rate=0.2):
+    def __init__(self, host='10.10.10.111', port=8089, rate=0.2):
         Thread.__init__(self)
         self.address = (host, port)
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

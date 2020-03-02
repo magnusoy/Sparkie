@@ -24,7 +24,7 @@ class Server(Thread):
 
     __slots__ = ['host', 'port']
 
-    def __init__(self, host='localhost', port=8089):
+    def __init__(self, host='0.0.0.0', port=8089):
         Thread.__init__(self)
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.host = host
@@ -71,4 +71,4 @@ if __name__ == "__main__":
     #server.start()
     server.initialize()
     while server.isConnected():
-        pass    
+        pass
