@@ -241,7 +241,7 @@ class ClientSenderThread(QtCore.QThread):
 
     send_input = QtCore.pyqtSignal()
     
-    HOST = '10.10.10.219'
+    HOST = 'localhost'
     PORT = 8089
     RATE = 0.1
 
@@ -252,7 +252,7 @@ class ClientSenderThread(QtCore.QThread):
         self.client.connect()
         while self.threadactive:
             data = self.client.read()
-            if data is False:
-                self.no_input.emit()
-                self.threadactive = False
+            #if data is False:
+            #    self.no_input.emit()
+            #    self.threadactive = False
             print(data)

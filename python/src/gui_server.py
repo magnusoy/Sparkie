@@ -19,14 +19,7 @@ from communication.subscriber import Subscriber
 from communication.server import Server
 
 
-class State(IntEnum):
-    NULL = 0
-    Default = 1
-    Hand = 2
-    HighAccuracy = 3
-    HighDensity = 4
-    MediumDensity = 5
-
+   
 
 # Subscribers
 IP = 'localhost'
@@ -47,22 +40,26 @@ depth_camera_sub = Subscriber(ip=IP, port=DEPTH_PORT, topic='img')
 depth_camera_sub.initialize()
 
 # Serial connection
-serial_sub = Subscriber(ip=IP, port=SERIAL_PORT, topic='serial')
-serial_sub.initialize()
+#serial_sub = Subscriber(ip=IP, port=SERIAL_PORT, topic='serial')
+#serial_sub.initialize()
 
 # Internal server
 server = Server(host=HOST, port=PORT)
 server.initialize()
 
-# States
-state = State()
-
 
 if __name__ == "__main__":
     while True:
-        tracking_camera_sub.read()
-        server.send(tracking_camera_sub.msg)
-        depth_camera_sub.read()
-        server.send(depth_camera_sub.msg)
-        serial_sub.read()
-        server.send(serial_sub.msg)
+        if not server.isConnected():
+            server.listening()
+        while server.isConnected():
+            try:
+                tracking_camera_sub.read()
+                #server.send(tracking_camera_sub.msg)
+                #serial_sub.read()
+                #server.send(serial_sub.msg)
+                depth_camera_sub.read()
+                server.send("HELLO")
+            except Exception:
+                server.disconnect()
+    
