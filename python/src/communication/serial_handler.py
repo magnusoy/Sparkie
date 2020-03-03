@@ -190,12 +190,12 @@ class SerialProcess(Process):
         self.running = True
         
         # Subscriber
-        self.sub_ip = 'localhost'
-        self.sub_port = 5562
-        self.sub_topic = 'serial'
+        self.sub_ip = '*'
+        self.sub_port = 5580
+        self.sub_topic = ''
         
         # Publisher
-        self.pub_ip = '*'
+        self.pub_ip = '10.0.0.121'
         self.pub_port = 5560
         self.pub_topic = 'serial'
     
@@ -255,7 +255,6 @@ class SerialProcess(Process):
         pub.bind(address)
         
         while True:
-
             msg = self.readInputStream()
             pub.send_string(f'{topic}, {msg}')
             time.sleep(self.interval)

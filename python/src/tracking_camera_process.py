@@ -18,46 +18,38 @@ import pyrealsense2 as rs
 
 # Importing from local source
 from communication.publisher import Publisher
-from config import *
 
 
-TRACKING_IP = '*'
+TRACKING_IP = '10.0.0.121'
 TRACKING_PORT = 5556
 INTERVAL_TIME = 0.1
 
 # Publisher
-pub = Publisher(ip=TRACKING_IP, port=TRACKING_PORT, topic='')   # topic is blank because of mulitple topics
+pub = Publisher(ip=TRACKING_IP, port=TRACKING_PORT, topic='tracking')
 pub.initialize()
 
 # Tracking camera
 pipe = rs.pipeline()
 cfg = rs.config()
 cfg.enable_stream(rs.stream.pose)
-cfg.enable_stream(rs.stream.fisheye, 1) # Left camera
-cfg.enable_stream(rs.stream.fisheye, 2) # Left camera
 pipe.start(cfg)
-
 
 zero_vec = (0.0, 0.0, 0.0)
 pos = zero_vec
 vel = zero_vec
 acc = zero_vec
-img = None
 data = None
-position = np.zeros((3))
+position = ''
+velocity = ''
+acceleration = ''
+tracking = {'Position': None, 'Velocity': None, 'Acceleration': None}
 
 
 if __name__ == "__main__":
     
     while True:
         try:
-
-            # Wait for a coherent pair of frames: depth and color
             frames = pipe.wait_for_frames()
-
-            left = frames.get_fisheye_frame(1)
-            img = np.asanyarray(left.get_data())
-
             pose = frames.get_pose_frame()
 
             if pose:
@@ -65,17 +57,15 @@ if __name__ == "__main__":
                 pos = data.translation
                 vel = data.velocity
                 acc = data.acceleration
+                position = f'{pos.x}, {pos.y}, {pos.z}'
+                velocity = f'{vel.x}, {vel.y}, {vel.z}'
+                acceleration = f'{acc.x}, {acc.y}, {acc.z}'
+                tracking['Position'] = position
+                tracking['Velocity'] = velocity
+                tracking['Acceleration'] = acceleration
                 #print('realsense pos(%f, %f, %f)' % (pos.x, pos.y, pos.z))
 
-            msg = img
-            pub.topic = 'img'
-            pub.send(msg)
-
-            #position = np.array([pos.x, pos.y, pos.z])
-            position[0] = pos.x; position[1] = pos.y; position[2] = pos.z;
-            print(position)
-            pub.topic = 'pose'
-            pub.send(position)
+            pub.send(tracking)
 
             time.sleep(INTERVAL_TIME)
         except Exception as e:
