@@ -16,6 +16,8 @@ import time
 import numpy as np
 from enum import IntEnum
 import pyrealsense2 as rs
+import base64
+import zmq
 
 # Importing from local source
 from communication.publisher import Publisher
@@ -44,8 +46,12 @@ class AppState:
 
 
 # Publisher
-pub = Publisher(ip=DEPTH_IP, port=DEPTH_PORT, topic='')   # topic is blank because of mulitple topics
-pub.initialize()
+#pub = Publisher(ip=DEPTH_IP, port=DEPTH_PORT, topic='')   # topic is blank because of mulitple topics
+#pub.initialize()
+
+context = zmq.Context()
+footage_socket = context.socket(zmq.PUB)
+footage_socket.connect('tcp://10.0.0.121:5555')
 
 state = AppState()
 
@@ -112,17 +118,17 @@ if __name__ == "__main__":
         verts = np.asanyarray(v).view(np.float32).reshape(-1, 3)  # xyz
         texcoords = np.asanyarray(t).view(np.float32).reshape(-1, 2)  # uv
 
-        msg = depth_image
-        pub.topic = 'depth'
-        pub.send(msg)
+        #msg = depth_image
+        #pub.topic = 'depth'
+        #pub.send(msg)
         
-        msg = color_image
-        pub.topic = 'img'
-        pub.send(msg)
+        encoded, buffer = cv2.imencode('.jpg', color_image)
+        #pub.topic = 'img'
+        footage_socket.send(base64.b64encode(buffer))
         
-        msg = depth_colormap
-        pub.topic = 'colormap'
-        pub.send(msg)
+        #msg = depth_colormap
+        #pub.topic = 'colormap'
+        #pub.send(msg)
 
         time.sleep(INTERVAL_TIME)
     

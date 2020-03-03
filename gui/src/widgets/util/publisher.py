@@ -62,7 +62,7 @@ class Publisher(Process):
         """docstring"""
         
         self.running = False
-
+    
 
 class Worker(Publisher):
     """docstring"""

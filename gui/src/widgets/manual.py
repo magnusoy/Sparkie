@@ -19,6 +19,8 @@ import cv2
 import sys
 import time
 import numpy as np
+import zmq
+import base64
 from PyQt5 import QtWidgets, uic, QtCore, QtGui
 
 # Importing from local source
@@ -84,6 +86,7 @@ class ManualWindow(QtWidgets.QDialog):
         
         # Stylesheets
         self.powerBtn.setStyleSheet("QPushButton#powerBtn:checked {color:black; background-color: red;}")
+        self.signal_btn.setStyleSheet("QPushButton#signalBtn:checked {color:black; background-color: green;}")
         #self.signal_btn.setStyleSheet("QPushButton#signalBtn:checked {color:black; background-color: green;}")
 
         
@@ -143,25 +146,37 @@ class ManualWindow(QtWidgets.QDialog):
     def power_on(self):
         active = self.powerBtn.isChecked()
         if active:
-            self.client = ClientThread(self)
-            self.client.start()
-            self.stop_client.connect(self.client.close_socket)
-            self.activate.emit(active)
+            self.activate.emit(True)
         else:
-            self.stop_client.emit()
+            self.activate.emit(False)
+    
+    def blink_connection(self):
+        if not self.signal_btn.isChecked():
+            self.signal_btn.setChecked(True)
+        else:
+            self.signal_btn.setChecked(False)
 
     def initUI(self):
-        self.video_stream = VideoThread(self)
-        self.video_stream.change_pixmap.connect(self.set_image)
-        self.activate.connect(self.video_stream.activate)
-        self.stop_video_stream.connect(self.video_stream.stop)
-        self.video_stream.start()
+        #self.video_stream = VideoThread(self)
+        #self.video_stream.change_pixmap.connect(self.set_image)
+        self.activate.connect(self.active_all)
+        #self.stop_video_stream.connect(self.video_stream.stop)
+        #self.video_stream.start()
+        self.client = ClientThread(self)
+        self.client.change_pixmap.connect(self.set_image)
+        self.client.start()
+        self.stop_client.connect(self.client.close_socket)
+        self.client.blink_signal.connect(self.blink_connection)
         self.show()
+    
+    def active_all(self):
+        #self.video_stream.activate(self.powerBtn.isChecked())
+        self.client.activate(self.powerBtn.isChecked())
     
     def close_window(self):
         self.stop_video_stream.emit()
         self.stop_client.emit()
-        self.video_stream.stop()
+        #self.video_stream.stop()
         self.close()
     
     def turn_robot_off(self):
@@ -223,34 +238,42 @@ class SubscriberThread(QtCore.QThread):
             data = self.subscriber.read()
             print(data)
 
-
+"""
 class ClientThread(QtCore.QThread):
 
     no_input = QtCore.pyqtSignal()
+    blink_signal = QtCore.pyqtSignal()
+    power_on = QtCore.pyqtSignal()
     
-    HOST = '10.10.10.219'
+    #HOST = '10.10.10.219'
+    HOST = '10.0.0.9'
     PORT = 8089
     RATE = 0.1
 
+    active = False
     threadactive = True
     client = Client(host=HOST, port=PORT, rate=RATE)
 
     @QtCore.pyqtSlot()
     def close_socket(self):
         self.threadactive = False
+        print("Closing")
         self.client.disconnect()
     
+    @QtCore.pyqtSlot(bool)
+    def activate(self, power_on):
+        self.active = power_on
+    
     def run(self):
-        self.client.connect()
         while self.threadactive:
-            data = self.client.read()
-            print("Running")
+            if self.active:
+                self.client.connect()
+            while self.threadactive and self.client.isConnected:
+                    self.blink_signal.emit()
+                    data = self.client.read()
+                    print("Running")
+"""
 
-        self.client.disconnect()
-        
-            
-            
-            
 class ClientSenderThread(QtCore.QThread):
 
     send_input = QtCore.pyqtSignal()
@@ -270,3 +293,43 @@ class ClientSenderThread(QtCore.QThread):
             #    self.no_input.emit()
             #    self.threadactive = False
             print(data)
+
+
+class ClientThread(QtCore.QThread):
+
+    no_input = QtCore.pyqtSignal()
+    blink_signal = QtCore.pyqtSignal()
+    power_on = QtCore.pyqtSignal()
+    change_pixmap = QtCore.pyqtSignal(QtGui.QImage)
+    
+    context = zmq.Context()
+    footage_socket = context.socket(zmq.SUB)
+    footage_socket.bind('tcp://*:5555')
+    footage_socket.setsockopt_string(zmq.SUBSCRIBE, str(''))
+    footage_socket.setsockopt(zmq.CONFLATE, 1)  # last msg only.
+
+    active = False
+    threadactive = True
+
+    @QtCore.pyqtSlot()
+    def close_socket(self):
+        self.threadactive = False
+        print("Closing")
+    
+    @QtCore.pyqtSlot(bool)
+    def activate(self, power_on):
+        self.active = power_on
+    
+    def run(self):
+        while self.threadactive:
+            if self.active:
+                self.blink_signal.emit()
+                frame = self.footage_socket.recv_string()
+                img = base64.b64decode(frame)
+                npimg = np.fromstring(img, dtype=np.uint8)
+                source = cv2.imdecode(npimg, 1)
+                h, w, ch = source.shape
+                bytes_per_line = ch * w
+                convert_to_Qt_format = QtGui.QImage(source.data, w, h, bytes_per_line, QtGui.QImage.Format_RGB888)
+                p = convert_to_Qt_format.scaled(1920, 1010)
+                self.change_pixmap.emit(p)

@@ -18,6 +18,7 @@ __status__ = "Development"
 # Importing packages
 import zmq
 from multiprocessing import Process
+import numpy as np
 
 
 class Subscriber(Process):
@@ -54,7 +55,6 @@ class Subscriber(Process):
         """docstring"""
 
         self.msg = self.socket.recv_string()
-        #print(self.msg)
     
     def stop(self):
         """docstring"""
