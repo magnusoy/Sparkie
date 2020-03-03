@@ -29,6 +29,8 @@ class Server(Thread):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.host = host
         self.port = port
+        print(self.port)
+        print(self.host)
         self.connection = None
         self.content = None
     
@@ -51,15 +53,23 @@ class Server(Thread):
     
     def send(self, msg):
         """doc"""
-        if self.connection is not None and msg is not None:
-            self.connection.send(msg.encode())
+        print("Sending")
+        self.connection.send(msg.encode())
+            
             
     def initialize(self):
         """doc"""
         addr = (self.host, self.port)
         self.socket.bind(addr)
-        self.socket.listen(10)
+        self.socket.listen(100)
         self.connection, self.address = self.socket.accept()
+        print('Connected by', self.address)
+    
+    def listening(self):
+        print('Waiting for a connection...')
+        self.connection, self.address = self.socket.accept()
+        print('Connected by', self.address)
+        
     
     def disconnect(self):
         """doc"""
@@ -73,8 +83,9 @@ class Server(Thread):
 
 # Example of usage
 if __name__ == "__main__":
-    server = Server()
+    server = Server(host='0.0.0.0', port=8089)
     #server.start()
     server.initialize()
     while server.isConnected():
-        pass
+        print(server.read())
+        server.send("Hello")

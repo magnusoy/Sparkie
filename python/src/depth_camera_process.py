@@ -23,7 +23,7 @@ from communication.publisher import Publisher
 
 DEPTH_IP = '*'
 DEPTH_PORT = 5558
-INTERVAL_TIME = 0.1
+INTERVAL_TIME = 0.5
 
 class Preset(IntEnum):
     Custom = 0
@@ -115,8 +115,7 @@ if __name__ == "__main__":
         msg = depth_image
         pub.topic = 'depth'
         pub.send(msg)
-        print(msg)
-
+        
         msg = color_image
         pub.topic = 'img'
         pub.send(msg)
