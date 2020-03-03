@@ -41,11 +41,10 @@ class Client(Thread):
         """doc"""
         try:
             self.socket.connect(self.address)
-        except OSError:
-            yield 'Unable to connect'
-        finally:
             self.isConnected = True
-    
+        except OSError:
+            pass
+            
     def disconnect(self):
         """doc"""
         self.socket.close()
@@ -63,6 +62,8 @@ class Client(Thread):
         """doc"""
         payload = payload + '\n'
         self.socket.sendall(payload.encode())
+    
+
 
 
 # Example of usage
@@ -70,4 +71,5 @@ if __name__ == "__main__":
     c1 = Client('10.10.10.219', 8089, 0.2)
     c1.connect()
     while c1.isConnected:
-        c1.write('Hello')
+        sad = c1.read()
+        print(sad)

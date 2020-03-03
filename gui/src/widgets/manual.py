@@ -18,6 +18,7 @@ __status__ = "Development"
 import cv2
 import sys
 import time
+import numpy as np
 from PyQt5 import QtWidgets, uic, QtCore, QtGui
 
 # Importing from local source
@@ -30,6 +31,7 @@ class ManualWindow(QtWidgets.QDialog):
     
     activate = QtCore.pyqtSignal(bool)
     stop_video_stream = QtCore.pyqtSignal()
+    stop_client  = QtCore.pyqtSignal()
 
     def __init__(self):
         super(ManualWindow, self).__init__()
@@ -83,6 +85,7 @@ class ManualWindow(QtWidgets.QDialog):
         # Stylesheets
         self.powerBtn.setStyleSheet("QPushButton#powerBtn:checked {color:black; background-color: red;}")
         #self.signal_btn.setStyleSheet("QPushButton#signalBtn:checked {color:black; background-color: green;}")
+
         
         self.initUI()
     
@@ -139,9 +142,13 @@ class ManualWindow(QtWidgets.QDialog):
     
     def power_on(self):
         active = self.powerBtn.isChecked()
-        self.client = ClientThread(self)
-        self.client.start()
-        self.activate.emit(active)
+        if active:
+            self.client = ClientThread(self)
+            self.client.start()
+            self.stop_client.connect(self.client.close_socket)
+            self.activate.emit(active)
+        else:
+            self.stop_client.emit()
 
     def initUI(self):
         self.video_stream = VideoThread(self)
@@ -153,6 +160,7 @@ class ManualWindow(QtWidgets.QDialog):
     
     def close_window(self):
         self.stop_video_stream.emit()
+        self.stop_client.emit()
         self.video_stream.stop()
         self.close()
     
@@ -226,15 +234,21 @@ class ClientThread(QtCore.QThread):
 
     threadactive = True
     client = Client(host=HOST, port=PORT, rate=RATE)
+
+    @QtCore.pyqtSlot()
+    def close_socket(self):
+        self.threadactive = False
+        self.client.disconnect()
     
     def run(self):
         self.client.connect()
         while self.threadactive:
             data = self.client.read()
-            if data is False:
-                self.no_input.emit()
-                self.threadactive = False
-            print(data)
+            print("Running")
+
+        self.client.disconnect()
+        
+            
             
             
 class ClientSenderThread(QtCore.QThread):
