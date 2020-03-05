@@ -35,6 +35,8 @@ def depth2D_to_point3D(depth_intrinsic, raw_depth, rgb_image, depth_scale):
             raw_depth_value = raw_depth[r, c]
             #print(raw_depth_value)
             if raw_depth_value > 0:
+
+                print("Hello")
                 pt3D = rs.rs2_deproject_pixel_to_point(depth_intrinsic, depth_pixel, raw_depth_value * depth_scale)
                 points3D.append(pt3D)
                 rgb_values.append(rgb_value)
@@ -115,11 +117,11 @@ if __name__ == "__main__":
         print(color_intrinsic)
         print("")
 
-        depth_intrinsic = {'width': 640, 'height': 480, 'ppx': 320.156, 'ppy': 238.092, 'fx': 385.367, 'fy': 385.367, 'model': 'Brown Conrady', 'coeffs': [0, 0, 0, 0, 0]}
-        color_intrinsic = {'width': 640, 'height': 480, 'ppx': 320.156, 'ppy': 238.092, 'fx': 385.367, 'fy': 385.367, 'model': 'Brown Conrady', 'coeffs': [0, 0, 0, 0, 0]}
+        #depth_intrinsic = {'width': 640, 'height': 480, 'ppx': 320.156, 'ppy': 238.092, 'fx': 385.367, 'fy': 385.367, 'model': 'Brown Conrady', 'coeffs': [0, 0, 0, 0, 0]}
+        #color_intrinsic = {'width': 640, 'height': 480, 'ppx': 320.156, 'ppy': 238.092, 'fx': 385.367, 'fy': 385.367, 'model': 'Brown Conrady', 'coeffs': [0, 0, 0, 0, 0]}
 
         # segment the rgb image using deep learning prediction and mask the segmented image from the depth image
-        segmented_rgb = cv2.imread("captured_images/rgb_image/1_body.png")
+        segmented_rgb = cv2.imread("captured_images/rgb_image/1.png")
         raw_depth_segmented = segment_raw_depth_image(segmented_rgb, raw_depth)
 
         pts3D, rgb_values = depth2D_to_point3D(depth_intrinsic, raw_depth_segmented, rgb_image, depth_scale)  # depth and rgb should have the same dimensions

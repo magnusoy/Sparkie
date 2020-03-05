@@ -162,7 +162,7 @@ class ManualWindow(QtWidgets.QDialog):
         self.init_camera()
         self.init_pose()
         self.init_serial()
-        self.init_command()
+        #self.init_command()
         self.show()
     
     def init_camera(self):
@@ -191,13 +191,13 @@ class ManualWindow(QtWidgets.QDialog):
         self.camera.activate(self.powerBtn.isChecked())
         self.pose.activate(self.powerBtn.isChecked())
         self.serial.activate(self.powerBtn.isChecked())
-        self.command.activate(self.powerBtn.isChecked())
+        #self.command.activate(self.powerBtn.isChecked())
     
     def close_window(self):
         self.stop_camera.emit()
         self.stop_pose.emit()
         self.stop_serial.emit()
-        self.stop_command.emit()
+        #self.stop_command.emit()
         self.close()
     
     def turn_robot_off(self):
@@ -230,11 +230,12 @@ class CameraThread(QtCore.QThread):
     
     def run(self):
         while self.threadactive:
+            frame = self.footage_socket.recv_string()
+            img = base64.b64decode(frame)
+            npimg = np.fromstring(img, dtype=np.uint8)
+            source = cv2.imdecode(npimg, 1)
             if self.active:
-                frame = self.footage_socket.recv_string()
-                img = base64.b64decode(frame)
-                npimg = np.fromstring(img, dtype=np.uint8)
-                source = cv2.imdecode(npimg, 1)
+                
                 h, w, ch = source.shape
                 bytes_per_line = ch * w
                 convert_to_Qt_format = QtGui.QImage(source.data, w, h, bytes_per_line, QtGui.QImage.Format_RGB888)
@@ -307,7 +308,7 @@ class CommandThread(QtCore.QThread):
 
     context = zmq.Context()
     command_socket = context.socket(zmq.PUB)
-    command_socket.connect('tcp://10.10.10.9:5580')
+    command_socket.connect('tcp://10.10.10.219:5580')
 
     command = None
     old_command = None

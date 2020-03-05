@@ -24,7 +24,7 @@ from communication.publisher import Publisher
 
 
 DEPTH_IP = '*'
-DEPTH_PORT = 5558
+DEPTH_PORT = 5555
 INTERVAL_TIME = 0.5
 
 class Preset(IntEnum):
@@ -51,7 +51,7 @@ class AppState:
 
 context = zmq.Context()
 footage_socket = context.socket(zmq.PUB)
-footage_socket.connect('tcp://10.0.0.121:5555')
+footage_socket.connect('tcp://10.10.10.111:5555')
 
 state = AppState()
 
@@ -130,7 +130,7 @@ if __name__ == "__main__":
         #pub.topic = 'colormap'
         #pub.send(msg)
 
-        time.sleep(INTERVAL_TIME)
+        time.sleep(0.1)
     
 # Stop streaming
 pipe.stop()
