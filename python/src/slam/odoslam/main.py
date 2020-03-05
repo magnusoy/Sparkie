@@ -1,20 +1,5 @@
 #!/usr/bin/env python3
 
-import sys
-if sys.version_info[0] < 3:
-    raise Exception("Must be using Python 3")
-
-
-#################################################################
-#################################################################
-##
-##  This software is Copyright 2018, Mark Fassler
-##  This software is licensed to you under the GPL version 3
-##
-#################################################################
-#################################################################
-
-
 import time
 import collections
 import numpy as np
@@ -138,8 +123,6 @@ def update_point_cloud():
     pcd.points = open3d.utility.Vector3dVector(cur_points)
     pcd.colors = open3d.utility.Vector3dVector(cur_colors)
 
-
-
 #position = np.array((0,0,0,1))
 position = np.array((0,0,0), np.float64)
 direction = np.array((0,0,1), np.float64)
@@ -214,7 +197,7 @@ while True:
             ###########
             # BEGIN:  find the transform from world coordinates to current camera coordinates
             ###########
-            if activePermPoints > 5:
+            if activePermPoints > 0:
                 world_points = np.empty((activePermPoints, 3))
                 current_points = np.empty((activePermPoints, 3))
 
