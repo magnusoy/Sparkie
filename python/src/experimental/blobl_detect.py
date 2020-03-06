@@ -43,8 +43,10 @@ def detectBlobs(mask):
     # Detect blobs.
     reversemask= mask
     keypoints = detector.detect(reversemask)
+    if np.sum(reversemask) > 0: print("Detected")
     im_with_keypoints = cv2.drawKeypoints(mask, keypoints, np.array([]),
             (0,0,255), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+    
     return im_with_keypoints
 
 def thresholdDepth(depth):
