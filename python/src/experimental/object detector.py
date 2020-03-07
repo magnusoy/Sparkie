@@ -34,7 +34,6 @@ pipeline.start(config)
 try:
     while True:
 
-        
         # Wait for a coherent pair of frames: depth and color
         frames = pipeline.wait_for_frames()
         depth_frame = frames.get_depth_frame()
@@ -58,7 +57,7 @@ try:
         truncated_depth=thresholdDepth(scaled_depth)
         if np.sum(truncated_depth) > 50: 
             print("Detect")
-        else: 
+        else:
             print("Looking")
         cv2.imshow('Truncated Depth', truncated_depth)
 

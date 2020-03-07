@@ -1,0 +1,35 @@
+	###Configure Odrive for motor and encoder###
+
+----------------------------------------------------------------------
+
+odrv0.axis0.motor.config.pole_pairs = 12
+odrv0.axis1.motor.config.pole_pairs = 12
+
+odrv0.axis0.encoder.config.cpr = 2048
+odrv0.axis1.encoder.config.cpr = 2048
+
+odrv0.axis0.encoder.config.calib_range = 0.07
+odrv0.axis0.encoder.config.calib_range = 0.07
+
+
+odrv0.save_configuration()
+odrv0.reboot()
+
+----------------------------------------------------------------------
+
+	###Validate configurations###
+
+odrv0.axis0.requested_state = AXIS_STATE_FULL_CALIBRATION_SEQUENCE
+odrv0.axis0.requested_state = AXIS_STATE_CLOSED_LOOP_CONTROL
+
+
+dump_errors(odrv0) --> Should return 'no errors'
+
+----------------------------------------------------------------------
+
+	###Common errors###
+
+ERROR_CPR_OUT_OF_RANGE --> Be sure the above configurations are done. Check connections, and encoder placement
+ERROR_CONTROL_DEADLINE_MISSED --> Change the motor polarity
+
+----------------------------------------------------------------------
