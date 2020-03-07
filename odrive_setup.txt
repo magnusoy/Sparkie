@@ -9,8 +9,7 @@ odrv0.axis0.encoder.config.cpr = 2048
 odrv0.axis1.encoder.config.cpr = 2048
 
 odrv0.axis0.encoder.config.calib_range = 0.07
-odrv0.axis0.encoder.config.calib_range = 0.07
-
+odrv0.axis1.encoder.config.calib_range = 0.07
 
 odrv0.save_configuration()
 odrv0.reboot()
@@ -20,11 +19,21 @@ odrv0.reboot()
 	###Validate configurations###
 
 odrv0.axis0.requested_state = AXIS_STATE_FULL_CALIBRATION_SEQUENCE
+odrv0.axis1.requested_state = AXIS_STATE_FULL_CALIBRATION_SEQUENCE
+
 odrv0.axis0.requested_state = AXIS_STATE_CLOSED_LOOP_CONTROL
+odrv0.axis1.requested_state = AXIS_STATE_CLOSED_LOOP_CONTROL
+
+
+odrv0.axis0.requested_state = AXIS_STATE_IDLE
+odrv0.axis1.requested_state = AXIS_STATE_IDLE
 
 
 dump_errors(odrv0) --> Should return 'no errors'
+dump_errors(odrv0, True) --> Resets errors
 
+
+odrv0.axis0.controller.pos_setpoint = 200
 ----------------------------------------------------------------------
 
 	###Common errors###
@@ -33,3 +42,15 @@ ERROR_CPR_OUT_OF_RANGE --> Be sure the above configurations are done. Check conn
 ERROR_CONTROL_DEADLINE_MISSED --> Change the motor polarity
 
 ----------------------------------------------------------------------
+
+Men ikke lagret eller rebootet
+ odrv0.axis0.controller.config.vel_limit = 5000 --> default = 20000 gjor dette pga ERROR_OVERSPEED
+ odrv0.axis0.encoder.config.use_index = False --> Usikker på hva den skal vær. 
+ se https://discourse.odriverobotics.com/t/error-current-unstable-during-axis-state-closed-loop-control/4277
+
+----------------------------------------------------------------------
+
+	###TUNING###
+odrv0.axis0.controller.config.pos_gain = 140	--> default 20.0
+odrv0.axis0.controller.config.vel_gain = 15 / 10000.0	--> default 5.0 / 10000.0
+odrv0.axis0.controller.config.vel_integrator_gain = 10.0 / 10000.0	--> default 10.0 / 10000.0
