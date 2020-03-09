@@ -84,12 +84,20 @@ void setOdrivesInState(ODriveArduino odrives[], uint8_t requestedState, uint8_t 
   Calibreates motors.
   Be aware the motors will move during this process!
 */
-void calibrateOdriveMotors(ODriveArduino odrives[]) {
+void calibrateOdriveMotors(ODriveArduino odrives[0]) {
   uint8_t requestedState = ODriveArduino::AXIS_STATE_MOTOR_CALIBRATION;
   setOdrivesInState(odrives, requestedState, true);
   requestedState = ODriveArduino::AXIS_STATE_ENCODER_OFFSET_CALIBRATION;
   setOdrivesInState(odrives, requestedState, true);
-  requestedState = ODriveArduino::AXIS_STATE_CLOSED_LOOP_CONTROL;
+
+}
+
+void armMotors(ODriveArduino odrives[0]) {
+  uint8_t requestedState = ODriveArduino::AXIS_STATE_CLOSED_LOOP_CONTROL;
+  setOdrivesInState(odrives, requestedState, false);
+}
+void disarmMotors(ODriveArduino odrives[0]) {
+  uint8_t requestedState = ODriveArduino::AXIS_STATE_IDLE;
   setOdrivesInState(odrives, requestedState, false);
 }
 

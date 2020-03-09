@@ -11,8 +11,8 @@ class LegMovment
 {
 
 public:
-#define INNER 0
-#define OUTER 1
+#define INNER 1
+#define OUTER 0
 
 	LegMovment(void);
 	double compute(double x, double y, uint8_t motor);
