@@ -36,6 +36,7 @@ class ManualWindow(QtWidgets.QDialog):
     stop_pose = QtCore.pyqtSignal()
     stop_serial = QtCore.pyqtSignal()
     stop_command = QtCore.pyqtSignal()
+    change_camera = QtCore.pyqtSignal(bool)
 
     def __init__(self):
         super(ManualWindow, self).__init__()
@@ -77,6 +78,7 @@ class ManualWindow(QtWidgets.QDialog):
         self.slow_btn.clicked.connect(self.set_slow_btn)
         self.medium_btn.clicked.connect(self.set_medium_btn)
         self.fast_btn.clicked.connect(self.set_fast_btn)
+        self.turn_right.clicked.connect(self.change_camera_output)
         
         #Button shortcuts
         self.exit_btn.setShortcut("Ctrl+Q")
@@ -161,7 +163,7 @@ class ManualWindow(QtWidgets.QDialog):
         self.activate.connect(self.active_all)
         self.init_camera()
         self.init_pose()
-        self.init_serial()
+        #self.init_serial()
         #self.init_command()
         self.show()
     
@@ -170,6 +172,7 @@ class ManualWindow(QtWidgets.QDialog):
         self.camera.change_pixmap.connect(self.set_image)
         self.camera.blink_signal.connect(self.blink_connection)
         self.stop_camera.connect(self.camera.close_socket)
+        self.change_camera.connect(self.change_camera_output)
         self.camera.start()
 
     def init_pose(self):
@@ -187,16 +190,19 @@ class ManualWindow(QtWidgets.QDialog):
         self.stop_command.connect(self.command.close_socket)
         self.command.start()
     
+    def change_camera_output(self):
+        self.camera.change_topic('depth')
+    
     def active_all(self):
         self.camera.activate(self.powerBtn.isChecked())
         self.pose.activate(self.powerBtn.isChecked())
-        self.serial.activate(self.powerBtn.isChecked())
+        #self.serial.activate(self.powerBtn.isChecked())
         #self.command.activate(self.powerBtn.isChecked())
     
     def close_window(self):
         self.stop_camera.emit()
         self.stop_pose.emit()
-        self.stop_serial.emit()
+        #self.stop_serial.emit()
         #self.stop_command.emit()
         self.close()
     
@@ -209,11 +215,12 @@ class CameraThread(QtCore.QThread):
     blink_signal = QtCore.pyqtSignal()
     power_on = QtCore.pyqtSignal()
     change_pixmap = QtCore.pyqtSignal(QtGui.QImage)
+    change_camera = QtCore.pyqtSignal()
     
     context = zmq.Context()
     footage_socket = context.socket(zmq.SUB)
-    footage_socket.bind('tcp://*:5555')
-    footage_socket.setsockopt_string(zmq.SUBSCRIBE, str(''))
+    footage_socket.connect('tcp://10.0.0.121:5555')
+    footage_socket.setsockopt_string(zmq.SUBSCRIBE, 'color')
     footage_socket.setsockopt(zmq.CONFLATE, 1)  # last msg only.
 
     active = False
@@ -224,13 +231,17 @@ class CameraThread(QtCore.QThread):
         self.threadactive = False
         print("Closing --> Camera")
     
+    @QtCore.pyqtSlot(str)
+    def change_topic(self, topic):
+        self.footage_socket.setsockopt_string(zmq.SUBSCRIBE, topic)
+    
     @QtCore.pyqtSlot(bool)
     def activate(self, power_on):
         self.active = power_on
     
     def run(self):
         while self.threadactive:
-            frame = self.footage_socket.recv_string()
+            topic, frame = self.footage_socket.recv_multipart()
             img = base64.b64decode(frame)
             npimg = np.fromstring(img, dtype=np.uint8)
             source = cv2.imdecode(npimg, 1)
@@ -250,8 +261,8 @@ class PoseThread(QtCore.QThread):
     
     context = zmq.Context()
     pose_socket = context.socket(zmq.SUB)
-    pose_socket.bind('tcp://*:5556')
-    pose_socket.setsockopt_string(zmq.SUBSCRIBE, str(''))
+    pose_socket.connect('tcp://10.0.0.121:5555')
+    pose_socket.setsockopt_string(zmq.SUBSCRIBE, 'pose')
     pose_socket.setsockopt(zmq.CONFLATE, 1)  # last msg only.
 
     active = False

@@ -53,7 +53,8 @@ class Subscriber(Process):
     def read(self):
         """docstring"""
 
-        self.msg = self.socket.recv_string()
+        topic, self.msg = self.socket.recv_multipart()
+        print(topic)
     
     def stop(self):
         """docstring"""
@@ -74,10 +75,10 @@ class Worker(Subscriber):
         
         while self.running:
             self.read()
-            print(self.msg)
+            #print(self.msg)
             
         
 # Example of usage
 if __name__ == "__main__":
-    sub = Worker('localhost', 5556, '0')
+    sub = Worker('localhost', 5555, 'depth')
     sub.start()

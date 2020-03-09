@@ -16,8 +16,8 @@ from time import sleep
 
 # Subscirber
 SUB_IP = 'localhost'
-SUB_PORT = 5558
-TOPIC = 'img'
+SUB_PORT = 5555
+TOPIC = 'color'
 
 # Cload computer
 HOST = '83.243.165.82'
