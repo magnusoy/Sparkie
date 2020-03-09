@@ -1,12 +1,12 @@
 #######################################
-# Syntax Coloring Map For LegMovment Library
+# Syntax Coloring Map For LegMovement Library
 #######################################
 
 #######################################
 # Datatypes (KEYWORD1)
 #######################################
 
-LegMovment	KEYWORD1
+LegMovement	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
