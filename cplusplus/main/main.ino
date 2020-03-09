@@ -1,4 +1,4 @@
-/**
+ /**
   The purpose of this project ...
   Libraries used:
   ArduinoOdrive - https://github.com/madcowswe/ODrive/tree/master/Arduino/ODriveArduino
@@ -18,17 +18,14 @@
 
 //TODO make the dependency correct
 #include "src/libraries/SerialHandler/SerialHandler.h"
-#include "src/libraries/LegMovment/LegMovment.h"
+#include "src/libraries/LegMovement/LegMovement.h"
 
 #include "Globals.h"
 #include "Constants.h"
 #include "OdriveParameters.h"
 #include "IO.h"
-
-boolean step_direction = false; // Forward = false, backward = true
-
 SerialHandler serial(BAUDRATE, CAPACITY);
-LegMovment legMovment;
+LegMovement legMovement;
 
 /* Variable for storing time for leg tracjetory */
 unsigned long n = 1;
@@ -65,16 +62,12 @@ void loop() {
 
     case S_WALK:
       for (int Odrive = 0; Odrive < 1; Odrive++) {
-        //double x = legMovment.stepX(n, 30, 1);
-        //double y = legMovment.stepY(n, 30, 200, 1);
-        //              n, step lenght, freq
-        double x = stepX(n, 160, 4);
-        //              n, amp1 amp2, rHeight, freq
-        double y = stepY(n, 70, 30, 170, 4);
+        double x = legMovement.stepX(n, LENGHT, FREQUENCY);
+        double y = legMovement.stepY(n, AMPLITUDEOVER, AMPLITUDEUNDER, HEIGHT, FREQUENCY);
         //x = 0;
         //y = 200;
         for (int motor = 0; motor < 2; motor++) {
-          double angle = legMovment.compute(x, y, motor);
+          double angle = legMovement.compute(x, y, motor);
           //Serial.println(angle);
           double motorCount = map(angle, -180, 180, -3000, 3000);
           setMotorPosition(Odrive, motor, motorCount);
@@ -125,25 +118,6 @@ void loop() {
   }
   readButtons();
   serial.flush();
-}
-
-
-double stepX(unsigned long t, int lenght, int f) {
-  double x = lenght / 2 * sin(2 * 3.14 * f * t);
-  return x;
-}
-double stepY(unsigned long t, int amp1, int amp2, int robotHeight, int f) {
-  double y;
-
-  if (step_direction) {
-    y = -robotHeight + amp1 * cos(2 * 3.14 * f * t);
-  } else {
-    y = -robotHeight + amp2 * cos(2 * 3.14 * f * t);
-  }
-
-  step_direction = (robotHeight + y < 0) ? false : true;
-  Serial.println(step_direction);
-  return y;
 }
 
 /**

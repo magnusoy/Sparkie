@@ -1,9 +1,9 @@
 {
-    "name": "LegMovment",
-    "keywords": "LegMovment",
-    "description": "LegMovment - Controller for systems.",
+    "name": "LegMovement",
+    "keywords": "LegMovement",
+    "description": "LegMovement - Controller for systems.",
     "url": "https://github.com/magnusoy/Sparkie-Quadruped-Robot",
-    "include": "LegMovment",
+    "include": "LegMovement",
     "authors":
     [
       {

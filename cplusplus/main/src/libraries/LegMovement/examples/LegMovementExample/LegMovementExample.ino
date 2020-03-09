@@ -1,6 +1,6 @@
-#include <LegMovment.h>
+#include <LegMovement.h>
 
-LegMovment LM_LegMovment;
+LegMovement LM_LegMovement;
 
 /* Parameters */
 double AMPLITUDE = 20.0f;
@@ -19,11 +19,11 @@ void setup()
 
 void loop()
 {
-  double x = LM_LegMovment.stepX(n, LENGHT, FREQUENCY);
-  double y = LM_LegMovment.stepY(n, AMPLITUDE, HEIGHT, FREQUENCY);
+  double x = LM_LegMovement.stepX(n, LENGHT, FREQUENCY);
+  double y = LM_LegMovement.stepY(n, AMPLITUDE, HEIGHT, FREQUENCY);
   for (int m = 0; m < 2; ++m)
   {
-    double angle = LM_LegMovment.compute(x, y, m);
+    double angle = LM_LegMovement.compute(x, y, m);
     Serial.print("M: ");
     Serial.print(m);
     Serial.print(" | ");

@@ -1,5 +1,5 @@
-#ifndef _LEGMOVMENT_H_
-#define _LEGMOVMENT_H_
+#ifndef _LEGMOVEMENT_H_
+#define _LEGMOVEMENT_H_
 
 #if (ARDUINO >= 100)
 #include "Arduino.h"
@@ -7,18 +7,18 @@
 #include "WProgram.h"
 #endif
 
-class LegMovment 
+class LegMovement 
 {
 
 public:
 #define INNER 1
 #define OUTER 0
 
-	LegMovment(void);
+	LegMovement(void);
 	double compute(double x, double y, uint8_t motor);
 	double stepX(unsigned long n, double lenght, double frequency);
-	double stepY(unsigned long n, double amplitude, double height, double frequency);
+	double stepY(unsigned long n, double amplitudeOver,double amplitudeUnder, double robotHeight, double frequency);
 
 };
 
-#endif // _LEGMOVMENT_H_
+#endif // _LEGMOVEMENT_H_
