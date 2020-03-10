@@ -195,14 +195,12 @@ class ManualWindow(QtWidgets.QDialog):
         self.command.start()
     
     def change_camera_output(self):
-        if self.turn_right.isChecked():
-            if self.current_camera_topic + 1 > len(self.camera_topics):
-                self.current_camera_topic = 0
-                self.camera.change_topic(self.camera_topics[self.current_camera_topic])
-            else:
-                self.current_camera_topic += 1
-                self.camera.change_topic(self.camera_topics[self.current_camera_topic])
-                
+    
+        self.current_camera_topic += 1
+        self.camera.change_topic(self.camera_topics[self.current_camera_topic])
+        if self.current_camera_topic == 2:
+            self.current_camera_topic = -1
+        """
         if self.turn_left.isChecked():
             if self.current_camera_topic - 1 < 0:
                 self.current_camera_topic = len(self.camera_topics)
@@ -210,6 +208,7 @@ class ManualWindow(QtWidgets.QDialog):
             else:
                 self.current_camera_topic -= 1
                 self.camera.change_topic(self.camera_topics[self.current_camera_topic])
+        """
     
     def active_all(self):
         self.camera.activate(self.powerBtn.isChecked())
@@ -234,15 +233,17 @@ class CameraThread(QtCore.QThread):
     power_on = QtCore.pyqtSignal()
     change_pixmap = QtCore.pyqtSignal(QtGui.QImage)
     
-    IP = '10.0.0.121'
+    IP = '10.10.10.161'
     PORT = 5555
     FILTER = 'color'
     
     context = zmq.Context()
     footage_socket = context.socket(zmq.SUB)
-    #footage_socket.connect(f'tcp://{IP}:{PORT}')
+    footage_socket.connect(f'tcp://{IP}:{PORT}')
     footage_socket.setsockopt_string(zmq.SUBSCRIBE, FILTER)
     footage_socket.setsockopt(zmq.CONFLATE, 1)  # last msg only.
+    
+    running = False
 
     active = False
     threadactive = True
@@ -251,18 +252,21 @@ class CameraThread(QtCore.QThread):
     def close_socket(self):
         self.threadactive = False
         self.footage_socket.disconnect(f'tcp://{self.IP}:{self.PORT}')
+        self.running = False
         print("Closing --> Camera")
     
     @QtCore.pyqtSlot(str)
     def change_topic(self, topic):
         self.footage_socket.setsockopt_string(zmq.UNSUBSCRIBE, self.FILTER)
         self.footage_socket.setsockopt_string(zmq.SUBSCRIBE, topic)
+        print("Changeing topic")
         self.FILTER = topic
     
     @QtCore.pyqtSlot(bool)
     def activate(self, power_on):
         self.active = power_on
         self.footage_socket.connect(f'tcp://{self.IP}:{self.PORT}')
+        self.running = True
     
     def run(self):
         while self.threadactive:
@@ -271,7 +275,6 @@ class CameraThread(QtCore.QThread):
             npimg = np.fromstring(img, dtype=np.uint8)
             source = cv2.imdecode(npimg, 1)
             if self.active:
-                
                 h, w, ch = source.shape
                 bytes_per_line = ch * w
                 convert_to_Qt_format = QtGui.QImage(source.data, w, h, bytes_per_line, QtGui.QImage.Format_RGB888)
@@ -286,7 +289,7 @@ class DepthThread(QtCore.QThread):
     power_on = QtCore.pyqtSignal()
     change_pixmap = QtCore.pyqtSignal(QtGui.QImage)
     
-    IP = '10.0.0.121'
+    IP = '10.10.10.161'
     PORT = 5555
     FILTER = 'depth'
     
@@ -331,7 +334,7 @@ class PoseThread(QtCore.QThread):
 
     power_on = QtCore.pyqtSignal()
     
-    IP = '10.0.0.121'
+    IP = '10.10.10.161'
     PORT = 5555
     
     context = zmq.Context()
@@ -365,7 +368,7 @@ class SerialThread(QtCore.QThread):
 
     power_on = QtCore.pyqtSignal()
     
-    IP = '10.0.0.121'
+    IP = '10.10.10.161'
     PORT = 6000
     
     context = zmq.Context()
