@@ -19,6 +19,9 @@ public:
 	double stepX(unsigned long n, double lenght, double frequency);
 	double stepY(unsigned long n, double amplitudeOver,double amplitudeUnder, double robotHeight, double frequency);
 
+private:
+	bool step_direction = false; // Forward = false, backward = true
+
 };
 
 #endif // _LEGMOVEMENT_H_

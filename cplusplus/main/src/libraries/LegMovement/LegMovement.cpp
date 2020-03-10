@@ -7,7 +7,6 @@
 
 */
 LegMovement::LegMovement(void){}
-boolean step_direction = false; // Forward = false, backward = true
 
 /*
 
@@ -36,7 +35,7 @@ double LegMovement::compute(double x, double y, uint8_t motor)
 double LegMovement::stepX(unsigned long n, double lenght, double frequency)
 {
   
-	double x = lenght / 2 * sin(6.2831 * frequency * n);
+	double x = lenght / 2 * sin(6.28 * frequency * n);
 	return x;
 }
 
@@ -48,9 +47,9 @@ double LegMovement::stepY(unsigned long n, double amplitudeOver,double amplitude
 {
 	  double y;
   if (step_direction) {
-    y = -robotHeight + amplitudeOver * cos(2 * 3.141 * frequency * n);
+    y = -robotHeight + amplitudeOver * cos(6.28 * frequency * n);
   } else {
-    y = -robotHeight + amplitudeUnder * cos(2 * 3.141 * frequency * n);
+    y = -robotHeight + amplitudeUnder * cos(6.28 * frequency * n);
   }
   step_direction = (robotHeight + y < 0) ? false : true;
   return y;

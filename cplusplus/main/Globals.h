@@ -75,9 +75,9 @@ uint8_t currentErrors[3] = {NONE};
 uint8_t currentWarnings[3] = {NONE};
 
 /* Parameters for leg movment*/
-double AMPLITUDEOVER = 70.0f;
-double AMPLITUDEUNDER = 30.0f;
-double LENGHT = 160.0f;
-double HEIGHT = 200.0f;
-double FREQUENCY = 4.0f;
+double AMPLITUDEOVER = 70.0;
+double AMPLITUDEUNDER = 30.0;
+double LENGHT = 160.0;
+double HEIGHT = 170.0;
+double FREQUENCY = 4.0;
 #endif // _GLOBALS_H_

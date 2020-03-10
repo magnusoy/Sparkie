@@ -47,6 +47,8 @@ void setMotorPosition(const int odriveNumber, const int motorNumber, double pos)
 }
 
 
+
+
 /** Odrive limitations */
 #define MOTOR_SPEED_LIMIT 40000.0f
 #define MOTOR_CURRENT_LIMIT 40.0f
@@ -107,12 +109,35 @@ void disarmMotors(ODriveArduino odrives[0]) {
   variable.
 */
 void readOdriveMotorPositions(HardwareSerial hwSerials[] , ODriveArduino odrives[]) {
-  for (int i = 0; i < 5; ++i) {
+  for (int i = 0; i < 4; ++i) {
     for (int m = 0; m < 2; ++m) {
       hwSerials[i] << "r axis" << m << ".encoder.pos_estimate\n";
       motorpositions[i][m] = odrives[i].readFloat();
     }
   }
 }
+
+/**
+   Print all errors on the motors
+*/
+void checkForErrors() {
+  for (int i = 0; i < 4; ++i) {
+    for (int axis = 0; axis < 2; ++axis) {
+      odrives[i].checkForErrors(axis);
+    }
+  }
+}
+/**
+   Resets all errors on all motors
+*/
+void resetMotorsErrors() {
+  for (int i = 0; i < 4; ++i) {
+    for (int axis = 0; axis < 2; ++axis) {
+      odrives[i].resetErrors(axis);
+    }
+  }
+}
+
+
 
 #endif // _ODRIVEPARAMETERS_H_

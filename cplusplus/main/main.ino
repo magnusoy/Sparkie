@@ -1,4 +1,4 @@
- /**
+/**
   The purpose of this project ...
   Libraries used:
   ArduinoOdrive - https://github.com/madcowswe/ODrive/tree/master/Arduino/ODriveArduino
@@ -11,12 +11,10 @@
 */
 
 // Including libraries and headers
-#include <ODriveArduino.h>
 #include <ArduinoJson.h>
-//#include <SerialHandler.h>
-//#include <LegMovment.h>
 
 //TODO make the dependency correct
+#include "src/libraries/ODriveArduino/OdriveArduino.h"
 #include "src/libraries/SerialHandler/SerialHandler.h"
 #include "src/libraries/LegMovement/LegMovement.h"
 
@@ -36,6 +34,7 @@ void setup() {
   initializeButtons();
   initializeLights();
   initializeOdrives();
+
 }
 
 void loop() {
@@ -64,6 +63,8 @@ void loop() {
       for (int Odrive = 0; Odrive < 1; Odrive++) {
         double x = legMovement.stepX(n, LENGHT, FREQUENCY);
         double y = legMovement.stepY(n, AMPLITUDEOVER, AMPLITUDEUNDER, HEIGHT, FREQUENCY);
+        //double x = stepX(n, 160, 4);
+        //double y = stepY(n, 70, 30, 170, 4);
         //x = 0;
         //y = 200;
         for (int motor = 0; motor < 2; motor++) {
@@ -101,7 +102,11 @@ void loop() {
 
     case S_RESET:
       turnOffAllLights();
+      checkForErrors();
+      resetMotorsErrors();
+      checkForErrors();
       changeStateTo(S_IDLE);
+
       break;
 
     case S_WARNING:
