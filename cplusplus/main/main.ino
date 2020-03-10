@@ -13,7 +13,6 @@
 // Including libraries and headers
 #include <ArduinoJson.h>
 
-
 //TODO make the dependency correct
 #include "src/libraries/ODriveArduino/OdriveArduino.h"
 #include "src/libraries/SerialHandler/SerialHandler.h"
@@ -27,7 +26,6 @@ SerialHandler serial(BAUDRATE, CAPACITY);
 LegMovement legMovement;
 
 /* Variable for storing time for leg tracjetory */
-bool step_direction1 = false;
 unsigned long n = 1;
 
 void setup() {
@@ -103,11 +101,12 @@ void loop() {
       break;
 
     case S_RESET:
-      //turnOffAllLights();
-      odrives[0].checkForErrors();
-      odrives[0].resetErrors(0);
-      odrives[0].resetErrors(1);
+      turnOffAllLights();
+      checkForErrors();
+      resetMotorsErrors();
+      checkForErrors();
       changeStateTo(S_IDLE);
+
       break;
 
     case S_WARNING:
@@ -125,24 +124,6 @@ void loop() {
   readButtons();
   serial.flush();
 }
-
-double stepX(unsigned long t, int lenght, int f) {
-  double x = lenght / 2 * sin(2 * 3.14 * f * t);
-  return x;
-}
-double stepY(unsigned long t, int amp1, int amp2, int robotHeight, int f) {
-  double y;
-
-  if (step_direction1) {
-    y = -robotHeight + amp1 * cos(2 * 3.14 * f * t);
-  } else {
-    y = -robotHeight + amp2 * cos(2 * 3.14 * f * t);
-  }
-
-  step_direction1 = (robotHeight + y < 0) ? false : true;
-  return y;
-}
-
 
 /**
   Generate a JSON document and sends it

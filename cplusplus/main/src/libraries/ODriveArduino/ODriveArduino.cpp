@@ -92,38 +92,38 @@ String ODriveArduino::readString() {
     return str;
 }
 
-void  ODriveArduino::checkForErrors() {
-  serial_ << "r axis0.error\n";
+void  ODriveArduino::checkForErrors(int motor_number) {
+  serial_ << "r axis"<< motor_number <<".error\n";
   axisError = readInt();
-  serial_ << "r axis0.motor.error\n";
+  serial_ << "r axis"<< motor_number <<".motor.error\n";
   motorError = readInt();
-  serial_ << "r axis0.controller.error\n";
+  serial_ << "r axis"<< motor_number <<".controller.error\n";
   controllerError = readInt();
-  serial_ << "r axis0.encoder.error\n";
+  serial_ << "r axis"<< motor_number <<".encoder.error\n";
   encoderError = readInt();
   
    if(axisError != 0 || motorError != 0 || controllerError != 0 || encoderError != 0) {
     if(axisError != 0) {
       for(int i = 0;i < 12;i++) {
         if(axisError & 1<<i) {
-          Serial << "Axis error: " << axisErrors[i] << '\n';
+          Serial << "Axis"<< motor_number <<" error: " << axisErrors[i] << '\n';
         }
       }
     }
     if(motorError != 0) {
       for(int i = 0;i < 13;i++) {
         if(motorError & 1<<i) {
-          Serial << "Motor error: " << motorErrors[i] << '\n';
+          Serial << "Motor"<< motor_number <<" error: " << motorErrors[i] << '\n';
         }
       }
     }
     if(controllerError != 0) {
-      Serial << "Controller error: " << controllerErrors[0] << '\n';
+      Serial << "Controller"<< motor_number <<" error: " << controllerErrors[0] << '\n';
     }
     if(encoderError != 0) {
       for(int i = 0;i < 6;i++) {
         if(encoderError & 1<<i) {
-          Serial << "Encoder error: " << encoderErrors[i] << '\n';
+          Serial << "Encoder"<< motor_number <<" error: " << encoderErrors[i] << '\n';
         }
       }
     }
@@ -137,3 +137,57 @@ void  ODriveArduino::resetErrors(int motor_number) {
         serial_ << "w axis" << motor_number << ".encoder.error " << 0 << "\n";
         //Serial.println(readString());
 }
+
+void ODriveArduino::readConfig(int motor_number){
+serial_ << "r axis" << motor_number << ".controller.config.pos_gain\n";
+Serial << "Pos gain: " << readString() << '\n';
+
+serial_ << "r axis" << motor_number << ".controller.config.vel_limit\n";
+Serial << "Vel limit: " << readString() << '\n';
+
+serial_ << "r axis" << motor_number << ".controller.config.vel_integrator_gain\n";
+Serial << "Vel integrator gain: " << readString() << '\n';
+
+serial_ << "r axis" << motor_number << ".motor.config.pole_pairs\n";
+Serial << "Pole pairs: " << readString() << '\n';
+
+serial_ << "r axis" << motor_number << ".motor.config.resistance_calib_max_voltage\n";
+Serial << "Calib max voltage: " << readString() << '\n';
+
+serial_ << "r axis" << motor_number << ".encoder.config.cpr\n";
+Serial << "Encoder cpr: " << readString() << '\n';
+
+serial_ << "r axis" << motor_number << ".motor.config.current_lim\n";
+Serial << "Current lim: " << readString() << '\n';
+
+serial_ << "r axis" << motor_number << ".motor.config.calibration_current\n";
+Serial << "Calibration current: " << readString() << '\n';
+
+serial_ << "r axis" << motor_number << ".motor.config.pre_calibrated\n";
+Serial << "Pre calibrated: " << readString() << '\n';
+
+}
+void ODriveArduino::writeConfig(int motor_number){
+serial_ << "w axis" << motor_number << ".controller.config.pos_gain " << 20.0 << "\n";
+serial_ << "w axis" << motor_number << ".controller.config.vel_limit " << 50000.0 << "\n";
+serial_ << "w axis" << motor_number << ".controller.config.vel_integrator_gain " << 0 << "\n";
+serial_ << "w axis" << motor_number << ".motor.config.pole_pairs " << 11 << "\n";
+serial_ << "w axis" << motor_number << ".motor.config.resistance_calib_max_voltage " << 4.0 << "\n";
+serial_ << "w axis" << motor_number << ".encoder.config.cpr " << 2000 << "\n";
+serial_ << "w axis" << motor_number << ".motor.config.current_lim " << 40 << "\n";
+serial_ << "w axis" << motor_number << ".motor.config.calibration_current " << 10 << "\n";
+}
+
+void ODriveArduino::setPreCalibrated(int motor_number, bool var){
+  serial_ << "w axis" << motor_number << ".motor.config.pre_calibrated " << var << "\n";
+}
+
+void  ODriveArduino::saveConfig() {
+serial_ << "ss \n";
+}
+
+void  ODriveArduino::reboot() {
+serial_ << "sr \n";
+}
+
+

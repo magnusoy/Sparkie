@@ -109,7 +109,7 @@ void disarmMotors(ODriveArduino odrives[0]) {
   variable.
 */
 void readOdriveMotorPositions(HardwareSerial hwSerials[] , ODriveArduino odrives[]) {
-  for (int i = 0; i < 5; ++i) {
+  for (int i = 0; i < 4; ++i) {
     for (int m = 0; m < 2; ++m) {
       hwSerials[i] << "r axis" << m << ".encoder.pos_estimate\n";
       motorpositions[i][m] = odrives[i].readFloat();
@@ -117,13 +117,27 @@ void readOdriveMotorPositions(HardwareSerial hwSerials[] , ODriveArduino odrives
   }
 }
 
-void resetMotorsErrors(){
-for (int i = 0; i < 1; ++i) {
-    for (int axis= 0; axis < 1; ++axis) {
-      hwSerials[i] << " w axis" << axis<< ".motor.error " << 0 << "\n";
+/**
+   Print all errors on the motors
+*/
+void checkForErrors() {
+  for (int i = 0; i < 4; ++i) {
+    for (int axis = 0; axis < 2; ++axis) {
+      odrives[i].checkForErrors(axis);
     }
+  }
 }
+/**
+   Resets all errors on all motors
+*/
+void resetMotorsErrors() {
+  for (int i = 0; i < 4; ++i) {
+    for (int axis = 0; axis < 2; ++axis) {
+      odrives[i].resetErrors(axis);
+    }
+  }
 }
+
 
 
 #endif // _ODRIVEPARAMETERS_H_

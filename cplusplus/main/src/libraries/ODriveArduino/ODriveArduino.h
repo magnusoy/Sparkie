@@ -28,9 +28,13 @@ public:
     void SetVelocity(int motor_number, float velocity, float current_feedforward);
     void SetCurrent(int motor_number, float current);
     void TrapezoidalMove(int motor_number, float position);
-    void checkForErrors();
+    void checkForErrors(int motor_number);
     void resetErrors(int motor_number);
-
+    void readConfig(int motor_number);
+    void writeConfig(int motor_number);
+    void setPreCalibrated(int motor_number, bool var);
+    void saveConfig();
+    void reboot();
     // Getters
     float GetVelocity(int motor_number);
     // General params
