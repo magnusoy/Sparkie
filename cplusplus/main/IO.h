@@ -71,7 +71,7 @@ void readButtons() {
     changeStateTo(S_IDLE);
   }
   else if (orange) {
-    changeStateTo(S_WARNING);
+    changeStateTo(S_RESET);
   }
   else if (blue) {
     changeStateTo(S_CALIBRATE);
