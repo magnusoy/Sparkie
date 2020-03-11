@@ -17,6 +17,7 @@ __status__ = "Development"
 
 import os, sys
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+#os.environ["SDL_VIDEODRIVER"] = "dummy"
 import pygame
 from pygame.locals import *
 import threading
@@ -245,11 +246,12 @@ class XboxController(threading.Thread):
 
     def _setupPygame(self, joystickNo):
         # Set SDL to use the dummy NULL video driver, so it doesn't need a windowing system.
-        os.environ["SDL_VIDEODRIVER"] = "dummy"
         pygame.init()
         screen = pygame.display.set_mode((1, 1))
+        
         pygame.joystick.init()
         if pygame.joystick.get_count() != 0:
+            print("Found joystick")
             joy = pygame.joystick.Joystick(joystickNo)
             joy.init()
         else:
@@ -265,6 +267,7 @@ class XboxController(threading.Thread):
         
         while(self.running):
             for event in pygame.event.get():
+                print("Pulling")
                 if event.type == JOYAXISMOTION:
                     if event.axis in self.AXISCONTROLMAP:
                         yAxis = True if (event.axis == self.PyGameAxis.LTHUMBY or event.axis == self.PyGameAxis.RTHUMBY) else False
@@ -289,6 +292,7 @@ class XboxController(threading.Thread):
         if self.controlValues[control] != value:
             self.controlValues[control] = value
             self.doCallBacks(control, value)
+        print(self.controlValues)
     
     def doCallBacks(self, control, value):
         if self.controllerCallBack != None: self.controllerCallBack(control, value)

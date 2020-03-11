@@ -233,7 +233,7 @@ class CameraThread(QtCore.QThread):
     power_on = QtCore.pyqtSignal()
     change_pixmap = QtCore.pyqtSignal(QtGui.QImage)
     
-    IP = '10.10.10.161'
+    IP = '10.10.10.243'
     PORT = 5555
     FILTER = 'color'
     
@@ -289,7 +289,7 @@ class DepthThread(QtCore.QThread):
     power_on = QtCore.pyqtSignal()
     change_pixmap = QtCore.pyqtSignal(QtGui.QImage)
     
-    IP = '10.10.10.161'
+    IP = '10.10.10.243'
     PORT = 5555
     FILTER = 'depth'
     
@@ -334,7 +334,7 @@ class PoseThread(QtCore.QThread):
 
     power_on = QtCore.pyqtSignal()
     
-    IP = '10.10.10.161'
+    IP = '10.10.10.243'
     PORT = 5555
     
     context = zmq.Context()
@@ -368,7 +368,7 @@ class SerialThread(QtCore.QThread):
 
     power_on = QtCore.pyqtSignal()
     
-    IP = '10.10.10.161'
+    IP = '10.10.10.243'
     PORT = 6000
     
     context = zmq.Context()

@@ -157,14 +157,20 @@ def flatten_perspective(image):
     return (cv2.warpPerspective(image, transform_matrix, (w, h)), unwarp_matrix)
 
 """
-image = cv2.imread("img.jpg")
-edges = get_edges(image)
-_, flatten = flatten_perspective(image)
+cap = cv2.VideoCapture(0)
 
-#cv2.imshow("Original", image)
-#cv2.imshow("Edges", edges)
-cv2.imshow("Flatten", _)
-cv2.waitKey(0)
+while True:
+    ret, image = cap.read()
+    edges = get_edges(image)
+    _, flatten = flatten_perspective(image)
+
+    cv2.imshow("Original", image)
+    #cv2.imshow("Edges", edges)
+    cv2.imshow("Flatten", _)
+    key = cv2.waitKey(1)
+    
+    if key == 27:
+        break
 cv2.destroyAllWindows()
 """
 
@@ -213,20 +219,23 @@ cv2.waitKey(0)
 cv2.destroyAllWindows()
 """
 
-import cv2
-import numpy as np
 
-im = cv2.imread("img.jpg")
+cap = cv2.VideoCapture(0)
 
-(h, w) = (im.shape[0], im.shape[1])
-source = np.float32([[w // 2 - 76, h * .625], [w // 2 + 76, h * .625], [-100, h], [w + 100, h]])
-# Define corresponding destination points
-destination = np.float32([[100, 0], [w - 100, 0], [100, h], [w - 100, h]])
+while True:
+    ret, im = cap.read()
+    (h, w) = (im.shape[0], im.shape[1])
+    source = np.float32([[w // 2 - 76, h * .625], [w // 2 + 76, h * .625], [-100, h], [w + 100, h]])
+    # Define corresponding destination points
+    destination = np.float32([[100, 0], [w - 100, 0], [100, h], [w - 100, h]])
 
-matrix = cv2.getPerspectiveTransform(source, destination)
-result = cv2.warpPerspective(im, matrix, (w, h))
+    matrix = cv2.getPerspectiveTransform(source, destination)
+    result = cv2.warpPerspective(im, matrix, (w, h))
 
-cv2.imshow("Image", im)
-cv2.imshow("Perspective transformation", result)
-cv2.waitKey(0)
+    cv2.imshow("Image", im)
+    cv2.imshow("Perspective transformation", result)
+    key = cv2.waitKey(1)
+    
+    if key == 27:
+        break
 cv2.destroyAllWindows()
