@@ -11,11 +11,11 @@ class LegMovement
 {
 
 public:
-#define INNER 1
-#define OUTER 0
+int INNER;
+int OUTER;
 
 	LegMovement(void);
-	double compute(double x, double y, uint8_t motor);
+	double compute(double x, double y, uint8_t motor, int ODrive);
 	double stepX(unsigned long n, double lenght, double frequency);
 	double stepY(unsigned long n, double amplitudeOver,double amplitudeUnder, double robotHeight, double frequency);
 

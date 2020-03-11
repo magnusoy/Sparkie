@@ -17,14 +17,16 @@
 #include "src/libraries/ODriveArduino/OdriveArduino.h"
 #include "src/libraries/SerialHandler/SerialHandler.h"
 #include "src/libraries/LegMovement/LegMovement.h"
+#include "src/libraries/Timer/Timer.h"
 
 #include "Globals.h"
 #include "Constants.h"
 #include "OdriveParameters.h"
 #include "IO.h"
-SerialHandler serial(BAUDRATE, CAPACITY);
+SerialHandler serial(BAUDRATE , CAPACITY);
 LegMovement legMovement;
-
+Timer walkIntervall;
+int intervall = 1;
 /* Variable for storing time for leg tracjetory */
 unsigned long n = 1;
 
@@ -34,7 +36,7 @@ void setup() {
   initializeButtons();
   initializeLights();
   initializeOdrives();
-
+  Serial.println("Setup finished");
 }
 
 void loop() {
@@ -52,7 +54,6 @@ void loop() {
       break;
 
     case S_READY:
-
       break;
 
     case S_PAUSE:
@@ -60,21 +61,22 @@ void loop() {
       break;
 
     case S_WALK:
-      for (int Odrive = 0; Odrive < 1; Odrive++) {
+      if (walkIntervall.hasTimerExpired()) {
         double x = legMovement.stepX(n, LENGHT, FREQUENCY);
         double y = legMovement.stepY(n, AMPLITUDEOVER, AMPLITUDEUNDER, HEIGHT, FREQUENCY);
-        //double x = stepX(n, 160, 4);
-        //double y = stepY(n, 70, 30, 170, 4);
-        //x = 0;
-        //y = 200;
-        for (int motor = 0; motor < 2; motor++) {
-          double angle = legMovement.compute(x, y, motor);
-          //Serial.println(angle);
-          double motorCount = map(angle, -180, 180, -3000, 3000);
-          setMotorPosition(Odrive, motor, motorCount);
+        for (int Odrive = 0; Odrive < 4; Odrive++) {
+          //x = 0;
+          //y = 200;
+          for (int motor = 0; motor < 2; motor++) {
+            double angle = legMovement.compute(x, y, motor, Odrive);
+            //Serial.println(angle);
+            double motorCount = map(angle, -180, 180, -3000, 3000);
+            setMotorPosition(Odrive, motor, motorCount);
+          }
         }
+        n += 5;
+        walkIntervall.startTimer(intervall);
       }
-      n += 5;
       break;
 
     case S_RUN:
@@ -102,9 +104,10 @@ void loop() {
 
     case S_RESET:
       turnOffAllLights();
-      checkForErrors();
-      resetMotorsErrors();
-      checkForErrors();
+      //checkForErrors();
+      //resetMotorsErrors();
+      //checkForErrors();
+      readConfig();
       changeStateTo(S_IDLE);
 
       break;
