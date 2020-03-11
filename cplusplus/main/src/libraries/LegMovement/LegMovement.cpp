@@ -12,8 +12,18 @@ LegMovement::LegMovement(void){}
 
 
 */
-double LegMovement::compute(double x, double y, uint8_t motor)
+double LegMovement::compute(double x, double y, uint8_t motor,int ODrive)
   {
+  if((ODrive == 0) || (ODrive == 2))  {
+    INNER = 0;
+    OUTER = 1;
+  }
+  else
+  {
+    INNER = 1;
+    OUTER = 0;
+  }
+  
   double alpha;
   double r = sqrt((x * x) + (y * y));
   double theta = atan(x / y);

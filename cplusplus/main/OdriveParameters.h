@@ -25,13 +25,13 @@ ODriveArduino odriveFrontRight(FRONT_RIGHT);
 ODriveArduino odriveBackLeft(BACK_LEFT);
 ODriveArduino odriveBackRight(BACK_RIGHT);
 
-ODriveArduino odrives[4] = {odriveFrontLeft, odriveFrontRight, odriveBackLeft, odriveBackRight};
+ODriveArduino odrives[4] = {odriveFrontLeft,odriveFrontRight, odriveBackLeft, odriveBackRight};
 
 /**
   Initialize the four Odrives.
 */
 void initializeOdrives() {
-  for (int i = 0; i < 1; ++i) {
+  for (int i = 0; i < 4; ++i) {
     hwSerials[i].begin(BAUDRATE);
   }
 }
@@ -58,12 +58,6 @@ void setMotorPosition(const int odriveNumber, const int motorNumber, double pos)
 #define MOTOR_SPEED_LOWER 0
 #define MOTOR_SPEED_UPPER 2000
 
-/** Motor structure */
-//enum motors {
-//  INNER,
-//  OUTER,
-//};
-
 /** Storing the positions of the motors */
 int motorpositions[4][2] = {{0, 0},
   {0, 0},
@@ -74,10 +68,10 @@ int motorpositions[4][2] = {{0, 0},
 /**
   Sets the motors in desired state
 */
-void setOdrivesInState(ODriveArduino odrives[], uint8_t requestedState, uint8_t wait) {
-  for (int i = 0; i < 1; ++i) {
+void setOdrivesInState(ODriveArduino odrive[], uint8_t requestedState, uint8_t wait) {
+  for (int i = 0; i < 4; ++i) {
     for (int m = 0; m < 2; ++m) {
-      odrives[i].run_state(m, requestedState, wait);
+      odrive[i].run_state(m, requestedState, wait);
     }
   }
 }
@@ -86,7 +80,7 @@ void setOdrivesInState(ODriveArduino odrives[], uint8_t requestedState, uint8_t 
   Calibreates motors.
   Be aware the motors will move during this process!
 */
-void calibrateOdriveMotors(ODriveArduino odrives[0]) {
+void calibrateOdriveMotors(ODriveArduino odrives[]) {
   uint8_t requestedState = ODriveArduino::AXIS_STATE_MOTOR_CALIBRATION;
   setOdrivesInState(odrives, requestedState, true);
   requestedState = ODriveArduino::AXIS_STATE_ENCODER_OFFSET_CALIBRATION;
@@ -94,11 +88,11 @@ void calibrateOdriveMotors(ODriveArduino odrives[0]) {
 
 }
 
-void armMotors(ODriveArduino odrives[0]) {
+void armMotors(ODriveArduino odrives[]) {
   uint8_t requestedState = ODriveArduino::AXIS_STATE_CLOSED_LOOP_CONTROL;
   setOdrivesInState(odrives, requestedState, false);
 }
-void disarmMotors(ODriveArduino odrives[0]) {
+void disarmMotors(ODriveArduino odrives[]) {
   uint8_t requestedState = ODriveArduino::AXIS_STATE_IDLE;
   setOdrivesInState(odrives, requestedState, false);
 }
@@ -137,6 +131,19 @@ void resetMotorsErrors() {
     }
   }
 }
+
+/**
+ * Read all configs
+ */
+ void readConfig(){
+  Serial << "Reading ODrive configuration... \n";
+    for (int i = 0; i < 4; ++i) {
+     Serial << "Odrive number: " << i << "\n";
+    for (int axis = 0; axis < 2; ++axis) {
+      odrives[i].readConfig(axis);
+    }
+  }
+ }
 
 
 

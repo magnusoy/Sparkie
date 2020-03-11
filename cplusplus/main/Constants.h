@@ -14,13 +14,13 @@ const uint8_t RED_LED = 10;
 const uint8_t ORANGE_LED = 9;
 
 /** Hardware serials for Odrive */
-#define FRONT_LEFT  Serial1  // RX, TX (0, 1)
+#define BACK_RIGHT  Serial1  // RX, TX (0, 1)
 #define FRONT_RIGHT  Serial2 // RX, TX (7, 8)
 #define BACK_LEFT  Serial3   // RX, TX (15, 14)
-#define BACK_RIGHT  Serial4  // RX, TX (16, 17)
+#define FRONT_LEFT  Serial4  // RX, TX (16, 17)
 
 /** JSON Serial */
-#define BAUDRATE 115200 // Bits per second
+#define BAUDRATE 921600 // Bits per second
 #define CAPACITY 255 // Bits payload
 
 #endif // _CONSTANTS_H_
