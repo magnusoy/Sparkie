@@ -27,6 +27,8 @@ from PyQt5 import QtWidgets, uic, QtCore, QtGui
 from config import *
 from .util.subscriber import Subscriber
 from .util.client import Client
+from .util.xbox_controller import XboxController
+
 
 class ManualWindow(QtWidgets.QDialog):
     """doc"""
@@ -43,7 +45,7 @@ class ManualWindow(QtWidgets.QDialog):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.ui = '../forms/manual.ui'
         uic.loadUi(self.ui, self)
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        #self.setWindowFlags(QtCore.Qt.FramelessWindowHint)  # Does not work good with Ubuntu
         
         self.mode = JOYSTICK_ONLY_MODE
         
@@ -96,7 +98,6 @@ class ManualWindow(QtWidgets.QDialog):
         self.powerBtn.setStyleSheet("QPushButton#powerBtn:checked {color:black; background-color: red;}")
         self.signal_btn.setStyleSheet("QPushButton#signalBtn:checked {color:black; background-color: green;}")
 
-        
         self.initUI()
     
     def change_mode(self):
@@ -194,21 +195,16 @@ class ManualWindow(QtWidgets.QDialog):
         self.stop_command.connect(self.command.close_socket)
         self.command.start()
     
+    def init_xbox_controller(self):
+        self.xbox_controller = XboxControllerThread()
+        self.xbox_controller.start()
+    
     def change_camera_output(self):
     
         self.current_camera_topic += 1
         self.camera.change_topic(self.camera_topics[self.current_camera_topic])
         if self.current_camera_topic == 2:
             self.current_camera_topic = -1
-        """
-        if self.turn_left.isChecked():
-            if self.current_camera_topic - 1 < 0:
-                self.current_camera_topic = len(self.camera_topics)
-                self.camera.change_topic(self.camera_topics[self.current_camera_topic])
-            else:
-                self.current_camera_topic -= 1
-                self.camera.change_topic(self.camera_topics[self.current_camera_topic])
-        """
     
     def active_all(self):
         self.camera.activate(self.powerBtn.isChecked())
@@ -282,54 +278,7 @@ class CameraThread(QtCore.QThread):
                 self.change_pixmap.emit(p)
                 self.blink_signal.emit()
 
-
-class DepthThread(QtCore.QThread):
-
-    blink_signal = QtCore.pyqtSignal()
-    power_on = QtCore.pyqtSignal()
-    change_pixmap = QtCore.pyqtSignal(QtGui.QImage)
-    
-    IP = '10.10.10.243'
-    PORT = 5555
-    FILTER = 'depth'
-    
-    context = zmq.Context()
-    footage_socket = context.socket(zmq.SUB)
-    #footage_socket.connect(f'tcp://{IP}:{PORT}')
-    footage_socket.setsockopt_string(zmq.SUBSCRIBE, FILTER)
-    footage_socket.setsockopt(zmq.CONFLATE, 1)  # last msg only.
-
-    active = False
-    threadactive = True
-
-    @QtCore.pyqtSlot()
-    def close_socket(self):
-        self.threadactive = False
-        self.footage_socket.disconnect(f'tcp://{self.IP}:{self.PORT}')
-        print("Closing --> Depth")
-    
-    @QtCore.pyqtSlot(bool)
-    def activate(self, power_on):
-        self.active = power_on
-        self.footage_socket.connect(f'tcp://{self.IP}:{self.PORT}')
-    
-    def run(self):
-        while self.threadactive:
-            topic, frame = self.footage_socket.recv_multipart()
-            img = base64.b64decode(frame)
-            npimg = np.fromstring(img, dtype=np.uint8)
-            source = cv2.imdecode(npimg, 1)
-            if self.active:
-                
-                h, w, ch = source.shape
-                bytes_per_line = ch * w
-                convert_to_Qt_format = QtGui.QImage(source.data, w, h, bytes_per_line, QtGui.QImage.Format_RGB888)
-                p = convert_to_Qt_format.scaled(1920, 1010)
-                self.change_pixmap.emit(p)
-                self.blink_signal.emit()
-    
-
-
+ 
 class PoseThread(QtCore.QThread):
 
     power_on = QtCore.pyqtSignal()
@@ -432,3 +381,49 @@ class CommandThread(QtCore.QThread):
                     self.command_socket.send(self.command.encode())
                     print(self.command)
                     self.old_command = self.command
+
+
+class XboxControllerThread(QtCore.QThread):
+
+    power_on = QtCore.pyqtSignal()
+
+    PORT = 5590
+    
+    context = zmq.Context()
+    xbox_socket = context.socket(zmq.PUB)
+    xbox_socket.bind(f'tcp://*:{PORT}')
+
+    xbox_controller = XboxController(controlCallBack, deadzone = 30, scale = 100, invertYAxis = True)
+    xbox_controller .setupControlCallback(xbox_controller.XboxControls.LTHUMBX, leftThumbX)
+    xbox_controller .setupControlCallback(xbox_controller.XboxControls.LTHUMBY, leftThumbY)
+
+    threadactive = True
+
+    @QtCore.pyqtSlot()
+    def close_socket(self):
+        self.threadactive = False
+        print("Closing --> Xbox controller")
+    
+    @QtCore.pyqtSlot(bool)
+    def activate(self, power_on):
+        self.xbox_controller.running = power_on
+        
+    @QtCore.pyqtSlot(str)
+    def set_command(self, command):
+        self.command = command
+    
+    def run(self):
+        while self.threadactive:
+            while(self.running):
+                self.xbox_controller.check_events()
+                xbox_socket.send_multipart([b'xbox_controller', base64.b64encode(self.xbox_controller.controlValues())])
+
+
+def controlCallBack(xboxControlId, value):
+    print("Control Id = {}, Value = {}".format(xboxControlId, value))
+
+def leftThumbX(xValue):
+    print("LX {}".format(xValue))
+    
+def leftThumbY(yValue):
+    print("LY {}".format(yValue))

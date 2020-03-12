@@ -26,7 +26,7 @@ import zmq
 
 IP = '*'
 PORT = 5555
-INTERVAL = 0.05
+INTERVAL = 0.07
 
 def convert_array_2_byte(arr):
     return cv2.imencode('.jpg', arr)
@@ -112,7 +112,7 @@ while True:
             encoded, buffer = convert_array_2_byte(img)
             footage_socket.send_multipart([b'color', base64.b64encode(buffer)])
     
-        #time.sleep(INTERVAL)
+        time.sleep(INTERVAL)
 
     except KeyboardInterrupt:
         for pipe in pipelines: pipe.stop()

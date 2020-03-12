@@ -17,7 +17,7 @@ __status__ = "Development"
 
 import os, sys
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
-#os.environ["SDL_VIDEODRIVER"] = "dummy"
+os.environ["SDL_VIDEODRIVER"] = "dummy"
 import pygame
 from pygame.locals import *
 import threading
@@ -245,29 +245,33 @@ class XboxController(threading.Thread):
 
 
     def _setupPygame(self, joystickNo):
-        # Set SDL to use the dummy NULL video driver, so it doesn't need a windowing system.
         pygame.init()
         screen = pygame.display.set_mode((1, 1))
-        
+        found = False
         pygame.joystick.init()
-        if pygame.joystick.get_count() != 0:
-            print("Found joystick")
-            joy = pygame.joystick.Joystick(joystickNo)
-            joy.init()
-        else:
-            print("No joysticks found.\nPlease check your connection.")
-            sys.exit(-1)
+            
+        while not found:
+            joy = pygame.joystick.Joystick(joystickNo)       
+            if joy.get_name() == "ST LIS3LV02DL Accelerometer":
+                print("No joystick found.\nPlease check your connection.")
+                joy.quit()
+                del(joy)
+            else:
+                print("Found joystick")
+                found = True
+            
+            time.sleep(2)
+        
+        joy.init()
 
     def run(self):
-        self._start()
-
-    def _start(self):
-        
         self.running = True
         
         while(self.running):
-            for event in pygame.event.get():
-                print("Pulling")
+            self.check_events()
+    
+    def check_events(self):
+        for event in pygame.event.get():
                 if event.type == JOYAXISMOTION:
                     if event.axis in self.AXISCONTROLMAP:
                         yAxis = True if (event.axis == self.PyGameAxis.LTHUMBY or event.axis == self.PyGameAxis.RTHUMBY) else False
@@ -284,7 +288,7 @@ class XboxController(threading.Thread):
                     if event.button in self.BUTTONCONTROLMAP:
                         self.updateControlValue(self.BUTTONCONTROLMAP[event.button],
                                                 self._sortOutButtonValue(event.type))
-        
+
     def stop(self):
         self.running = False
 
@@ -292,7 +296,6 @@ class XboxController(threading.Thread):
         if self.controlValues[control] != value:
             self.controlValues[control] = value
             self.doCallBacks(control, value)
-        print(self.controlValues)
     
     def doCallBacks(self, control, value):
         if self.controllerCallBack != None: self.controllerCallBack(control, value)
