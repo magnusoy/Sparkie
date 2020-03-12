@@ -25,7 +25,7 @@ ODriveArduino odriveFrontRight(FRONT_RIGHT);
 ODriveArduino odriveBackLeft(BACK_LEFT);
 ODriveArduino odriveBackRight(BACK_RIGHT);
 
-ODriveArduino odrives[4] = {odriveFrontLeft,odriveFrontRight, odriveBackLeft, odriveBackRight};
+ODriveArduino odrives[4] = {odriveFrontLeft, odriveFrontRight, odriveBackLeft, odriveBackRight};
 
 /**
   Initialize the four Odrives.
@@ -72,6 +72,7 @@ void setOdrivesInState(ODriveArduino odrive[], uint8_t requestedState, uint8_t w
   for (int i = 0; i < 4; ++i) {
     for (int m = 0; m < 2; ++m) {
       odrive[i].run_state(m, requestedState, wait);
+      delay(10);
     }
   }
 }
@@ -133,18 +134,42 @@ void resetMotorsErrors() {
 }
 
 /**
- * Read all configs
- */
- void readConfig(){
+   Read all configs
+*/
+void readConfig() {
   Serial << "Reading ODrive configuration... \n";
-    for (int i = 0; i < 4; ++i) {
-     Serial << "Odrive number: " << i << "\n";
+  for (int i = 0; i < 4; ++i) {
+    Serial << "Odrive number: " << i << "\n";
     for (int axis = 0; axis < 2; ++axis) {
       odrives[i].readConfig(axis);
     }
   }
- }
+}
 
+void setPreCalibrated(bool var) {
+  Serial << "Pre Calibrate... \n";
+  for (int i = 0; i < 4; ++i) {
+    if (2 != i) {
+      Serial << "Odrive number: " << i << "\n";
+      for (int axis = 0; axis < 2; ++axis) {
+        odrives[i].setPreCalibrated(axis, var);
+      }
+    }
+  }
+}
+void saveConfigOdrives() {
+  for (int i = 0; i < 4; ++i) {
+    odrives[i].saveConfig();
+    delay(200);
+  }
+}
+
+void rebootOdrives() {
+  for (int i = 0; i < 4; ++i) {
+    odrives[i].reboot();
+    delay(200);
+  }
+}
 
 
 #endif // _ODRIVEPARAMETERS_H_

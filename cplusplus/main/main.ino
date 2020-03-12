@@ -26,7 +26,7 @@
 SerialHandler serial(BAUDRATE , CAPACITY);
 LegMovement legMovement;
 Timer walkIntervall;
-int intervall = 1;
+int intervall = 1.0;
 /* Variable for storing time for leg tracjetory */
 unsigned long n = 1;
 
@@ -64,17 +64,32 @@ void loop() {
       if (walkIntervall.hasTimerExpired()) {
         double x = legMovement.stepX(n, LENGHT, FREQUENCY);
         double y = legMovement.stepY(n, AMPLITUDEOVER, AMPLITUDEUNDER, HEIGHT, FREQUENCY);
-        for (int Odrive = 0; Odrive < 4; Odrive++) {
-          //x = 0;
-          //y = 200;
-          for (int motor = 0; motor < 2; motor++) {
-            double angle = legMovement.compute(x, y, motor, Odrive);
-            //Serial.println(angle);
-            double motorCount = map(angle, -180, 180, -3000, 3000);
-            setMotorPosition(Odrive, motor, motorCount);
-          }
+        //double x = 0;
+        //double y = 200;
+        //for (int Odrive = 0; Odrive < 4; Odrive + 2) {
+        int Odrive = 0;
+        for (int motor = 0; motor < 2; motor++) {
+          double angle = legMovement.compute(x, y, motor, Odrive);
+          double motorCount = map(angle, -180, 180, -3000, 3000);
+          setMotorPosition(Odrive, motor, motorCount);
         }
-        n += 5;
+        //}
+        //for (int Odrive = 1; Odrive < 4; Odrive + 2) {
+        Odrive = 2;
+        for (int motor = 0; motor < 2; motor++) {
+          double angle = legMovement.compute(x, y, motor, Odrive);
+          double motorCount = map(angle, -180, 180, -3000, 3000);
+          setMotorPosition(Odrive, motor, motorCount);
+        }
+
+        Odrive = 3;
+        for (int motor = 0; motor < 2; motor++) {
+          double angle = legMovement.compute(-x, y, motor, Odrive);
+          double motorCount = map(angle, -180, 180, -3000, 3000);
+          setMotorPosition(Odrive, motor, motorCount);
+        }
+        //}
+        n += 2;
         walkIntervall.startTimer(intervall);
       }
       break;
@@ -103,11 +118,16 @@ void loop() {
       break;
 
     case S_RESET:
-      turnOffAllLights();
-      //checkForErrors();
+      //turnOffAllLights();
+      checkForErrors();
       //resetMotorsErrors();
       //checkForErrors();
-      readConfig();
+      //readConfig();
+      //setPreCalibrated(true);
+      //saveConfigOdrives();
+      //delay(500);
+      //rebootOdrives();
+      //readConfig();
       changeStateTo(S_IDLE);
 
       break;

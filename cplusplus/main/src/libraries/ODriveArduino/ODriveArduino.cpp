@@ -131,10 +131,15 @@ void  ODriveArduino::checkForErrors(int motor_number) {
 }
 
 void  ODriveArduino::resetErrors(int motor_number) {
+        delay(10);
         serial_ << "w axis" << motor_number << ".error " << 0 << "\n";
+        delay(20);
         serial_ << "w axis" << motor_number <<".motor.error " << 0 << "\n";
+        delay(20);
         serial_ << "w axis" << motor_number << ".controller.error " << 0 << "\n";
+        delay(20);
         serial_ << "w axis" << motor_number << ".encoder.error " << 0 << "\n";
+        delay(20);
         //Serial.println(readString());
 }
 
@@ -165,6 +170,7 @@ Serial << "Calibration current: " << readString() << '\n';
 
 serial_ << "r axis" << motor_number << ".motor.config.pre_calibrated\n";
 Serial << "Pre calibrated: " << readString() << '\n';
+Serial <<'\n';
 
 }
 void ODriveArduino::writeConfig(int motor_number){
@@ -180,6 +186,7 @@ serial_ << "w axis" << motor_number << ".motor.config.calibration_current " << 1
 
 void ODriveArduino::setPreCalibrated(int motor_number, bool var){
   serial_ << "w axis" << motor_number << ".motor.config.pre_calibrated " << var << "\n";
+  delay(50);
 }
 
 void  ODriveArduino::saveConfig() {
