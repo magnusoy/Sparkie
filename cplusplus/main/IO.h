@@ -78,7 +78,7 @@ void readButtons() {
   }
   else if (green) {
     armMotors(odrives);
-    changeStateTo(S_WALK);
+    changeStateTo(S_JUMP);
     digitalWrite(GREEN_LED, HIGH);
   }
 }

@@ -18,11 +18,13 @@ void loop()
   if (t1.hasTimerExpired())
   {
     digitalWrite(LED, HIGH);
-    t2.startTimer(DURATION);
+    t2.startTimer(1000);
+    Serial.println("HIGH");
   } else if (t2.hasTimerExpired())
   {
     digitalWrite(LED, LOW);
-    t1.startTimer(DURATION);
+    Serial.println("LOW");
+    t1.startTimer(2000);
   }
-  Serial.println("Blinking without freezing loop");
+  //Serial.println("Blinking without freezing loop");
 }

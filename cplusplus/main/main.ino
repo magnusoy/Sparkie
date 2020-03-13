@@ -25,8 +25,12 @@
 #include "IO.h"
 SerialHandler serial(BAUDRATE , CAPACITY);
 LegMovement legMovement;
+
 Timer walkIntervall;
-int intervall = 1.0;
+int intervall = 2000; //0.1
+
+Timer jump1;
+Timer jump2;
 /* Variable for storing time for leg tracjetory */
 unsigned long n = 1;
 
@@ -70,7 +74,13 @@ void loop() {
         int Odrive = 0;
         for (int motor = 0; motor < 2; motor++) {
           double angle = legMovement.compute(x, y, motor, Odrive);
-          double motorCount = map(angle, -180, 180, -3000, 3000);
+          double motorCount = map(angle, -360, 360, -6000, 6000);
+          setMotorPosition(Odrive, motor, motorCount);
+        }
+        Odrive = 1;
+        for (int motor = 0; motor < 2; motor++) {
+          double angle = legMovement.compute(-x, y, motor, Odrive);
+          double motorCount = map(angle, -360, 360, -6000, 6000);
           setMotorPosition(Odrive, motor, motorCount);
         }
         //}
@@ -78,14 +88,14 @@ void loop() {
         Odrive = 2;
         for (int motor = 0; motor < 2; motor++) {
           double angle = legMovement.compute(x, y, motor, Odrive);
-          double motorCount = map(angle, -180, 180, -3000, 3000);
+          double motorCount = map(angle, -360, 360, -6000, 6000);
           setMotorPosition(Odrive, motor, motorCount);
         }
 
         Odrive = 3;
         for (int motor = 0; motor < 2; motor++) {
           double angle = legMovement.compute(-x, y, motor, Odrive);
-          double motorCount = map(angle, -180, 180, -3000, 3000);
+          double motorCount = map(angle, -360, 360, -6000, 6000);
           setMotorPosition(Odrive, motor, motorCount);
         }
         //}
@@ -99,7 +109,26 @@ void loop() {
       break;
 
     case S_JUMP:
-
+      double x = 0;
+      double y;
+      y = -80;
+      for (int Odrive = 0; Odrive < 4; Odrive ++) {
+        for (int motor = 0; motor < 2; motor++) {
+          double angle = legMovement.compute(x, y, motor, Odrive);
+          double motorCount = map(angle, -360, 360, -6000, 6000);
+          setMotorPosition(Odrive, motor, motorCount);
+        }
+      }
+      delay(500);
+      y = -200;
+      for (int Odrive = 0; Odrive < 4; Odrive ++) {
+        for (int motor = 0; motor < 2; motor++) {
+          double angle = legMovement.compute(x, y, motor, Odrive);
+          double motorCount = map(angle, -360, 360, -6000, 6000);
+          setMotorPosition(Odrive, motor, motorCount);
+        }
+      }
+      delay(1500);
       break;
 
     case S_AUTONOMOUS:
@@ -120,7 +149,8 @@ void loop() {
     case S_RESET:
       //turnOffAllLights();
       checkForErrors();
-      //resetMotorsErrors();
+      delay(200);
+      resetMotorsErrors();
       //checkForErrors();
       //readConfig();
       //setPreCalibrated(true);
