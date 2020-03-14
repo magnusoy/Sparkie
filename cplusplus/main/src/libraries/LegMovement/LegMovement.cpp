@@ -82,10 +82,10 @@ else if (y>=0)
 
 
 */
-double LegMovement::stepX(unsigned long n, double lenght, double frequency)
+double LegMovement::stepX(unsigned long n, double lenght, double frequency,double phaseShift)
 {
   
-	double x = lenght / 2 * sin(6.28 * frequency * n);
+	double x = lenght / 2 * sin(frequency * n + phaseShift);
 	return x;
 }
 
@@ -93,14 +93,14 @@ double LegMovement::stepX(unsigned long n, double lenght, double frequency)
 
 
 */
-double LegMovement::stepY(unsigned long n, double amplitudeOver,double amplitudeUnder, double robotHeight, double frequency)
+double LegMovement::stepY(unsigned long n, double amplitudeOver,double amplitudeUnder, double robotHeight, double frequency,double phaseShift)
 {
 	  double y;
-  if (step_direction) {
-    y = -robotHeight + amplitudeOver * cos(6.28 * frequency * n);
+    double wave = cos(frequency * n + phaseShift);
+  if (wave > 0) {
+    y = -robotHeight + amplitudeOver * wave;
   } else {
-    y = -robotHeight + amplitudeUnder * cos(6.28 * frequency * n);
+    y = -robotHeight + amplitudeUnder * wave;
   }
-  step_direction = (robotHeight + y < 0) ? false : true;
   return y;
 }

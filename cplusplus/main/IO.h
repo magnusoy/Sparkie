@@ -57,6 +57,7 @@ void blinkLight(int pin) {
 */
 void changeStateTo(int newState) {
   turnOffAllLights();
+  idlePosition = false;
   currentState = newState;
 }
 
@@ -78,7 +79,7 @@ void readButtons() {
   }
   else if (green) {
     armMotors(odrives);
-    changeStateTo(S_JUMP);
+    changeStateTo(S_WALK);
     digitalWrite(GREEN_LED, HIGH);
   }
 }

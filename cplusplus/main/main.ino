@@ -27,12 +27,10 @@ SerialHandler serial(BAUDRATE , CAPACITY);
 LegMovement legMovement;
 
 Timer walkIntervall;
-int intervall = 2000; //0.1
+int intervall = 1; //0.1
 
-Timer jump1;
-Timer jump2;
 /* Variable for storing time for leg tracjetory */
-unsigned long n = 1;
+unsigned long n = 0;
 
 void setup() {
   Serial.println("Setup started");
@@ -50,10 +48,29 @@ void loop() {
   switch (currentState) {
     case S_IDLE:
       blinkLight(GREEN_LED);
+      n += 1;
+      Serial.println(n);
+      if (!idlePosition && calibrated) {
+        armMotors(odrives);
+        delay(100);
+        double x = 0;
+        double y = -160;
+        for (int Odrive = 0; Odrive < 4; Odrive ++) {
+          for (int motor = 0; motor < 2; motor++) {
+            double angle = legMovement.compute(x, y, motor, Odrive);
+            double motorCount = map(angle, -360, 360, -6000, 6000);
+            setMotorPosition(Odrive, motor, motorCount);
+          }
+        }
+        delay(100);
+        disarmMotors(odrives);
+        idlePosition = true;
+      }
       break;
 
     case S_CALIBRATE:
       calibrateOdriveMotors(odrives);
+      calibrated = true;
       changeStateTo(S_IDLE);
       break;
 
@@ -66,40 +83,40 @@ void loop() {
 
     case S_WALK:
       if (walkIntervall.hasTimerExpired()) {
-        double x = legMovement.stepX(n, LENGHT, FREQUENCY);
-        double y = legMovement.stepY(n, AMPLITUDEOVER, AMPLITUDEUNDER, HEIGHT, FREQUENCY);
-        //double x = 0;
-        //double y = 200;
-        //for (int Odrive = 0; Odrive < 4; Odrive + 2) {
         int Odrive = 0;
+        double x = legMovement.stepX(n, LENGHT, FREQUENCY, PHASESHIFT0X);
+        double y = legMovement.stepY(n, AMPLITUDEOVER, AMPLITUDEUNDER, HEIGHT, FREQUENCY, PHASESHIFT0Y);
         for (int motor = 0; motor < 2; motor++) {
           double angle = legMovement.compute(x, y, motor, Odrive);
           double motorCount = map(angle, -360, 360, -6000, 6000);
           setMotorPosition(Odrive, motor, motorCount);
         }
         Odrive = 1;
-        for (int motor = 0; motor < 2; motor++) {
-          double angle = legMovement.compute(-x, y, motor, Odrive);
-          double motorCount = map(angle, -360, 360, -6000, 6000);
-          setMotorPosition(Odrive, motor, motorCount);
-        }
-        //}
-        //for (int Odrive = 1; Odrive < 4; Odrive + 2) {
-        Odrive = 2;
+        x = legMovement.stepX(n, LENGHT, FREQUENCY, PHASESHIFT1X);
+        y = legMovement.stepY(n, AMPLITUDEOVER, AMPLITUDEUNDER, HEIGHT, FREQUENCY, PHASESHIFT1Y);
         for (int motor = 0; motor < 2; motor++) {
           double angle = legMovement.compute(x, y, motor, Odrive);
           double motorCount = map(angle, -360, 360, -6000, 6000);
           setMotorPosition(Odrive, motor, motorCount);
         }
-
-        Odrive = 3;
+        Odrive = 2;
+        x = legMovement.stepX(n, LENGHT, FREQUENCY, PHASESHIFT2X);
+        y = legMovement.stepY(n, AMPLITUDEOVER, AMPLITUDEUNDER, HEIGHT, FREQUENCY, PHASESHIFT2Y);
         for (int motor = 0; motor < 2; motor++) {
-          double angle = legMovement.compute(-x, y, motor, Odrive);
+          double angle = legMovement.compute(x, y, motor, Odrive);
+          double motorCount = map(angle, -360, 360, -6000, 6000);
+          setMotorPosition(Odrive, motor, motorCount);
+        }
+        Odrive = 3;
+        x = legMovement.stepX(n, LENGHT, FREQUENCY, PHASESHIFT3X);
+        y = legMovement.stepY(n, AMPLITUDEOVER, AMPLITUDEUNDER, HEIGHT, FREQUENCY, PHASESHIFT3Y);
+        for (int motor = 0; motor < 2; motor++) {
+          double angle = legMovement.compute(x, y, motor, Odrive);
           double motorCount = map(angle, -360, 360, -6000, 6000);
           setMotorPosition(Odrive, motor, motorCount);
         }
         //}
-        n += 2;
+        n += 1;
         walkIntervall.startTimer(intervall);
       }
       break;

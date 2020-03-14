@@ -170,6 +170,4 @@ void rebootOdrives() {
     delay(200);
   }
 }
-
-
 #endif // _ODRIVEPARAMETERS_H_

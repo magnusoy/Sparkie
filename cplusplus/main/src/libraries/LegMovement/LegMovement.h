@@ -16,12 +16,10 @@ int OUTER;
 
 	LegMovement(void);
 	double compute(double x, double y, uint8_t motor, int ODrive);
-	double stepX(unsigned long n, double lenght, double frequency);
-	double stepY(unsigned long n, double amplitudeOver,double amplitudeUnder, double robotHeight, double frequency);
+	double stepX(unsigned long n, double lenght, double frequency, double phaseShift);
+	double stepY(unsigned long n, double amplitudeOver,double amplitudeUnder, double robotHeight, double frequency, double phaseShift);
 
 private:
-	bool step_direction = false; // Forward = false, backward = true
-
 };
 
 #endif // _LEGMOVEMENT_H_
