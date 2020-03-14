@@ -19,6 +19,7 @@ __status__ = "Development"
 import zmq
 from multiprocessing import Process
 import numpy as np
+import base64
 
 
 class Subscriber(Process):
@@ -56,6 +57,10 @@ class Subscriber(Process):
 
         self.msg = self.socket.recv_string()
     
+    def read_multipart(self):
+        topic, data = self.socket.recv_multipart()
+        self.msg  = base64.b64decode(data)
+    
     def stop(self):
         """docstring"""
 
@@ -80,8 +85,9 @@ class Worker(Subscriber):
             
 # Example of usage
 if __name__ == "__main__":
-    sub = Worker('localhost', 5556, 'pose')
+    sub = Worker('localhost', 5590, 'xbox_controller')
     sub.initialize()
     while True:
-        sub.read()
+        sub.read_multipart()
+        print(sub.msg)
     

@@ -22,6 +22,7 @@ from threading import Thread
 from multiprocessing import Process
 from .publisher import Publisher
 import zmq
+import base64
 
 
 
@@ -241,11 +242,10 @@ class SerialProcess(Process):
         sub.connect(address)
         
         while True:
-            msg = sub.recv_string()
-            #TODO: Preprocessing
+            topic, data = self.footage_socket.recv_multipart()
+            msg = base64.b64decode(data)
             #self.sendOutputStream(msg)
             print(msg)
-            #time.sleep(10)
                    
     def publisher(self, ip, port, topic):
         """doc"""

@@ -38,6 +38,7 @@ class ManualWindow(QtWidgets.QDialog):
     stop_pose = QtCore.pyqtSignal()
     stop_serial = QtCore.pyqtSignal()
     stop_command = QtCore.pyqtSignal()
+    stop_xbox_controller = QtCore.pyqtSignal()
     change_camera = QtCore.pyqtSignal(bool)
 
     def __init__(self):
@@ -169,6 +170,7 @@ class ManualWindow(QtWidgets.QDialog):
         self.init_camera()
         self.init_pose()
         self.init_serial()
+        self.init_xbox_controller()
         #self.init_command()
         self.show()
     
@@ -197,10 +199,10 @@ class ManualWindow(QtWidgets.QDialog):
     
     def init_xbox_controller(self):
         self.xbox_controller = XboxControllerThread()
+        self.stop_xbox_controller.connect(self.xbox_controller.close_socket)
         self.xbox_controller.start()
     
     def change_camera_output(self):
-    
         self.current_camera_topic += 1
         self.camera.change_topic(self.camera_topics[self.current_camera_topic])
         if self.current_camera_topic == 2:
@@ -210,12 +212,14 @@ class ManualWindow(QtWidgets.QDialog):
         self.camera.activate(self.powerBtn.isChecked())
         self.pose.activate(self.powerBtn.isChecked())
         self.serial.activate(self.powerBtn.isChecked())
+        self.xbox_controller.activate(self.powerBtn.isChecked())
         #self.command.activate(self.powerBtn.isChecked())
     
     def close_window(self):
         self.stop_camera.emit()
         self.stop_pose.emit()
         self.stop_serial.emit()
+        self.stop_xbox_controller.emit()
         #self.stop_command.emit()
         self.close()
     
@@ -378,7 +382,7 @@ class CommandThread(QtCore.QThread):
         while self.threadactive:
             if self.active:
                 if self.command is not None and self.command != self.old_command:
-                    self.command_socket.send(self.command.encode())
+                    self.command_socket.send_multipart([b'command', self.command.encode()])
                     print(self.command)
                     self.old_command = self.command
 
@@ -387,17 +391,16 @@ class XboxControllerThread(QtCore.QThread):
 
     power_on = QtCore.pyqtSignal()
 
-    PORT = 5590
+    PORT = 5590 
     
     context = zmq.Context()
     xbox_socket = context.socket(zmq.PUB)
     xbox_socket.bind(f'tcp://*:{PORT}')
 
-    xbox_controller = XboxController(controlCallBack, deadzone = 30, scale = 100, invertYAxis = True)
-    xbox_controller .setupControlCallback(xbox_controller.XboxControls.LTHUMBX, leftThumbX)
-    xbox_controller .setupControlCallback(xbox_controller.XboxControls.LTHUMBY, leftThumbY)
+    xbox_controller = XboxController(None, deadzone = 30, scale = 100, invertYAxis = True)
 
     threadactive = True
+    active = False
 
     @QtCore.pyqtSlot()
     def close_socket(self):
@@ -406,24 +409,12 @@ class XboxControllerThread(QtCore.QThread):
     
     @QtCore.pyqtSlot(bool)
     def activate(self, power_on):
-        self.xbox_controller.running = power_on
-        
-    @QtCore.pyqtSlot(str)
-    def set_command(self, command):
-        self.command = command
+        self.active = power_on
+        print("Active being called")
     
     def run(self):
         while self.threadactive:
-            while(self.running):
-                self.xbox_controller.check_events()
-                xbox_socket.send_multipart([b'xbox_controller', base64.b64encode(self.xbox_controller.controlValues())])
-
-
-def controlCallBack(xboxControlId, value):
-    print("Control Id = {}, Value = {}".format(xboxControlId, value))
-
-def leftThumbX(xValue):
-    print("LX {}".format(xValue))
-    
-def leftThumbY(yValue):
-    print("LY {}".format(yValue))
+            if self.active:
+                if self.xbox_controller.check_events():
+                    self.xbox_socket.send_multipart([b'xbox_controller', base64.b64encode(str(self.xbox_controller.controlValues).encode())])
+                time.sleep(0.1)

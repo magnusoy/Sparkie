@@ -140,6 +140,7 @@ class XboxController(threading.Thread):
         
         #persist values
         self.running = False
+        self.connected = False
         self.controllerCallBack = controllerCallBack
         self.joystickNo = joystickNo
         self.lowerDeadzone = deadzone * -1
@@ -168,7 +169,7 @@ class XboxController(threading.Thread):
                               self.XboxControls.RIGHTTHUMB:0,
                               self.XboxControls.DPAD:(0,0)}
 
-        self._setupPygame(joystickNo)
+        self.setupPygame(joystickNo)
 
     # Create controller properties
     @property
@@ -244,50 +245,58 @@ class XboxController(threading.Thread):
         return self.controlValues[self.XboxControls.DPAD]
 
 
-    def _setupPygame(self, joystickNo):
+    def setupPygame(self, joystickNo):
         pygame.init()
         screen = pygame.display.set_mode((1, 1))
-        found = False
-        pygame.joystick.init()
+        self.clock = pygame.time.Clock()
             
-        while not found:
-            joy = pygame.joystick.Joystick(joystickNo)       
-            if joy.get_name() == "ST LIS3LV02DL Accelerometer":
-                print("No joystick found.\nPlease check your connection.")
-                joy.quit()
-                del(joy)
+        while not self.connected:
+            pygame.joystick.init()
+            if pygame.joystick.get_count() != 0:
+                joy = pygame.joystick.Joystick(joystickNo)   
+                print("Found controller")
+                self.connected = True    
             else:
-                print("Found joystick")
-                found = True
-            
+                print("Could not detect controller.\nCheck connection\n")
+                pygame.joystick.quit()
             time.sleep(2)
         
         joy.init()
 
     def run(self):
         self.running = True
-        
-        while(self.running):
-            self.check_events()
+        while self.running:
+            while(self.connected):
+                self.check_events()
+                self.clock.tick(10)
+            
+            self.setupPygame(0)
     
     def check_events(self):
+        got_event = False
         for event in pygame.event.get():
                 if event.type == JOYAXISMOTION:
                     if event.axis in self.AXISCONTROLMAP:
                         yAxis = True if (event.axis == self.PyGameAxis.LTHUMBY or event.axis == self.PyGameAxis.RTHUMBY) else False
                         self.updateControlValue(self.AXISCONTROLMAP[event.axis],
-                                                self._sortOutAxisValue(event.value, yAxis))
+                                                self.sortOutAxisValue(event.value, yAxis))
+                        got_event = True
                         
                     if event.axis in self.TRIGGERCONTROLMAP:
                         self.updateControlValue(self.TRIGGERCONTROLMAP[event.axis],
-                                                self._sortOutTriggerValue(event.value))
+                                                self.sortOutTriggerValue(event.value))
+                        got_event = True
+
                 elif event.type == JOYHATMOTION:
                     self.updateControlValue(self.XboxControls.DPAD, event.value)
+                    got_event = True
 
                 elif event.type == JOYBUTTONUP or event.type == JOYBUTTONDOWN:
                     if event.button in self.BUTTONCONTROLMAP:
                         self.updateControlValue(self.BUTTONCONTROLMAP[event.button],
-                                                self._sortOutButtonValue(event.type))
+                                                self.sortOutButtonValue(event.type))
+                        got_event = True
+        return got_event
 
     def stop(self):
         self.running = False
@@ -295,7 +304,7 @@ class XboxController(threading.Thread):
     def updateControlValue(self, control, value):
         if self.controlValues[control] != value:
             self.controlValues[control] = value
-            self.doCallBacks(control, value)
+            #self.doCallBacks(control, value)
     
     def doCallBacks(self, control, value):
         if self.controllerCallBack != None: self.controllerCallBack(control, value)
@@ -306,18 +315,18 @@ class XboxController(threading.Thread):
     def setupControlCallback(self, control, callbackFunction):
         self.controlCallbacks[control] = callbackFunction
                 
-    def _sortOutAxisValue(self, value, yAxis = False):
+    def sortOutAxisValue(self, value, yAxis = False):
         if yAxis and self.invertYAxis: value = value * -1
         value = value * self.scale
         if value < self.upperDeadzone and value > self.lowerDeadzone: value = 0
         return value
 
-    def _sortOutTriggerValue(self, value):
+    def sortOutTriggerValue(self, value):
         value = max(0,(value + 1) / 2)
         value = value * self.scale
         return value
 
-    def _sortOutButtonValue(self, eventType):
+    def sortOutButtonValue(self, eventType):
         value = 1 if eventType == JOYBUTTONDOWN else 0
         return value
     
