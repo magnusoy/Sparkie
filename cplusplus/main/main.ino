@@ -13,7 +13,6 @@
 // Including libraries and headers
 #include <ArduinoJson.h>
 
-//TODO make the dependency correct
 #include "src/libraries/ODriveArduino/OdriveArduino.h"
 #include "src/libraries/SerialHandler/SerialHandler.h"
 #include "src/libraries/LegMovement/LegMovement.h"
@@ -23,14 +22,27 @@
 #include "Constants.h"
 #include "OdriveParameters.h"
 #include "IO.h"
+
+
 SerialHandler serial(BAUDRATE , CAPACITY);
 LegMovement legMovement;
 
+/* Variable for the intervall time for walking case*/
 Timer walkIntervall;
-int intervall = 1; //0.1
+int intervall = 1.0; //0.1
 
 /* Variable for storing time for leg tracjetory */
 unsigned long n = 0;
+
+/* Variable for storing loop time */
+unsigned long loopTime;
+unsigned long walkTime;
+
+/* Variable for jump fuction*/
+Timer airTime;
+Timer groundTime;
+bool runned = false;
+int jump = 0;
 
 void setup() {
   Serial.println("Setup started");
@@ -42,14 +54,12 @@ void setup() {
 }
 
 void loop() {
-
+  //loopTime = micros();
   //readOdriveMotorPositions(hwSerials, odrives);
 
   switch (currentState) {
     case S_IDLE:
       blinkLight(GREEN_LED);
-      n += 1;
-      Serial.println(n);
       if (!idlePosition && calibrated) {
         armMotors(odrives);
         delay(100);
@@ -63,7 +73,7 @@ void loop() {
           }
         }
         delay(100);
-        disarmMotors(odrives);
+        //disarmMotors(odrives);
         idlePosition = true;
       }
       break;
@@ -83,6 +93,7 @@ void loop() {
 
     case S_WALK:
       if (walkIntervall.hasTimerExpired()) {
+        //walkTime = micros();
         int Odrive = 0;
         double x = legMovement.stepX(n, LENGHT, FREQUENCY, PHASESHIFT0X);
         double y = legMovement.stepY(n, AMPLITUDEOVER, AMPLITUDEUNDER, HEIGHT, FREQUENCY, PHASESHIFT0Y);
@@ -115,10 +126,12 @@ void loop() {
           double motorCount = map(angle, -360, 360, -6000, 6000);
           setMotorPosition(Odrive, motor, motorCount);
         }
-        //}
         n += 1;
         walkIntervall.startTimer(intervall);
+        // Serial.print("Walk Time: ");
+        //Serial.println(micros() - loopTime);
       }
+
       break;
 
     case S_RUN:
@@ -128,24 +141,46 @@ void loop() {
     case S_JUMP:
       double x = 0;
       double y;
-      y = -80;
-      for (int Odrive = 0; Odrive < 4; Odrive ++) {
-        for (int motor = 0; motor < 2; motor++) {
-          double angle = legMovement.compute(x, y, motor, Odrive);
-          double motorCount = map(angle, -360, 360, -6000, 6000);
-          setMotorPosition(Odrive, motor, motorCount);
-        }
+      switch (jump) {
+        case 0:
+          y = -80;
+
+          if (!runned) {
+            for (int Odrive = 0; Odrive < 4; Odrive ++) {
+              for (int motor = 0; motor < 2; motor++) {
+                double angle = legMovement.compute(x, y, motor, Odrive);
+                double motorCount = map(angle, -360, 360, -6000, 6000);
+                setMotorPosition(Odrive, motor, motorCount);
+              }
+            }
+            groundTime.startTimer(500);
+            runned = true;
+          }
+          if (groundTime.hasTimerExpired()) {
+            jump = 1;
+            runned = false;
+          }
+          break;
+
+        case 1:
+          y = -200;
+          if (!runned) {
+            for (int Odrive = 0; Odrive < 4; Odrive ++) {
+              for (int motor = 0; motor < 2; motor++) {
+                double angle = legMovement.compute(x, y, motor, Odrive);
+                double motorCount = map(angle, -360, 360, -6000, 6000);
+                setMotorPosition(Odrive, motor, motorCount);
+              }
+            }
+            airTime.startTimer(1000);
+            runned = true;
+          }
+          if (airTime.hasTimerExpired()) {
+            jump = 0;
+            runned = false;
+          }
+          break;
       }
-      delay(500);
-      y = -200;
-      for (int Odrive = 0; Odrive < 4; Odrive ++) {
-        for (int motor = 0; motor < 2; motor++) {
-          double angle = legMovement.compute(x, y, motor, Odrive);
-          double motorCount = map(angle, -360, 360, -6000, 6000);
-          setMotorPosition(Odrive, motor, motorCount);
-        }
-      }
-      delay(1500);
       break;
 
     case S_AUTONOMOUS:
@@ -193,6 +228,8 @@ void loop() {
   }
   readButtons();
   serial.flush();
+  //Serial.print("Loop Time: ");
+  //Serial.println(micros() - loopTime);
 }
 
 /**
