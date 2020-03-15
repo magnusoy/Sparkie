@@ -23,4 +23,4 @@
 hs_err_pid*
 
 # Only used for report
-/Pictures
+/Pictures/*
