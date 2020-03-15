@@ -398,6 +398,8 @@ class XboxControllerThread(QtCore.QThread):
     xbox_socket.bind(f'tcp://*:{PORT}')
 
     xbox_controller = XboxController(None, deadzone = 30, scale = 100, invertYAxis = True)
+    xbox_controller.setupControlCallback(xbox_controller.XboxControls.LTHUMBX, None)
+    xbox_controller.setupControlCallback(xbox_controller.XboxControls.LTHUMBY, None)
 
     threadactive = True
     active = False
@@ -417,4 +419,5 @@ class XboxControllerThread(QtCore.QThread):
             if self.active:
                 if self.xbox_controller.check_events():
                     self.xbox_socket.send_multipart([b'xbox_controller', base64.b64encode(str(self.xbox_controller.controlValues).encode())])
+                    print(self.xbox_controller.controlValues)
                 time.sleep(0.1)

@@ -20,6 +20,7 @@ import zmq
 from multiprocessing import Process
 import numpy as np
 import base64
+import json
 
 
 class Subscriber(Process):
@@ -90,4 +91,3 @@ if __name__ == "__main__":
     while True:
         sub.read_multipart()
         print(sub.msg)
-    

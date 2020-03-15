@@ -23,7 +23,7 @@ from multiprocessing import Process
 from .publisher import Publisher
 import zmq
 import base64
-
+from .util.serializer import *
 
 
 class SerialThread(Thread):
@@ -191,23 +191,14 @@ class SerialProcess(Process):
         self.running = True
         
         # Subscriber
-        self.sub_ip = '*'
-        self.sub_port = 5580
+        self.sub_ip = '10.10.10.243'
+        self.sub_port = 5590
         self.sub_topic = ''
         
         # Publisher
-        self.pub_ip = '10.0.0.121'
-        self.pub_port = 5560
+        self.pub_ip = '*'
+        self.pub_port = 5580
         self.pub_topic = 'serial'
-    
-    @staticmethod
-    def millis(self):
-        """Returns the current time in milliseconds
-        Returns
-        -------
-        current time in milliseconds
-        """
-        return int(round(time.time() * 1000))
     
     def init_subscriber(self, ip, port, topic):
         """doc"""
@@ -244,6 +235,7 @@ class SerialProcess(Process):
         while True:
             topic, data = self.footage_socket.recv_multipart()
             msg = base64.b64decode(data)
+            msg = msg_2_json(msg)
             #self.sendOutputStream(msg)
             print(msg)
                    
@@ -314,5 +306,5 @@ class SerialProcess(Process):
 
 # Example of usage
 if __name__ == "__main__":
-    se = SerialProcess("COM5", 115200, 1000)
+    se = SerialProcess("COM5", 115200, 0.1)
     se.start()

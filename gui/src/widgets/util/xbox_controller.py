@@ -275,27 +275,27 @@ class XboxController(threading.Thread):
     def check_events(self):
         got_event = False
         for event in pygame.event.get():
-                if event.type == JOYAXISMOTION:
-                    if event.axis in self.AXISCONTROLMAP:
-                        yAxis = True if (event.axis == self.PyGameAxis.LTHUMBY or event.axis == self.PyGameAxis.RTHUMBY) else False
-                        self.updateControlValue(self.AXISCONTROLMAP[event.axis],
-                                                self.sortOutAxisValue(event.value, yAxis))
-                        got_event = True
-                        
-                    if event.axis in self.TRIGGERCONTROLMAP:
-                        self.updateControlValue(self.TRIGGERCONTROLMAP[event.axis],
-                                                self.sortOutTriggerValue(event.value))
-                        got_event = True
-
-                elif event.type == JOYHATMOTION:
-                    self.updateControlValue(self.XboxControls.DPAD, event.value)
+            if event.type == JOYAXISMOTION:
+                if event.axis in self.AXISCONTROLMAP:
+                    yAxis = True if (event.axis == self.PyGameAxis.LTHUMBY or event.axis == self.PyGameAxis.RTHUMBY) else False
+                    self.updateControlValue(self.AXISCONTROLMAP[event.axis],
+                                            self.sortOutAxisValue(event.value, yAxis))
+                    got_event = True
+                    
+                if event.axis in self.TRIGGERCONTROLMAP:
+                    self.updateControlValue(self.TRIGGERCONTROLMAP[event.axis],
+                                            self.sortOutTriggerValue(event.value))
                     got_event = True
 
-                elif event.type == JOYBUTTONUP or event.type == JOYBUTTONDOWN:
-                    if event.button in self.BUTTONCONTROLMAP:
-                        self.updateControlValue(self.BUTTONCONTROLMAP[event.button],
-                                                self.sortOutButtonValue(event.type))
-                        got_event = True
+            elif event.type == JOYHATMOTION:
+                self.updateControlValue(self.XboxControls.DPAD, event.value)
+                got_event = True
+
+            elif event.type == JOYBUTTONUP or event.type == JOYBUTTONDOWN:
+                if event.button in self.BUTTONCONTROLMAP:
+                    self.updateControlValue(self.BUTTONCONTROLMAP[event.button],
+                                            self.sortOutButtonValue(event.type))
+                    got_event = True
         return got_event
 
     def stop(self):
@@ -304,6 +304,7 @@ class XboxController(threading.Thread):
     def updateControlValue(self, control, value):
         if self.controlValues[control] != value:
             self.controlValues[control] = value
+            print(self.controlValues)
             #self.doCallBacks(control, value)
     
     def doCallBacks(self, control, value):
@@ -343,10 +344,10 @@ if __name__ == '__main__':
     def leftThumbY(yValue):
         print("LY {}".format(yValue))
 
-    xboxCont = XboxController(controlCallBack, deadzone = 30, scale = 100, invertYAxis = True)
+    xboxCont = XboxController(None, deadzone = 30, scale = 100, invertYAxis = True)
 
-    xboxCont.setupControlCallback(xboxCont.XboxControls.LTHUMBX, leftThumbX)
-    xboxCont.setupControlCallback(xboxCont.XboxControls.LTHUMBY, leftThumbY)
+    xboxCont.setupControlCallback(xboxCont.XboxControls.LTHUMBX, None)
+    xboxCont.setupControlCallback(xboxCont.XboxControls.LTHUMBY, None)
 
     try:
         xboxCont.start()
