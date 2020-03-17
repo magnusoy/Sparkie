@@ -22,6 +22,7 @@
 #include "Constants.h"
 #include "OdriveParameters.h"
 #include "IO.h"
+#include "XboxController.h"
 
 SerialHandler serial(BAUDRATE, CAPACITY);
 LegMovement legMovement;
@@ -264,7 +265,40 @@ void sendJSONDocumentToSerial()
 */
 void readJSONDocumentFromSerial()
 {
-  JsonObject obj = serial.read();
+  //JsonObject obj = serial.read();
   //TODO decode JSON
   //recCommand = obj["command"];
+}
+
+void readXboxControllerInputs()
+{
+  if (Serial.available() > 0)
+  {
+    const size_t capacity = JSON_OBJECT_SIZE(17) + 313;
+    DynamicJsonDocument doc(capacity);
+    DeserializationError error = deserializeJson(doc, Serial);
+    if (error)
+    {
+      return;
+    }
+    JsonObject obj = doc.as<JsonObject>();
+
+    XBOX_CONTROLLER_INPUT.LJ_LEFT_RIGHT = obj["0"];
+    XBOX_CONTROLLER_INPUT.LJ_DOWN_UP = obj["1"];
+    XBOX_CONTROLLER_INPUT.LT = obj["2"];
+    XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT = obj["3"];
+    XBOX_CONTROLLER_INPUT.RJ_DOWN_UP = obj["4"];
+    XBOX_CONTROLLER_INPUT.RT = obj["5"];
+    XBOX_CONTROLLER_INPUT.A = obj["6"];
+    XBOX_CONTROLLER_INPUT.B = obj["7"];
+    XBOX_CONTROLLER_INPUT.X = obj["8"];
+    XBOX_CONTROLLER_INPUT.Y = obj["9"];
+    XBOX_CONTROLLER_INPUT.LB = obj["10"];
+    XBOX_CONTROLLER_INPUT.RB = obj["11"];
+    XBOX_CONTROLLER_INPUT.MLB = obj["12"];
+    XBOX_CONTROLLER_INPUT.MRB = obj["13"];
+    XBOX_CONTROLLER_INPUT.MB = obj["14"];
+    XBOX_CONTROLLER_INPUT.LJ = obj["15"];
+    XBOX_CONTROLLER_INPUT.RJ = obj["16"];
+  }
 }
