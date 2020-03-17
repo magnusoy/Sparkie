@@ -304,7 +304,7 @@ class XboxController(threading.Thread):
     def updateControlValue(self, control, value):
         if self.controlValues[control] != value:
             self.controlValues[control] = value
-            print(self.controlValues)
+            #print(self.controlValues)
             #self.doCallBacks(control, value)
     
     def doCallBacks(self, control, value):

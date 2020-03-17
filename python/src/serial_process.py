@@ -15,8 +15,8 @@ __status__ = "Development"
 from communication.serial_handler import SerialProcess
 
 
-SERIAL_PORT = "COM3"
-SERIAL_BAUDRATE = 115200
+SERIAL_PORT = "COM4"
+SERIAL_BAUDRATE = 921600
 SERIAL_INTERVAL = 0.1
 
 serial = SerialProcess(usb_port=SERIAL_PORT, baudrate=SERIAL_BAUDRATE, interval=SERIAL_INTERVAL)

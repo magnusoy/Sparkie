@@ -76,7 +76,7 @@ enum states
 
 };
 
-uint8_t currentState = S_IDLE;
+uint8_t currentState = S_MANUAL;
 uint8_t currentErrors[3] = {NONE};
 uint8_t currentWarnings[3] = {NONE};
 uint8_t idlePosition = false;

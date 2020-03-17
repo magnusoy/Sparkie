@@ -191,9 +191,9 @@ class SerialProcess(Process):
         self.running = True
         
         # Subscriber
-        self.sub_ip = '10.10.10.243'
+        self.sub_ip = 'localhost'
         self.sub_port = 5590
-        self.sub_topic = ''
+        self.sub_topic = 'xbox_controller'
         
         # Publisher
         self.pub_ip = '*'
@@ -218,8 +218,8 @@ class SerialProcess(Process):
             self.connect()
             time.sleep(2)
         sub_thread = Thread(target=self.subscriber, args=(self.sub_ip, self.sub_port, self.sub_topic), daemon=True)
-        pub_thread = Thread(target=self.publisher, args=(self.pub_ip, self.pub_port, self.pub_topic), daemon=True)
-        pub_thread.start()
+        #pub_thread = Thread(target=self.publisher, args=(self.pub_ip, self.pub_port, self.pub_topic), daemon=True)
+        #pub_thread.start()
         sub_thread.start()
         while self.running:
             time.sleep(10)
@@ -233,11 +233,11 @@ class SerialProcess(Process):
         sub.connect(address)
         
         while True:
-            topic, data = self.footage_socket.recv_multipart()
+            topic, data = sub.recv_multipart()
             msg = base64.b64decode(data)
             msg = msg_2_json(msg)
-            #self.sendOutputStream(msg)
-            print(msg)
+            self.sendOutputStream(msg)
+            print(self.readInputStream)
                    
     def publisher(self, ip, port, topic):
         """doc"""
@@ -306,5 +306,5 @@ class SerialProcess(Process):
 
 # Example of usage
 if __name__ == "__main__":
-    se = SerialProcess("COM5", 115200, 0.1)
+    se = SerialProcess("COM4", 921600, 0.1)
     se.start()

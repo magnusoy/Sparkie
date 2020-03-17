@@ -44,6 +44,8 @@ Timer groundTime;
 bool runned = false;
 int jump = 0;
 
+void readXboxControllerInputs();
+
 void setup()
 {
   serial.initialize();
@@ -206,6 +208,8 @@ void loop()
     break;
 
   case S_MANUAL:
+    readXboxControllerInputs();
+    Serial.println(XBOX_CONTROLLER_INPUT.LJ_LEFT_RIGHT);
     break;
 
   case S_BACKFLIP:
