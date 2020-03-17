@@ -3,28 +3,32 @@
 #include "Constants.h"
 
 /** IMU structure */
-typedef struct {
+typedef struct
+{
   float yaw;
   float pitch;
   float roll;
 } IMU;
 
 /** Accelerometer structure */
-typedef struct {
+typedef struct
+{
   float x;
   float y;
   float z;
 } Accelerometer;
 
 /** Gyroscope structure */
-typedef struct {
+typedef struct
+{
   float x;
   float y;
   float z;
 } Gyroscope;
 
 /** Error codes */
-enum errors {
+enum errors
+{
   NONE,
   SERIAL_ERROR,
   MOTOR_FRONT_LEFT_1_ERROR,
@@ -46,13 +50,15 @@ enum errors {
 };
 
 /** Warning codes */
-enum warnings {
+enum warnings
+{
   NONE1,
   NONE2,
 };
 
 /** Operation states */
-enum states {
+enum states
+{
   S_IDLE,
   S_CALIBRATE,
   S_READY,
@@ -77,21 +83,21 @@ uint8_t idlePosition = false;
 uint8_t calibrated = false;
 
 /* Parameters for leg movment*/
-double AMPLITUDEOVER = 70.0;//NORMAL 70.0;
+double AMPLITUDEOVER = 70.0;  //NORMAL 70.0;
 double AMPLITUDEUNDER = 30.0; //NORMAL 30.0;
-double LENGHT = 160.0; //NORMAL 160.0;
-double HEIGHT = 170.0; //NORMAL 170.0;
-double FREQUENCY = 0.025; //SLOW 0.0025 //WALK 0.025  //RUN 0.05
+double LENGHT = 160.0;        //NORMAL 160.0;
+double HEIGHT = 170.0;        //NORMAL 170.0;
+double FREQUENCY = 0.025;     //SLOW 0.0025 //WALK 0.025  //RUN 0.05
 
-double PHASESHIFT0X = 3.14;    //Alle ben samlet 3.14;    //Trot 3.14;
-double PHASESHIFT0Y = 0;       //Alle ben samlet 0;       //Trot 0;
+double PHASESHIFT0X = 3.14; //Alle ben samlet 3.14;    //Trot 3.14;
+double PHASESHIFT0Y = 0;    //Alle ben samlet 0;       //Trot 0;
 
-double PHASESHIFT1X = 3.14;       //Alle ben samlet 0;       //Trot 3.14;
-double PHASESHIFT1Y = 3.14;       //Alle ben samlet 0;       //Trot 3.14;
+double PHASESHIFT1X = 3.14; //Alle ben samlet 0;       //Trot 3.14;
+double PHASESHIFT1Y = 3.14; //Alle ben samlet 0;       //Trot 3.14;
 
-double PHASESHIFT2X = 0;    //Alle ben samlet 3.14;    //Trot 0;  
-double PHASESHIFT2Y = 3.14;       //Alle ben samlet 0;       //Trot 3.14;
+double PHASESHIFT2X = 0;    //Alle ben samlet 3.14;    //Trot 0;
+double PHASESHIFT2Y = 3.14; //Alle ben samlet 0;       //Trot 3.14;
 
-double PHASESHIFT3X = 0;      //Alle ben samlet 0;        //Trot 0;
-double PHASESHIFT3Y = 0;      //Alle ben samlet 0;        //Trot 0;
-#endif // _GLOBALS_H_
+double PHASESHIFT3X = 0; //Alle ben samlet 0;        //Trot 0;
+double PHASESHIFT3Y = 0; //Alle ben samlet 0;        //Trot 0;
+#endif                   // _GLOBALS_H_

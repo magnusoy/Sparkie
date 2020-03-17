@@ -7,17 +7,17 @@
 #include "WProgram.h"
 #endif
 
-class LegMovement 
+class LegMovement
 {
 
 public:
-int INNER;
-int OUTER;
+	int INNER;
+	int OUTER;
 
 	LegMovement(void);
 	double compute(double x, double y, uint8_t motor, int ODrive);
 	double stepX(unsigned long n, double lenght, double frequency, double phaseShift);
-	double stepY(unsigned long n, double amplitudeOver,double amplitudeUnder, double robotHeight, double frequency, double phaseShift);
+	double stepY(unsigned long n, double amplitudeOver, double amplitudeUnder, double robotHeight, double frequency, double phaseShift);
 
 private:
 };

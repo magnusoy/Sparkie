@@ -1,11 +1,13 @@
 #ifndef _GEOMETRY_H_
 #define _GEOMETRY_H_
 
-typedef struct {
+typedef struct
+{
     // Leg parameters
 } Leg;
 
-typedef struct {
+typedef struct
+{
     // Body parameters
 } Body;
 

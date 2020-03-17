@@ -4,14 +4,18 @@
 /**
    Template for writing to  oDrives
 */
-template<class T> inline Print& operator <<(Print & obj,     T arg) {
+template <class T>
+inline Print &operator<<(Print &obj, T arg)
+{
   obj.print(arg);
   return obj;
 }
 /**
    Template for writing to  oDrives
 */
-template<>        inline Print& operator <<(Print & obj, float arg) {
+template <>
+inline Print &operator<<(Print &obj, float arg)
+{
   obj.print(arg, 4);
   return obj;
 }
@@ -30,8 +34,10 @@ ODriveArduino odrives[4] = {odriveFrontLeft, odriveFrontRight, odriveBackLeft, o
 /**
   Initialize the four Odrives.
 */
-void initializeOdrives() {
-  for (int i = 0; i < 4; ++i) {
+void initializeOdrives()
+{
+  for (int i = 0; i < 4; ++i)
+  {
     hwSerials[i].begin(BAUDRATE);
   }
 }
@@ -42,10 +48,10 @@ void initializeOdrives() {
    @param motorNumber, Specify motor {0, 1}
    @param pos, Position to drive to
 */
-void setMotorPosition(const int odriveNumber, const int motorNumber, double pos) {
+void setMotorPosition(const int odriveNumber, const int motorNumber, double pos)
+{
   odrives[odriveNumber].SetPosition(motorNumber, pos);
 }
-
 
 /** Odrive limitations */
 #define MOTOR_SPEED_LIMIT 40000.0f
@@ -58,17 +64,19 @@ void setMotorPosition(const int odriveNumber, const int motorNumber, double pos)
 
 /** Storing the positions of the motors */
 int motorpositions[4][2] = {{0, 0},
-  {0, 0},
-  {0, 0},
-  {0, 0}
-};
+                            {0, 0},
+                            {0, 0},
+                            {0, 0}};
 
 /**
   Sets the motors in desired state
 */
-void setOdrivesInState(uint8_t requestedState, uint8_t wait) {
-  for (int i = 0; i < 4; ++i) {
-    for (int m = 0; m < 2; ++m) {
+void setOdrivesInState(uint8_t requestedState, uint8_t wait)
+{
+  for (int i = 0; i < 4; ++i)
+  {
+    for (int m = 0; m < 2; ++m)
+    {
       odrives[i].run_state(m, requestedState, wait);
       delay(10);
     }
@@ -79,19 +87,21 @@ void setOdrivesInState(uint8_t requestedState, uint8_t wait) {
   Calibreates motors.
   Be aware the motors will move during this process!
 */
-void calibrateOdriveMotors() {
+void calibrateOdriveMotors()
+{
   uint8_t requestedState = ODriveArduino::AXIS_STATE_MOTOR_CALIBRATION;
   setOdrivesInState(requestedState, true);
   requestedState = ODriveArduino::AXIS_STATE_ENCODER_OFFSET_CALIBRATION;
   setOdrivesInState(requestedState, true);
-
 }
 
-void armMotors() {
+void armMotors()
+{
   uint8_t requestedState = ODriveArduino::AXIS_STATE_CLOSED_LOOP_CONTROL;
   setOdrivesInState(requestedState, false);
 }
-void disarmMotors() {
+void disarmMotors()
+{
   uint8_t requestedState = ODriveArduino::AXIS_STATE_IDLE;
   setOdrivesInState(requestedState, false);
 }
@@ -101,9 +111,12 @@ void disarmMotors() {
   Storing them in the global motorPosition
   variable.
 */
-void readOdriveMotorPositions(HardwareSerial hwSerials[] , ODriveArduino odrives[]) {
-  for (int i = 0; i < 4; ++i) {
-    for (int m = 0; m < 2; ++m) {
+void readOdriveMotorPositions(HardwareSerial hwSerials[], ODriveArduino odrives[])
+{
+  for (int i = 0; i < 4; ++i)
+  {
+    for (int m = 0; m < 2; ++m)
+    {
       hwSerials[i] << "r axis" << m << ".encoder.pos_estimate\n";
       motorpositions[i][m] = odrives[i].readFloat();
     }
@@ -113,9 +126,12 @@ void readOdriveMotorPositions(HardwareSerial hwSerials[] , ODriveArduino odrives
 /**
    Print all errors on the motors
 */
-void checkForErrors() {
-  for (int i = 0; i < 4; ++i) {
-    for (int axis = 0; axis < 2; ++axis) {
+void checkForErrors()
+{
+  for (int i = 0; i < 4; ++i)
+  {
+    for (int axis = 0; axis < 2; ++axis)
+    {
       odrives[i].checkForErrors(axis);
     }
   }
@@ -123,9 +139,12 @@ void checkForErrors() {
 /**
    Resets all errors on all motors
 */
-void resetMotorsErrors() {
-  for (int i = 0; i < 4; ++i) {
-    for (int axis = 0; axis < 2; ++axis) {
+void resetMotorsErrors()
+{
+  for (int i = 0; i < 4; ++i)
+  {
+    for (int axis = 0; axis < 2; ++axis)
+    {
       odrives[i].resetErrors(axis);
     }
   }
@@ -134,36 +153,47 @@ void resetMotorsErrors() {
 /**
    Read all configs
 */
-void readConfig() {
+void readConfig()
+{
   Serial << "Reading ODrive configuration... \n";
-  for (int i = 0; i < 4; ++i) {
+  for (int i = 0; i < 4; ++i)
+  {
     Serial << "Odrive number: " << i << "\n";
-    for (int axis = 0; axis < 2; ++axis) {
+    for (int axis = 0; axis < 2; ++axis)
+    {
       odrives[i].readConfig(axis);
     }
   }
 }
 
-void setPreCalibrated(bool var) {
+void setPreCalibrated(bool var)
+{
   Serial << "Pre Calibrate... \n";
-  for (int i = 0; i < 4; ++i) {
-    if (2 != i) {
+  for (int i = 0; i < 4; ++i)
+  {
+    if (2 != i)
+    {
       Serial << "Odrive number: " << i << "\n";
-      for (int axis = 0; axis < 2; ++axis) {
+      for (int axis = 0; axis < 2; ++axis)
+      {
         odrives[i].setPreCalibrated(axis, var);
       }
     }
   }
 }
-void saveConfigOdrives() {
-  for (int i = 0; i < 4; ++i) {
+void saveConfigOdrives()
+{
+  for (int i = 0; i < 4; ++i)
+  {
     odrives[i].saveConfig();
     delay(200);
   }
 }
 
-void rebootOdrives() {
-  for (int i = 0; i < 4; ++i) {
+void rebootOdrives()
+{
+  for (int i = 0; i < 4; ++i)
+  {
     odrives[i].reboot();
     delay(200);
   }
