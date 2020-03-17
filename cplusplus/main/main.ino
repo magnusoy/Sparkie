@@ -61,7 +61,7 @@ void loop() {
     case S_IDLE:
       blinkLight(GREEN_LED);
       if (!idlePosition && calibrated) {
-        armMotors(odrives);
+        armMotors();
         delay(100);
         double x = 0;
         double y = -160;
@@ -73,13 +73,13 @@ void loop() {
           }
         }
         delay(100);
-        //disarmMotors(odrives);
+        disarmMotors();
         idlePosition = true;
       }
       break;
 
     case S_CALIBRATE:
-      calibrateOdriveMotors(odrives);
+      calibrateOdriveMotors();
       calibrated = true;
       changeStateTo(S_IDLE);
       break;
@@ -93,7 +93,7 @@ void loop() {
 
     case S_WALK:
       if (walkIntervall.hasTimerExpired()) {
-        //walkTime = micros();
+        // walkTime = micros();
         int Odrive = 0;
         double x = legMovement.stepX(n, LENGHT, FREQUENCY, PHASESHIFT0X);
         double y = legMovement.stepY(n, AMPLITUDEOVER, AMPLITUDEUNDER, HEIGHT, FREQUENCY, PHASESHIFT0Y);
@@ -128,8 +128,8 @@ void loop() {
         }
         n += 1;
         walkIntervall.startTimer(intervall);
-        // Serial.print("Walk Time: ");
-        //Serial.println(micros() - loopTime);
+        //  Serial.print("Walk Time: ");
+        // Serial.println(micros() - loopTime);
       }
 
       break;

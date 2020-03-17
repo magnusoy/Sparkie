@@ -47,8 +47,6 @@ void setMotorPosition(const int odriveNumber, const int motorNumber, double pos)
 }
 
 
-
-
 /** Odrive limitations */
 #define MOTOR_SPEED_LIMIT 40000.0f
 #define MOTOR_CURRENT_LIMIT 40.0f
@@ -68,10 +66,10 @@ int motorpositions[4][2] = {{0, 0},
 /**
   Sets the motors in desired state
 */
-void setOdrivesInState(ODriveArduino odrive[], uint8_t requestedState, uint8_t wait) {
+void setOdrivesInState(uint8_t requestedState, uint8_t wait) {
   for (int i = 0; i < 4; ++i) {
     for (int m = 0; m < 2; ++m) {
-      odrive[i].run_state(m, requestedState, wait);
+      odrives[i].run_state(m, requestedState, wait);
       delay(10);
     }
   }
@@ -81,21 +79,21 @@ void setOdrivesInState(ODriveArduino odrive[], uint8_t requestedState, uint8_t w
   Calibreates motors.
   Be aware the motors will move during this process!
 */
-void calibrateOdriveMotors(ODriveArduino odrives[]) {
+void calibrateOdriveMotors() {
   uint8_t requestedState = ODriveArduino::AXIS_STATE_MOTOR_CALIBRATION;
-  setOdrivesInState(odrives, requestedState, true);
+  setOdrivesInState(requestedState, true);
   requestedState = ODriveArduino::AXIS_STATE_ENCODER_OFFSET_CALIBRATION;
-  setOdrivesInState(odrives, requestedState, true);
+  setOdrivesInState(requestedState, true);
 
 }
 
-void armMotors(ODriveArduino odrives[]) {
+void armMotors() {
   uint8_t requestedState = ODriveArduino::AXIS_STATE_CLOSED_LOOP_CONTROL;
-  setOdrivesInState(odrives, requestedState, false);
+  setOdrivesInState(requestedState, false);
 }
-void disarmMotors(ODriveArduino odrives[]) {
+void disarmMotors() {
   uint8_t requestedState = ODriveArduino::AXIS_STATE_IDLE;
-  setOdrivesInState(odrives, requestedState, false);
+  setOdrivesInState(requestedState, false);
 }
 
 /**

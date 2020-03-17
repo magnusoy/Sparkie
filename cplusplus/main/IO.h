@@ -68,7 +68,7 @@ void readButtons() {
   int blue = digitalRead(BLUE_BTN);
   int orange = digitalRead(ORANGE_BTN);
   if (red) {
-    //disarmMotors(odrives);
+    disarmMotors();
     changeStateTo(S_IDLE);
   }
   else if (orange) {
@@ -78,7 +78,7 @@ void readButtons() {
     changeStateTo(S_CALIBRATE);
   }
   else if (green) {
-    armMotors(odrives);
+    armMotors();
     changeStateTo(S_WALK);
     digitalWrite(GREEN_LED, HIGH);
   }
