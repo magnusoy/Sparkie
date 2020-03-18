@@ -43,13 +43,13 @@ class SerialThread(Thread):
         self.port = port
         self.baudrate = baudrate
         self.connection = None
-        
+
     def run(self):
         """doc"""
         while not self.isConnected():
             self.connect()
             time.sleep(2)
-    
+
     def connect(self):
         """doc"""
         try:
@@ -58,7 +58,6 @@ class SerialThread(Thread):
             print(f'Established connection to {self.port}')
         except serial.SerialException as se:
             print(f'Cant establish connection to {self.port}')
-
 
     def isConnected(self):
         """
@@ -96,7 +95,6 @@ class SerialThread(Thread):
         return True
 
 
-
 class SerialPublisher(Publisher):
     """SerialProcess is a class that extends from Publisher.
     This makes the readInputStream from serial accessible for everyone
@@ -109,19 +107,19 @@ class SerialPublisher(Publisher):
         self.usb_port = usb_port
         self.baudrate = baudrate
         self.connection = None
-        
+
     def run(self):
         """doc"""
         while not self.isConnected():
             self.connect()
             time.sleep(2)
-        
+
         self.initialize()
         while self.running:
             msg = self.readInputStream()
-            #print(msg)
+            # print(msg)
             self.send(msg)
-    
+
     def connect(self):
         """
         Establishes a connection to the given port.
@@ -189,41 +187,43 @@ class SerialProcess(Process):
         self.baudrate = baudrate
         self.connection = None
         self.running = True
-        
+
         # Subscriber
         self.sub_ip = 'localhost'
         self.sub_port = 5590
         self.sub_topic = 'xbox_controller'
-        
+
         # Publisher
         self.pub_ip = '*'
-        self.pub_port = 5580
+        self.pub_port = 6010
         self.pub_topic = 'serial'
-    
+
     def init_subscriber(self, ip, port, topic):
         """doc"""
         self.sub_ip = ip
         self.sub_port = port
         self.sub_topic = topic
-    
+
     def init_publisher(self, ip, port, topic):
         """doc"""
         self.pub_ip = ip
         self.pub_port = port
         self.pub_topic = topic
-    
+
     def run(self):
         """doc"""
         while not self.isConnected():
             self.connect()
             time.sleep(2)
-        sub_thread = Thread(target=self.subscriber, args=(self.sub_ip, self.sub_port, self.sub_topic), daemon=True)
-        pub_thread = Thread(target=self.publisher, args=(self.pub_ip, self.pub_port, self.pub_topic), daemon=True)
+        sub_thread = Thread(target=self.subscriber, args=(
+            self.sub_ip, self.sub_port, self.sub_topic), daemon=True)
+        pub_thread = Thread(target=self.publisher, args=(
+            self.pub_ip, self.pub_port, self.pub_topic), daemon=True)
         pub_thread.start()
         sub_thread.start()
         while self.running:
             time.sleep(10)
-           
+
     def subscriber(self, ip, port, topic):
         """doc"""
         contex = zmq.Context.instance()
@@ -231,26 +231,27 @@ class SerialProcess(Process):
         sub = contex.socket(zmq.SUB)
         sub.setsockopt_string(zmq.SUBSCRIBE, topic)
         sub.connect(address)
-        
+
         while True:
             topic, data = sub.recv_multipart()
             msg = base64.b64decode(data)
             msg = msg_2_json(msg)
+            # print(msg)
             self.sendOutputStream(msg)
-                   
+
     def publisher(self, ip, port, topic):
         """doc"""
         contex = zmq.Context.instance()
         address = 'tcp://%s:%s' % (ip, port)
         pub = contex.socket(zmq.PUB)
         pub.bind(address)
-        
+
         while True:
             msg = self.readInputStream()
             #pub.send_string(f'{topic}, {msg}')
             print(msg)
-            time.sleep(self.interval)
-        
+            # time.sleep(self.interval)
+
     def connect(self):
         """
         Establishes a connection to the given port.
@@ -291,7 +292,7 @@ class SerialProcess(Process):
         @data : msg to be sent out
         """
 
-        content = data + '\n'
+        content = str(data).replace("'", '"') + '\n'
         self.connection.write(content.encode())
 
     def disconnect(self):

@@ -209,7 +209,7 @@ void loop()
 
   case S_MANUAL:
     readXboxControllerInputs();
-    Serial.println(XBOX_CONTROLLER_INPUT.LJ_LEFT_RIGHT);
+    //Serial.println(XBOX_CONTROLLER_INPUT.LJ_LEFT_RIGHT);
     break;
 
   case S_BACKFLIP:
@@ -246,7 +246,7 @@ void loop()
     break;
   }
   readButtons();
-  serial.flush();
+  //serial.flush();
   //Serial.print("Loop Time: ");
   //Serial.println(micros() - loopTime);
 }
@@ -278,7 +278,7 @@ void readXboxControllerInputs()
 {
   if (Serial.available() > 0)
   {
-    const size_t capacity = JSON_OBJECT_SIZE(17) + 313;
+    const size_t capacity = JSON_OBJECT_SIZE(32) + 512;
     DynamicJsonDocument doc(capacity);
     DeserializationError error = deserializeJson(doc, Serial);
     if (error)
