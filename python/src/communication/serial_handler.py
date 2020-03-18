@@ -218,8 +218,8 @@ class SerialProcess(Process):
             self.connect()
             time.sleep(2)
         sub_thread = Thread(target=self.subscriber, args=(self.sub_ip, self.sub_port, self.sub_topic), daemon=True)
-        #pub_thread = Thread(target=self.publisher, args=(self.pub_ip, self.pub_port, self.pub_topic), daemon=True)
-        #pub_thread.start()
+        pub_thread = Thread(target=self.publisher, args=(self.pub_ip, self.pub_port, self.pub_topic), daemon=True)
+        pub_thread.start()
         sub_thread.start()
         while self.running:
             time.sleep(10)
@@ -237,7 +237,6 @@ class SerialProcess(Process):
             msg = base64.b64decode(data)
             msg = msg_2_json(msg)
             self.sendOutputStream(msg)
-            print(self.readInputStream)
                    
     def publisher(self, ip, port, topic):
         """doc"""
@@ -248,7 +247,8 @@ class SerialProcess(Process):
         
         while True:
             msg = self.readInputStream()
-            pub.send_string(f'{topic}, {msg}')
+            #pub.send_string(f'{topic}, {msg}')
+            print(msg)
             time.sleep(self.interval)
         
     def connect(self):
