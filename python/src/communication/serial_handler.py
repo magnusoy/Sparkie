@@ -235,8 +235,8 @@ class SerialProcess(Process):
         while True:
             topic, data = sub.recv_multipart()
             msg = base64.b64decode(data)
-            msg = msg_2_json(msg)
             # print(msg)
+            msg = msg_2_json(msg)
             self.sendOutputStream(msg)
 
     def publisher(self, ip, port, topic):
@@ -291,8 +291,8 @@ class SerialProcess(Process):
         Send data trough Serial.
         @data : msg to be sent out
         """
-
-        content = str(data).replace("'", '"') + '\n'
+        # print(data)
+        content = str(data).replace("'", '"')  # + '\n'
         self.connection.write(content.encode())
 
     def disconnect(self):

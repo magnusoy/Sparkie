@@ -93,7 +93,7 @@ void readButtons()
   else if (green)
   {
     armMotors();
-    changeStateTo(S_WALK);
+    changeStateTo(S_MANUAL);
     digitalWrite(GREEN_LED, HIGH);
   }
 }

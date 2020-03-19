@@ -76,11 +76,11 @@ enum states
 
 };
 
-uint8_t currentState = S_MANUAL;
+uint8_t currentState = S_CONFIGURE;
 uint8_t currentErrors[3] = {NONE};
 uint8_t currentWarnings[3] = {NONE};
 uint8_t idlePosition = false;
-uint8_t calibrated = false;
+uint8_t calibrated = true;
 
 /* Parameters for leg movment*/
 double AMPLITUDEOVER = 70.0;  //NORMAL 70.0;
@@ -88,16 +88,22 @@ double AMPLITUDEUNDER = 30.0; //NORMAL 30.0;
 double LENGHT = 160.0;        //NORMAL 160.0;
 double HEIGHT = 170.0;        //NORMAL 170.0;
 double FREQUENCY = 0.025;     //SLOW 0.0025 //WALK 0.025  //RUN 0.05
+double MANUALX = 0.0;
+double MANUALY = 0.0;
+double MANUALFREQUENCY = 0.00;
+double MANUALHEIGHT = 170.0;
+double MANUALSTEPLEFT = 160.00;
+double MANUALSTEPRIGHT = 160.00;
 
-double PHASESHIFT0X = 3.14; //Alle ben samlet 3.14;    //Trot 3.14;
-double PHASESHIFT0Y = 0;    //Alle ben samlet 0;       //Trot 0;
+double PHASESHIFT0X = 3.14 + MANUALX; //Alle ben samlet 3.14;    //Trot 3.14;
+double PHASESHIFT0Y = 0 + MANUALY;    //Alle ben samlet 0;       //Trot 0;
 
-double PHASESHIFT1X = 3.14; //Alle ben samlet 0;       //Trot 3.14;
-double PHASESHIFT1Y = 3.14; //Alle ben samlet 0;       //Trot 3.14;
+double PHASESHIFT1X = 3.14 + MANUALX; //Alle ben samlet 0;       //Trot 3.14;
+double PHASESHIFT1Y = 3.14 + MANUALY; //Alle ben samlet 0;       //Trot 3.14;
 
-double PHASESHIFT2X = 0;    //Alle ben samlet 3.14;    //Trot 0;
-double PHASESHIFT2Y = 3.14; //Alle ben samlet 0;       //Trot 3.14;
+double PHASESHIFT2X = 0 + MANUALX;    //Alle ben samlet 3.14;    //Trot 0;
+double PHASESHIFT2Y = 3.14 + MANUALY; //Alle ben samlet 0;       //Trot 3.14;
 
-double PHASESHIFT3X = 0; //Alle ben samlet 0;        //Trot 0;
-double PHASESHIFT3Y = 0; //Alle ben samlet 0;        //Trot 0;
-#endif                   // _GLOBALS_H_
+double PHASESHIFT3X = 0 + MANUALX; //Alle ben samlet 0;        //Trot 0;
+double PHASESHIFT3Y = 0 + MANUALY; //Alle ben samlet 0;        //Trot 0;
+#endif                             // _GLOBALS_H_

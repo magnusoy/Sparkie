@@ -29,8 +29,14 @@ LegMovement legMovement;
 
 /* Variable for the intervall time for walking case*/
 Timer walkIntervall;
-int intervall = 1.0; //0.1
+int intervall = 1; //1
 
+// ! TEMP
+float old = FREQUENCY;
+bool flip = false;
+
+Timer XboxReadIntervall;
+int XboxIntervall = 100;
 /* Variable for storing time for leg tracjetory */
 unsigned long n = 0;
 
@@ -54,6 +60,7 @@ void setup()
   initializeLights();
   initializeOdrives();
   Serial.println("Setup finished");
+  Serial.setTimeout(1);
 }
 
 void loop()
@@ -208,14 +215,89 @@ void loop()
     break;
 
   case S_MANUAL:
-    readXboxControllerInputs();
-    //Serial.println(XBOX_CONTROLLER_INPUT.LJ_LEFT_RIGHT);
+
+    if (XboxReadIntervall.hasTimerExpired())
+    {
+      readXboxControllerInputs();
+      //readXboxButtons();
+      XboxReadIntervall.startTimer(XboxIntervall);
+      if (XBOX_CONTROLLER_INPUT.LJ_DOWN_UP != 0)
+      {
+        MANUALFREQUENCY = map(XBOX_CONTROLLER_INPUT.LJ_DOWN_UP, -100, 100, -0.0025, 0.0025);
+        MANUALFREQUENCY = constrain(MANUALFREQUENCY, -0.05, 0.05);
+      }
+      else
+      {
+        MANUALFREQUENCY = 0;
+      }
+
+      if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT != 50)
+      {
+        if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT < 50)
+        {
+          MANUALSTEPLEFT = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, 0, 49, 10, 160);
+        }
+        else
+        {
+          MANUALSTEPRIGHT = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, 51, 100, 160, 10);
+        }
+      }
+
+      if (XBOX_CONTROLLER_INPUT.RJ_DOWN_UP != 0)
+      {
+        MANUALHEIGHT += map(XBOX_CONTROLLER_INPUT.RJ_DOWN_UP, -100, 100, -1, 1);
+        MANUALHEIGHT = constrain(HEIGHT, 70, 249);
+      }
+    }
+
+    if (walkIntervall.hasTimerExpired())
+    {
+      int Odrive = 0;
+      double x = legMovement.stepX(n, MANUALSTEPLEFT, abs(MANUALFREQUENCY), PHASESHIFT0X);
+      double y = legMovement.stepY(n, AMPLITUDEOVER, AMPLITUDEUNDER, MANUALHEIGHT, MANUALFREQUENCY, PHASESHIFT0Y);
+      for (int motor = 0; motor < 2; motor++)
+      {
+        double angle = legMovement.compute(x, y, motor, Odrive);
+        double motorCount = map(angle, -360, 360, -6000, 6000);
+        setMotorPosition(Odrive, motor, motorCount);
+      }
+      Odrive = 1;
+      x = legMovement.stepX(n, MANUALSTEPRIGHT, abs(MANUALFREQUENCY), PHASESHIFT1X);
+      y = legMovement.stepY(n, AMPLITUDEOVER, AMPLITUDEUNDER, MANUALHEIGHT, MANUALFREQUENCY, PHASESHIFT1Y);
+      for (int motor = 0; motor < 2; motor++)
+      {
+        double angle = legMovement.compute(x, y, motor, Odrive);
+        double motorCount = map(angle, -360, 360, -6000, 6000);
+        setMotorPosition(Odrive, motor, motorCount);
+      }
+      Odrive = 2;
+      x = legMovement.stepX(n, MANUALSTEPLEFT, abs(MANUALFREQUENCY), PHASESHIFT2X);
+      y = legMovement.stepY(n, AMPLITUDEOVER, AMPLITUDEUNDER, MANUALHEIGHT, MANUALFREQUENCY, PHASESHIFT2Y);
+      for (int motor = 0; motor < 2; motor++)
+      {
+        double angle = legMovement.compute(x, y, motor, Odrive);
+        double motorCount = map(angle, -360, 360, -6000, 6000);
+        setMotorPosition(Odrive, motor, motorCount);
+      }
+      Odrive = 3;
+      x = legMovement.stepX(n, MANUALSTEPRIGHT, abs(MANUALFREQUENCY), PHASESHIFT3X);
+      y = legMovement.stepY(n, AMPLITUDEOVER, AMPLITUDEUNDER, MANUALHEIGHT, MANUALFREQUENCY, PHASESHIFT3Y);
+      for (int motor = 0; motor < 2; motor++)
+      {
+        double angle = legMovement.compute(x, y, motor, Odrive);
+        double motorCount = map(angle, -360, 360, -6000, 6000);
+        setMotorPosition(Odrive, motor, motorCount);
+      }
+      n += 1;
+      walkIntervall.startTimer(intervall);
+    }
     break;
 
   case S_BACKFLIP:
     break;
 
   case S_CONFIGURE:
+    readXboxControllerInputs();
     break;
 
   case S_RESET:
@@ -278,13 +360,10 @@ void readXboxControllerInputs()
 {
   if (Serial.available() > 0)
   {
+    //const size_t capacity = JSON_ARRAY_SIZE(17) + JSON_ARRAY_SIZE(20);
     const size_t capacity = JSON_OBJECT_SIZE(32) + 512;
     DynamicJsonDocument doc(capacity);
-    DeserializationError error = deserializeJson(doc, Serial);
-    if (error)
-    {
-      return;
-    }
+    deserializeJson(doc, Serial);
     JsonObject obj = doc.as<JsonObject>();
 
     XBOX_CONTROLLER_INPUT.LJ_LEFT_RIGHT = obj["0"];
@@ -304,5 +383,6 @@ void readXboxControllerInputs()
     XBOX_CONTROLLER_INPUT.MB = obj["14"];
     XBOX_CONTROLLER_INPUT.LJ = obj["15"];
     XBOX_CONTROLLER_INPUT.RJ = obj["16"];
+    Serial.println(XBOX_CONTROLLER_INPUT.LJ_LEFT_RIGHT);
   }
 }
