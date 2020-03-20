@@ -2,9 +2,9 @@
 #define _IO_H_
 
 /*  Variables used for blinking a led without delay*/
-int ledState = LOW;
+uint8_t ledState = LOW;
 unsigned long previousMillis = 0;
-const long interval = 1000;
+const long INTERVAL = 1000;
 
 /** Initialize switches to inputs. */
 void initializeButtons()
@@ -37,24 +37,14 @@ void turnOffAllLights()
    Blinking one LED at a desired pace
    @param pin, The pin to blink
 */
-void blinkLight(int pin)
+void blinkLight(uint8_t pin)
 {
   unsigned long currentMillis = millis();
-  if (currentMillis - previousMillis >= interval)
-  {
-    // save the last time you blinked the LED
-    previousMillis = currentMillis;
-    // if the LED is off turn it on and vice-versa:
-    if (ledState == LOW)
-    {
-      ledState = HIGH;
-    }
-    else
-    {
-      ledState = LOW;
-    }
-    // set the LED with the ledState of the variable:
+  if (currentMillis - previousMillis >= INTERVAL)
+  {  
+    ledState = (ledState == LOW) ? HIGH : LOW;
     digitalWrite(pin, ledState);
+    previousMillis = currentMillis;
   }
 }
 
@@ -63,7 +53,7 @@ void blinkLight(int pin)
    given by the parameter newState
    @param newState The new state to set the statemachine to
 */
-void changeStateTo(int newState)
+void changeStateTo(uint8_t newState)
 {
   turnOffAllLights();
   idlePosition = false;
@@ -73,10 +63,10 @@ void changeStateTo(int newState)
 /** Reads all the buttons and change the state if a button is pressed */
 void readButtons()
 {
-  int green = digitalRead(GREEN_BTN);
-  int red = digitalRead(RED_BTN);
-  int blue = digitalRead(BLUE_BTN);
-  int orange = digitalRead(ORANGE_BTN);
+  uint8_t green = digitalRead(GREEN_BTN);
+  uint8_t red = digitalRead(RED_BTN);
+  uint8_t blue = digitalRead(BLUE_BTN);
+  uint8_t orange = digitalRead(ORANGE_BTN);
   if (red)
   {
     disarmMotors();

@@ -31,7 +31,6 @@ LegMovement legMovement;
 Timer walkIntervall;
 int intervall = 1; //1
 
-// ! TEMP
 float old = FREQUENCY;
 bool flip = false;
 
@@ -354,7 +353,7 @@ void readJSONDocumentFromSerial()
   //JsonObject obj = serial.read();
   //TODO decode JSON
   //recCommand = obj["command"];
-}
+}XboxIntervall
 
 void readXboxControllerInputs()
 {
@@ -383,6 +382,6 @@ void readXboxControllerInputs()
     XBOX_CONTROLLER_INPUT.MB = obj["14"];
     XBOX_CONTROLLER_INPUT.LJ = obj["15"];
     XBOX_CONTROLLER_INPUT.RJ = obj["16"];
-    Serial.println(XBOX_CONTROLLER_INPUT.LJ_LEFT_RIGHT);
+    //Serial.println(XBOX_CONTROLLER_INPUT.LJ_LEFT_RIGHT);
   }
 }
