@@ -27,6 +27,7 @@ from widgets.autonomous import AutonomousWindow
 from widgets.manual import ManualWindow
 from widgets.interact import InteractWindow
 from widgets.testing import TestingWindow
+from widgets.path_generator import PathGeneratorWindow
 
 
 class Controller:
@@ -39,7 +40,7 @@ class Controller:
         as the first window to be presented."""
 
         self.icon = '../static/img/favicon/favicon.png'
-        self.showManualWindow()
+        self.showPathGenerator()
 
     def showLoginWindow(self):
         """Creates a new login window, and connects an
@@ -108,4 +109,10 @@ class Controller:
         self.configure.setWindowIcon(QtGui.QIcon(self.icon))
         self.configure.setFixedSize(720, 400)
         self.configure.show()
+    
+    def showPathGenerator(self):
+        self.path = PathGeneratorWindow()
+        self.path.setWindowIcon(QtGui.QIcon(self.icon))
+        self.path.setFixedSize(305, 267)
+        self.path.show()
     

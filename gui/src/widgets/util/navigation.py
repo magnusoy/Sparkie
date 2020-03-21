@@ -64,13 +64,13 @@ class Path(object):
             for waypoint in self.waypoints:
                 f.write(f'{waypoint}\n')
             
-    
     def load_path(self, filename):
         with open(filename, 'r') as f:
             lines = f.readlines()
             for line in lines:
                 x, z = line.split(',')
                 self.waypoints.append(Waypoint(x, z))
+
 
 
 if __name__ == "__main__":
