@@ -31,7 +31,6 @@ LegMovement legMovement;
 Timer walkIntervall;
 uint8_t intervall = 1; //1
 
-// ! TEMP
 float old = FREQUENCY;
 bool flip = false;
 
