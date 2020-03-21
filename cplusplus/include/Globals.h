@@ -76,11 +76,11 @@ enum states
 
 };
 
-uint8_t currentState = S_CONFIGURE;
+uint8_t currentState = S_IDLE;
 uint8_t currentErrors[3] = {NONE};
 uint8_t currentWarnings[3] = {NONE};
 uint8_t idlePosition = false;
-uint8_t calibrated = true;
+uint8_t calibrated = false;
 
 /* Parameters for leg movment*/
 double AMPLITUDEOVER = 70.0;  //NORMAL 70.0;

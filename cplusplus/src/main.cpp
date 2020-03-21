@@ -29,14 +29,14 @@ LegMovement legMovement;
 
 /* Variable for the intervall time for walking case*/
 Timer walkIntervall;
-int intervall = 1; //1
+uint8_t intervall = 1; //1
 
 // ! TEMP
 float old = FREQUENCY;
 bool flip = false;
 
 Timer XboxReadIntervall;
-int XboxIntervall = 100;
+uint8_t XboxIntervall = 100;
 /* Variable for storing time for leg tracjetory */
 unsigned long n = 0;
 
@@ -48,7 +48,7 @@ unsigned long walkTime;
 Timer airTime;
 Timer groundTime;
 bool runned = false;
-int jump = 0;
+uint8_t jump = 0;
 
 void readXboxControllerInputs();
 
@@ -223,7 +223,7 @@ void loop()
       XboxReadIntervall.startTimer(XboxIntervall);
       if (XBOX_CONTROLLER_INPUT.LJ_DOWN_UP != 0)
       {
-        MANUALFREQUENCY = map(XBOX_CONTROLLER_INPUT.LJ_DOWN_UP, -100, 100, -0.0025, 0.0025);
+        MANUALFREQUENCY = map(XBOX_CONTROLLER_INPUT.LJ_DOWN_UP, -100, 100, -0.025, 0.025);
         MANUALFREQUENCY = constrain(MANUALFREQUENCY, -0.05, 0.05);
       }
       else
@@ -231,22 +231,28 @@ void loop()
         MANUALFREQUENCY = 0;
       }
 
-      if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT != 50)
+      if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT <= 45 || XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT >= 55)
       {
-        if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT < 50)
+        if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT < 45)
         {
-          MANUALSTEPLEFT = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, 0, 49, 10, 160);
+          MANUALSTEPLEFT = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, 0, 44, 10, 160);
         }
-        else
+        else if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT > 55)
         {
-          MANUALSTEPRIGHT = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, 51, 100, 160, 10);
+          MANUALSTEPRIGHT = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, 56, 100, 160, 10);
         }
+      }
+      else
+      {
+        MANUALSTEPLEFT = 160.0;
+        MANUALSTEPRIGHT = 160.0;
       }
 
       if (XBOX_CONTROLLER_INPUT.RJ_DOWN_UP != 0)
       {
         MANUALHEIGHT += map(XBOX_CONTROLLER_INPUT.RJ_DOWN_UP, -100, 100, -1, 1);
-        MANUALHEIGHT = constrain(HEIGHT, 70, 249);
+        MANUALHEIGHT = constrain(MANUALHEIGHT, 100, 220); //TODO: make constrain correct (constrain(MANUALHEIGHT, 80+ampOver, 249-ampUnder))
+        Serial.println(MANUALHEIGHT);
       }
     }
 
@@ -301,13 +307,13 @@ void loop()
     break;
 
   case S_RESET:
-    //turnOffAllLights();
+    turnOffAllLights();
+    checkForErrors();
+    delay(200);
+    resetMotorsErrors();
     //checkForErrors();
-    //delay(200);
-    //resetMotorsErrors();
-    //checkForErrors();
-    readConfig();
-    delay(500);
+    //readConfig();
+    //delay(500);
     //setPreCalibrated(true);
     //saveConfigOdrives();
     //delay(500);
@@ -369,8 +375,8 @@ void readXboxControllerInputs()
     XBOX_CONTROLLER_INPUT.LJ_LEFT_RIGHT = obj["0"];
     XBOX_CONTROLLER_INPUT.LJ_DOWN_UP = obj["1"];
     XBOX_CONTROLLER_INPUT.LT = obj["2"];
-    XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT = obj["3"];
-    XBOX_CONTROLLER_INPUT.RJ_DOWN_UP = obj["4"];
+    XBOX_CONTROLLER_INPUT.RJ_DOWN_UP = obj["3"];
+    XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT = obj["4"];
     XBOX_CONTROLLER_INPUT.RT = obj["5"];
     XBOX_CONTROLLER_INPUT.A = obj["6"];
     XBOX_CONTROLLER_INPUT.B = obj["7"];
@@ -383,6 +389,5 @@ void readXboxControllerInputs()
     XBOX_CONTROLLER_INPUT.MB = obj["14"];
     XBOX_CONTROLLER_INPUT.LJ = obj["15"];
     XBOX_CONTROLLER_INPUT.RJ = obj["16"];
-    Serial.println(XBOX_CONTROLLER_INPUT.LJ_LEFT_RIGHT);
   }
 }
