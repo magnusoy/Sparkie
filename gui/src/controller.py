@@ -24,7 +24,7 @@ from widgets.login import LoginWindow
 from widgets.welcome import WelcomeWindow
 from widgets.configure import ConfigureWindow
 from widgets.autonomous import AutonomousWindow
-from widgets.manual import ManualWindow
+#from widgets.manual import ManualWindow
 from widgets.interact import InteractWindow
 from widgets.testing import TestingWindow
 from widgets.path_generator import PathGeneratorWindow
@@ -111,8 +111,10 @@ class Controller:
         self.configure.show()
     
     def showPathGenerator(self):
+        """Creates a new path generator window."""
+
         self.path = PathGeneratorWindow()
         self.path.setWindowIcon(QtGui.QIcon(self.icon))
-        self.path.setFixedSize(305, 267)
+        self.path.setFixedSize(440, 362)
         self.path.show()
     

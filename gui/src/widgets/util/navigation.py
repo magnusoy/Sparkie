@@ -4,8 +4,8 @@ class Waypoint(object):
 
     def __init__(self, x, z):
         if type(x) is str:
-            self.x = int(x)
-            self.z = int(z)
+            self.x = float(x)
+            self.z = float(z)
         else:        
             self.x = x
             self.z = z
@@ -31,9 +31,15 @@ class Path(object):
     
     def add_waypoint(self, waypoint):
         self.waypoints.append(waypoint)
+        self.increment()
     
     def remove_waypoint(self, index):
-        self.waypoints.remove(index)
+        try:
+            self.waypoints.pop(index)
+            self.decrement()
+            return True;
+        except IndexError:
+            return False;
     
     def clear_waypoints(self):
         self.waypoints.clear()

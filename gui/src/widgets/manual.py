@@ -25,8 +25,6 @@ from PyQt5 import QtWidgets, uic, QtCore, QtGui
 
 # Importing from local source
 from config import *
-from .util.subscriber import Subscriber
-from .util.client import Client
 from .util.xbox_controller import XboxController
 
 

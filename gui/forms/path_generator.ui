@@ -6,18 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>304</width>
-    <height>267</height>
+    <width>456</width>
+    <height>362</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Path generator</string>
   </property>
   <widget class="QToolButton" name="addBtn">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>100</y>
+     <x>84</x>
+     <y>177</y>
      <width>131</width>
      <height>161</height>
     </rect>
@@ -39,8 +39,8 @@
   <widget class="QToolButton" name="removeBtn">
    <property name="geometry">
     <rect>
-     <x>160</x>
-     <y>100</y>
+     <x>234</x>
+     <y>177</y>
      <width>131</width>
      <height>161</height>
     </rect>
@@ -59,39 +59,39 @@
     </size>
    </property>
   </widget>
-  <widget class="QToolButton" name="newBtn">
+  <widget class="QPushButton" name="newBtn">
    <property name="geometry">
     <rect>
      <x>14</x>
      <y>10</y>
-     <width>41</width>
-     <height>21</height>
+     <width>51</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
     <string>New</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="loadBtn">
+  <widget class="QPushButton" name="loadBtn">
    <property name="geometry">
     <rect>
-     <x>74</x>
+     <x>120</x>
      <y>10</y>
-     <width>41</width>
-     <height>21</height>
+     <width>51</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
     <string>Load</string>
    </property>
   </widget>
-  <widget class="QToolButton" name="connectbtn">
+  <widget class="QPushButton" name="connectBtn">
    <property name="geometry">
     <rect>
-     <x>211</x>
+     <x>334</x>
      <y>10</y>
-     <width>81</width>
-     <height>21</height>
+     <width>91</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
@@ -101,8 +101,8 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>38</x>
-     <y>63</y>
+     <x>91</x>
+     <y>140</y>
      <width>21</width>
      <height>16</height>
     </rect>
@@ -114,9 +114,9 @@
   <widget class="QLabel" name="xLabel">
    <property name="geometry">
     <rect>
-     <x>66</x>
-     <y>63</y>
-     <width>41</width>
+     <x>119</x>
+     <y>140</y>
+     <width>51</width>
      <height>16</height>
     </rect>
    </property>
@@ -127,9 +127,9 @@
   <widget class="QLabel" name="yLabel">
    <property name="geometry">
     <rect>
-     <x>146</x>
-     <y>63</y>
-     <width>41</width>
+     <x>212</x>
+     <y>140</y>
+     <width>51</width>
      <height>16</height>
     </rect>
    </property>
@@ -140,8 +140,8 @@
   <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
-     <x>117</x>
-     <y>63</y>
+     <x>183</x>
+     <y>140</y>
      <width>21</width>
      <height>16</height>
     </rect>
@@ -153,9 +153,9 @@
   <widget class="QLabel" name="zLabel">
    <property name="geometry">
     <rect>
-     <x>226</x>
-     <y>63</y>
-     <width>41</width>
+     <x>310</x>
+     <y>140</y>
+     <width>51</width>
      <height>16</height>
     </rect>
    </property>
@@ -166,8 +166,8 @@
   <widget class="QLabel" name="label_6">
    <property name="geometry">
     <rect>
-     <x>196</x>
-     <y>63</y>
+     <x>280</x>
+     <y>140</y>
      <width>21</width>
      <height>16</height>
     </rect>
@@ -176,7 +176,37 @@
     <string>Z:</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="saveBtn">
+   <property name="geometry">
+    <rect>
+     <x>227</x>
+     <y>10</y>
+     <width>51</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
+ <designerdata>
+  <property name="gridDeltaX">
+   <number>10</number>
+  </property>
+  <property name="gridDeltaY">
+   <number>10</number>
+  </property>
+  <property name="gridSnapX">
+   <bool>true</bool>
+  </property>
+  <property name="gridSnapY">
+   <bool>true</bool>
+  </property>
+  <property name="gridVisible">
+   <bool>true</bool>
+  </property>
+ </designerdata>
 </ui>
