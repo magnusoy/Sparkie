@@ -1,17 +1,35 @@
+# #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+This module ...
+
+__author__ = "Magnus Kvendseth Øye"
+__copyright__ = "Copyright 2019, Sparkie Quadruped Robot"
+__credits__ = ["Magnus Kvendseth Øye", "Petter Drønnen", "Vegard Solheim"]
+__version__ = "1.0.0"
+__license__ = "MIT"
+__maintainer__ = "Magnus Kvendseth Øye"
+__email__ = "magnus.oye@gmail.com"
+__status__ = "Development"
+"""
+
+# Importing package
 from os import path
 
 class Waypoint(object):
 
-    def __init__(self, x, z):
+    def __init__(self, x=0, z=0, action=0):
         if type(x) is str:
             self.x = float(x)
             self.z = float(z)
         else:        
             self.x = x
             self.z = z
+        self.action = action
     
     def __repr__(self):
-        return f'{self.x},{self.z}'
+        return f'{self.x},{self.z},{self.action}'
     
 
 class Path(object):
