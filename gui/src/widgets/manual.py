@@ -25,9 +25,8 @@ from PyQt5 import QtWidgets, uic, QtCore, QtGui
 
 # Importing from local source
 from config import *
-from .util.subscriber import Subscriber
-from .util.client import Client
 from .util.xbox_controller import XboxController
+from .util.navigation import Path
 
 
 class ManualWindow(QtWidgets.QDialog):
@@ -124,6 +123,11 @@ class ManualWindow(QtWidgets.QDialog):
             self.change_mode_btn.setText("ROBOT CAMERAS")
             self.xbox_controller_frame.hide()
             self.video_frame.show()
+        elif self.mode == 2:
+            self.change_mode_btn.setText("WAYPOINTS")
+            self.xbox_controller_frame.hide()
+            self.video_frame.hide()
+            #self.path_frame.show()
 
     def set_walk_btn(self):
         if self.walk_btn.isChecked():
@@ -434,3 +438,39 @@ class XboxControllerThread(QtCore.QThread):
                         str(self.xbox_controller.controlValues).encode())])
                     print(self.xbox_controller.controlValues)
                 time.sleep(0.1)
+
+
+class WaypointThread(QtCore.QThread):
+
+    power_on = QtCore.pyqtSignal()
+
+    PORT = 5592
+
+    context = zmq.Context()
+    waypoint_socket = context.socket(zmq.PUB)
+    waypoint_socket.bind(f'tcp://*:{PORT}')
+
+    path = Path()
+
+    threadactive = True
+    active = False
+
+    @QtCore.pyqtSlot()
+    def close_socket(self):
+        self.threadactive = False
+        print("Closing --> waypoint thread")
+
+    @QtCore.pyqtSlot(bool)
+    def activate(self, power_on):
+        self.active = power_on
+        print("Active being called")
+
+    def run(self):
+        while self.threadactive:
+            if self.active:
+                if self.waypoint_socket.check_events():
+                    self.waypoint_socket.send_multipart([b'waypoint', base64.b64encode(
+                        str(self.xbox_controller.controlValues).encode())])
+                    print(self.xbox_controller.controlValues)
+                time.sleep(0.1)
+

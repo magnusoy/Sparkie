@@ -1,17 +1,35 @@
+# #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+This module ...
+
+__author__ = "Magnus Kvendseth Øye"
+__copyright__ = "Copyright 2019, Sparkie Quadruped Robot"
+__credits__ = ["Magnus Kvendseth Øye", "Petter Drønnen", "Vegard Solheim"]
+__version__ = "1.0.0"
+__license__ = "MIT"
+__maintainer__ = "Magnus Kvendseth Øye"
+__email__ = "magnus.oye@gmail.com"
+__status__ = "Development"
+"""
+
+# Importing package
 from os import path
 
 class Waypoint(object):
 
-    def __init__(self, x, z):
+    def __init__(self, x=0, z=0, action=0):
         if type(x) is str:
-            self.x = int(x)
-            self.z = int(z)
+            self.x = float(x)
+            self.z = float(z)
         else:        
             self.x = x
             self.z = z
+        self.action = action
     
     def __repr__(self):
-        return f'{self.x},{self.z}'
+        return f'{self.x},{self.z},{self.action}'
     
 
 class Path(object):
@@ -31,9 +49,15 @@ class Path(object):
     
     def add_waypoint(self, waypoint):
         self.waypoints.append(waypoint)
+        self.increment()
     
     def remove_waypoint(self, index):
-        self.waypoints.remove(index)
+        try:
+            self.waypoints.pop(index)
+            self.decrement()
+            return True;
+        except IndexError:
+            return False;
     
     def clear_waypoints(self):
         self.waypoints.clear()
@@ -64,13 +88,13 @@ class Path(object):
             for waypoint in self.waypoints:
                 f.write(f'{waypoint}\n')
             
-    
     def load_path(self, filename):
         with open(filename, 'r') as f:
             lines = f.readlines()
             for line in lines:
                 x, z = line.split(',')
                 self.waypoints.append(Waypoint(x, z))
+
 
 
 if __name__ == "__main__":

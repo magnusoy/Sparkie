@@ -15,7 +15,7 @@ __status__ = "Development"
 """
 
 
-MAX_MODES = 1
+MAX_MODES = 2
 JOYSTICK_ONLY_MODE = 0
 CAMERAS_MODE = 1
 
