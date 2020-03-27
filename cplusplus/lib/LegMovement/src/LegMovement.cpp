@@ -8,11 +8,14 @@
 */
 LegMovement::LegMovement(void) {}
 
-/*
-
-
+/**
+ * returns the angle to put the motor in
+ * @param x x value
+ * @param y y value
+ * @param motor motor 0 or 1
+ * @param ODrive Odrive 0-3
 */
-double LegMovement::compute(double x, double y, uint8_t motor, int ODrive)
+float LegMovement::compute(float x, float y, uint8_t motor, int ODrive)
 {
   if ((ODrive == 0) || (ODrive == 2))
   {
@@ -25,11 +28,11 @@ double LegMovement::compute(double x, double y, uint8_t motor, int ODrive)
     OUTER = 0;
   }
 
-  double alpha = 0;
-  double r = sqrt((x * x) + (y * y));
+  float alpha = 0;
+  float r = sqrt((x * x) + (y * y));
   r = constrain(r, 80, 249);
-  double theta = atan(x / y);
-  double gamma = acos((8100 + (r * r) - 25600) / (180 * r));
+  float theta = atan(x / y);
+  float gamma = acos((8100 + (r * r) - 25600) / (180 * r));
 
   if (y < 0)
   {
@@ -46,7 +49,7 @@ double LegMovement::compute(double x, double y, uint8_t motor, int ODrive)
   {
     if (x == 0)
     {
-      double offsetInRad;
+      float offsetInRad;
       if ((ODrive == 0) || (ODrive == 2))
       {
         offsetInRad = -3.14;
@@ -92,25 +95,22 @@ double LegMovement::compute(double x, double y, uint8_t motor, int ODrive)
   return alpha;
 }
 
-/*
-
-
+/**
+ * Returns x
 */
-double LegMovement::stepX(unsigned long n, double lenght, double frequency, double phaseShift)
+float LegMovement::stepX(float n, float lenght, float frequency, float phaseShift)
 {
-
-  double x = lenght / 2 * sin(frequency * n + phaseShift);
+  float x = lenght / 2 * sin(frequency * n + phaseShift);
   return x;
 }
 
-/*
-
-
+/**
+ * Returns y
 */
-double LegMovement::stepY(unsigned long n, double amplitudeOver, double amplitudeUnder, double robotHeight, double frequency, double phaseShift)
+float LegMovement::stepY(float n, float amplitudeOver, float amplitudeUnder, float robotHeight, float frequency, float phaseShift)
 {
-  double y;
-  double wave = cos(frequency * n + phaseShift);
+  float y;
+  float wave = cos(frequency * n + phaseShift);
   if (wave > 0)
   {
     y = -robotHeight + amplitudeOver * wave;

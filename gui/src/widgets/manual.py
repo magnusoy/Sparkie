@@ -407,7 +407,7 @@ class XboxControllerThread(QtCore.QThread):
     xbox_socket.bind(f'tcp://*:{PORT}')
 
     xbox_controller = XboxController(
-        None, deadzone=30, scale=100, invertYAxis=True)
+        None, deadzone=10, scale=100, invertYAxis=True)
     xbox_controller.setupControlCallback(
         xbox_controller.XboxControls.LTHUMBX, None)
     xbox_controller.setupControlCallback(

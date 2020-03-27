@@ -1,5 +1,5 @@
-#ifndef _IO_H_
-#define _IO_H_
+#ifndef IO_H_
+#define IO_H_
 
 /*  Variables used for blinking a led without delay*/
 uint8_t ledState = LOW;
@@ -79,12 +79,13 @@ void readButtons()
   else if (blue)
   {
     changeStateTo(S_CALIBRATE);
+    digitalWrite(BLUE_LED, HIGH);
   }
   else if (green)
   {
     armMotors();
-    changeStateTo(S_MANUAL);
+    changeStateTo(S_WALK);
     digitalWrite(GREEN_LED, HIGH);
   }
 }
-#endif // _IO_H_
+#endif // IO_H_

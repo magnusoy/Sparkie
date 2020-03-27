@@ -81,6 +81,12 @@ float ODriveArduino::GetVelocity(int motor_number)
   return ODriveArduino::readFloat();
 }
 
+float ODriveArduino::GetCurrent(int motor_number)
+{
+  serial_ << "r axis" << motor_number << ".motor.current_control.Iq_measured\n";
+  return ODriveArduino::readFloat();
+}
+
 int32_t ODriveArduino::readInt()
 {
   return readString().toInt();

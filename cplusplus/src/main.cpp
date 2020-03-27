@@ -5,49 +5,38 @@
   ArduinoJSON - https://github.com/bblanchon/ArduinoJson
   -----------------------------------------------------------
   Code by: Magnus Kvendseth Øye, Vegard Solheim, Petter Drønnen
-  Date: 10.02-2020
-  Version: 0.4
+  Date: 27.03-2020
+  Version: 0.5
   Website: https://github.com/magnusoy/Sparkie
 */
 
 // Including libraries and headers
 #include <Arduino.h>
-#include <../lib/ArduinoJson/src/ArduinoJson.h>
-#include <../lib/ODriveArduino/src/ODriveArduino.h>
-#include <../lib/SerialHandler/src/SerialHandler.h>
-#include <../lib/LegMovement/src/LegMovement.h>
-#include <../lib/Timer/src/Timer.h>
+#include "../lib/ArduinoJson/src/ArduinoJson.h"
+#include "../lib/ODriveArduino/src/ODriveArduino.h"
+#include "../lib/SerialHandler/src/SerialHandler.h"
+#include "../lib/Timer/src/Timer.h"
 
 #include "Globals.h"
 #include "Constants.h"
 #include "OdriveParameters.h"
 #include "IO.h"
 #include "XboxController.h"
+#include "Locomotion.h"
 
 SerialHandler serial(BAUDRATE, CAPACITY);
-LegMovement legMovement;
 
 /* Variable for the intervall time for walking case*/
 Timer walkIntervall;
 uint8_t intervall = 1; //1
 
-float old = FREQUENCY;
-bool flip = false;
-
+/*  */
 Timer XboxReadIntervall;
 uint8_t XboxIntervall = 100;
-/* Variable for storing time for leg tracjetory */
-unsigned long n = 0;
 
 /* Variable for storing loop time */
 unsigned long loopTime;
 unsigned long walkTime;
-
-/* Variable for jump fuction*/
-Timer airTime;
-Timer groundTime;
-bool runned = false;
-uint8_t jump = 0;
 
 void readXboxControllerInputs();
 
@@ -60,34 +49,23 @@ void setup()
   initializeOdrives();
   Serial.println("Setup finished");
   Serial.setTimeout(1);
+  initializeLegTracjetory();
+  set_frequency(1.0f, autoParams);
+  set_frequency(1.0f, manualParams);
 }
 
 void loop()
 {
   //loopTime = micros();
   //readOdriveMotorPositions(hwSerials, odrives);
+  //readOdriveMotorCurrent();
   switch (currentState)
   {
   case S_IDLE:
     blinkLight(GREEN_LED);
     if (!idlePosition && calibrated)
     {
-      armMotors();
-      delay(100);
-      double x = 0;
-      double y = -160;
-      for (int Odrive = 0; Odrive < 4; Odrive++)
-      {
-        for (int motor = 0; motor < 2; motor++)
-        {
-          double angle = legMovement.compute(x, y, motor, Odrive);
-          double motorCount = map(angle, -360, 360, -6000, 6000);
-          setMotorPosition(Odrive, motor, motorCount);
-        }
-      }
-      delay(100);
-      disarmMotors();
-      idlePosition = true;
+      setIdlePosition();
     }
     break;
 
@@ -105,50 +83,14 @@ void loop()
     break;
 
   case S_WALK:
+    // walkTime = micros();
     if (walkIntervall.hasTimerExpired())
     {
-      // walkTime = micros();
-      int Odrive = 0;
-      double x = legMovement.stepX(n, LENGHT, FREQUENCY, PHASESHIFT0X);
-      double y = legMovement.stepY(n, AMPLITUDEOVER, AMPLITUDEUNDER, HEIGHT, FREQUENCY, PHASESHIFT0Y);
-      for (int motor = 0; motor < 2; motor++)
-      {
-        double angle = legMovement.compute(x, y, motor, Odrive);
-        double motorCount = map(angle, -360, 360, -6000, 6000);
-        setMotorPosition(Odrive, motor, motorCount);
-      }
-      Odrive = 1;
-      x = legMovement.stepX(n, LENGHT, FREQUENCY, PHASESHIFT1X);
-      y = legMovement.stepY(n, AMPLITUDEOVER, AMPLITUDEUNDER, HEIGHT, FREQUENCY, PHASESHIFT1Y);
-      for (int motor = 0; motor < 2; motor++)
-      {
-        double angle = legMovement.compute(x, y, motor, Odrive);
-        double motorCount = map(angle, -360, 360, -6000, 6000);
-        setMotorPosition(Odrive, motor, motorCount);
-      }
-      Odrive = 2;
-      x = legMovement.stepX(n, LENGHT, FREQUENCY, PHASESHIFT2X);
-      y = legMovement.stepY(n, AMPLITUDEOVER, AMPLITUDEUNDER, HEIGHT, FREQUENCY, PHASESHIFT2Y);
-      for (int motor = 0; motor < 2; motor++)
-      {
-        double angle = legMovement.compute(x, y, motor, Odrive);
-        double motorCount = map(angle, -360, 360, -6000, 6000);
-        setMotorPosition(Odrive, motor, motorCount);
-      }
-      Odrive = 3;
-      x = legMovement.stepX(n, LENGHT, FREQUENCY, PHASESHIFT3X);
-      y = legMovement.stepY(n, AMPLITUDEOVER, AMPLITUDEUNDER, HEIGHT, FREQUENCY, PHASESHIFT3Y);
-      for (int motor = 0; motor < 2; motor++)
-      {
-        double angle = legMovement.compute(x, y, motor, Odrive);
-        double motorCount = map(angle, -360, 360, -6000, 6000);
-        setMotorPosition(Odrive, motor, motorCount);
-      }
-      n += 1;
       walkIntervall.startTimer(intervall);
-      //  Serial.print("Walk Time: ");
-      // Serial.println(micros() - loopTime);
+      locomotion(autoParams);
     }
+    //  Serial.print("Walk Time: ");
+    // Serial.println(micros() - walkTime);
     break;
 
   case S_RUN:
@@ -156,145 +98,27 @@ void loop()
 
   case S_JUMP:
   {
-    double x = 0;
-    double y;
-    switch (jump)
-    {
-    case 0:
-      y = -80;
-
-      if (!runned)
-      {
-        for (int Odrive = 0; Odrive < 4; Odrive++)
-        {
-          for (int motor = 0; motor < 2; motor++)
-          {
-            double angle = legMovement.compute(x, y, motor, Odrive);
-            double motorCount = map(angle, -360, 360, -6000, 6000);
-            setMotorPosition(Odrive, motor, motorCount);
-          }
-        }
-        groundTime.startTimer(500);
-        runned = true;
-      }
-      if (groundTime.hasTimerExpired())
-      {
-        jump = 1;
-        runned = false;
-      }
-      break;
-
-    case 1:
-      y = -200;
-      if (!runned)
-      {
-        for (int Odrive = 0; Odrive < 4; Odrive++)
-        {
-          for (int motor = 0; motor < 2; motor++)
-          {
-            double angle = legMovement.compute(x, y, motor, Odrive);
-            double motorCount = map(angle, -360, 360, -6000, 6000);
-            setMotorPosition(Odrive, motor, motorCount);
-          }
-        }
-        airTime.startTimer(1000);
-        runned = true;
-      }
-      if (airTime.hasTimerExpired())
-      {
-        jump = 0;
-        runned = false;
-      }
-      break;
-    }
+    jumpCommand();
   }
+
   break;
 
   case S_AUTONOMOUS:
     break;
 
   case S_MANUAL:
-
     if (XboxReadIntervall.hasTimerExpired())
     {
-      readXboxControllerInputs();
-      //readXboxButtons();
       XboxReadIntervall.startTimer(XboxIntervall);
-      if (XBOX_CONTROLLER_INPUT.LJ_DOWN_UP != 0)
-      {
-        MANUALFREQUENCY = map(XBOX_CONTROLLER_INPUT.LJ_DOWN_UP, -100, 100, -0.025, 0.025);
-        MANUALFREQUENCY = constrain(MANUALFREQUENCY, -0.05, 0.05);
-      }
-      else
-      {
-        MANUALFREQUENCY = 0;
-      }
-
-      if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT <= 45 || XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT >= 55)
-      {
-        if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT < 45)
-        {
-          MANUALSTEPLEFT = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, 0, 44, 10, 160);
-        }
-        else if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT > 55)
-        {
-          MANUALSTEPRIGHT = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, 56, 100, 160, 10);
-        }
-      }
-      else
-      {
-        MANUALSTEPLEFT = 160.0;
-        MANUALSTEPRIGHT = 160.0;
-      }
-
-      if (XBOX_CONTROLLER_INPUT.RJ_DOWN_UP != 0)
-      {
-        MANUALHEIGHT += map(XBOX_CONTROLLER_INPUT.RJ_DOWN_UP, -100, 100, -1, 1);
-        MANUALHEIGHT = constrain(MANUALHEIGHT, 100, 220); //TODO: make constrain correct (constrain(MANUALHEIGHT, 80+ampOver, 249-ampUnder))
-        Serial.println(MANUALHEIGHT);
-      }
+      readXboxControllerInputs();
+      readXboxButtons();
+      mapXboxInputs();
     }
 
     if (walkIntervall.hasTimerExpired())
     {
-      int Odrive = 0;
-      double x = legMovement.stepX(n, MANUALSTEPLEFT, abs(MANUALFREQUENCY), PHASESHIFT0X);
-      double y = legMovement.stepY(n, AMPLITUDEOVER, AMPLITUDEUNDER, MANUALHEIGHT, MANUALFREQUENCY, PHASESHIFT0Y);
-      for (int motor = 0; motor < 2; motor++)
-      {
-        double angle = legMovement.compute(x, y, motor, Odrive);
-        double motorCount = map(angle, -360, 360, -6000, 6000);
-        setMotorPosition(Odrive, motor, motorCount);
-      }
-      Odrive = 1;
-      x = legMovement.stepX(n, MANUALSTEPRIGHT, abs(MANUALFREQUENCY), PHASESHIFT1X);
-      y = legMovement.stepY(n, AMPLITUDEOVER, AMPLITUDEUNDER, MANUALHEIGHT, MANUALFREQUENCY, PHASESHIFT1Y);
-      for (int motor = 0; motor < 2; motor++)
-      {
-        double angle = legMovement.compute(x, y, motor, Odrive);
-        double motorCount = map(angle, -360, 360, -6000, 6000);
-        setMotorPosition(Odrive, motor, motorCount);
-      }
-      Odrive = 2;
-      x = legMovement.stepX(n, MANUALSTEPLEFT, abs(MANUALFREQUENCY), PHASESHIFT2X);
-      y = legMovement.stepY(n, AMPLITUDEOVER, AMPLITUDEUNDER, MANUALHEIGHT, MANUALFREQUENCY, PHASESHIFT2Y);
-      for (int motor = 0; motor < 2; motor++)
-      {
-        double angle = legMovement.compute(x, y, motor, Odrive);
-        double motorCount = map(angle, -360, 360, -6000, 6000);
-        setMotorPosition(Odrive, motor, motorCount);
-      }
-      Odrive = 3;
-      x = legMovement.stepX(n, MANUALSTEPRIGHT, abs(MANUALFREQUENCY), PHASESHIFT3X);
-      y = legMovement.stepY(n, AMPLITUDEOVER, AMPLITUDEUNDER, MANUALHEIGHT, MANUALFREQUENCY, PHASESHIFT3Y);
-      for (int motor = 0; motor < 2; motor++)
-      {
-        double angle = legMovement.compute(x, y, motor, Odrive);
-        double motorCount = map(angle, -360, 360, -6000, 6000);
-        setMotorPosition(Odrive, motor, motorCount);
-      }
-      n += 1;
       walkIntervall.startTimer(intervall);
+      locomotion(manualParams);
     }
     break;
 
@@ -302,7 +126,9 @@ void loop()
     break;
 
   case S_CONFIGURE:
-    readXboxControllerInputs();
+    //readXboxControllerInputs();
+    //readOdriveMotorCurrent();
+    //Serial.println(motorcurrent[0][0]);
     break;
 
   case S_RESET:
@@ -361,6 +187,9 @@ void readJSONDocumentFromSerial()
   //recCommand = obj["command"];
 }
 
+/**
+ * Maps the Serial input to corresponding variables
+*/
 void readXboxControllerInputs()
 {
   if (Serial.available() > 0)

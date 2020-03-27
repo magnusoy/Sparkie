@@ -15,13 +15,14 @@ __status__ = "Development"
 """
 
 
-import os, sys
+import time
+import threading
+from pygame.locals import *
+import pygame
+import os
+import sys
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 os.environ["SDL_VIDEODRIVER"] = "dummy"
-import pygame
-from pygame.locals import *
-import threading
-import time
 
 """
 NOTES - pygame events and values
@@ -110,7 +111,7 @@ class XboxController(threading.Thread):
                       PyGameAxis.LTHUMBY: XboxControls.LTHUMBY,
                       PyGameAxis.RTHUMBX: XboxControls.RTHUMBX,
                       PyGameAxis.RTHUMBY: XboxControls.RTHUMBY}
-    
+
     # Map between pygame axis (trigger) ids and xbox control ids
     TRIGGERCONTROLMAP = {PyGameAxis.RTRIGGER: XboxControls.RTRIGGER,
                          PyGameAxis.LTRIGGER: XboxControls.LTRIGGER}
@@ -127,18 +128,18 @@ class XboxController(threading.Thread):
                         PyGameButtons.XBOX: XboxControls.XBOX,
                         PyGameButtons.LEFTTHUMB: XboxControls.LEFTTHUMB,
                         PyGameButtons.RIGHTTHUMB: XboxControls.RIGHTTHUMB}
-                        
-    def __init__(self,
-                 controllerCallBack = None,
-                 joystickNo = 0,
-                 deadzone = 0.1,
-                 scale = 1,
-                 invertYAxis = False):
 
-        #setup threading
+    def __init__(self,
+                 controllerCallBack=None,
+                 joystickNo=0,
+                 deadzone=0.1,
+                 scale=1,
+                 invertYAxis=False):
+
+        # setup threading
         threading.Thread.__init__(self)
-        
-        #persist values
+
+        # persist values
         self.running = False
         self.connected = False
         self.controllerCallBack = controllerCallBack
@@ -149,25 +150,25 @@ class XboxController(threading.Thread):
         self.invertYAxis = invertYAxis
         self.controlCallbacks = {}
 
-        #setup controller properties
-        self.controlValues = {self.XboxControls.LTHUMBX:0,
-                              self.XboxControls.LTHUMBY:0,
-                              self.XboxControls.RTHUMBX:0,
-                              self.XboxControls.RTHUMBY:0,
-                              self.XboxControls.RTRIGGER:0,
-                              self.XboxControls.LTRIGGER:0,
-                              self.XboxControls.A:0,
-                              self.XboxControls.B:0,
-                              self.XboxControls.X:0,
-                              self.XboxControls.Y:0,
-                              self.XboxControls.LB:0,
-                              self.XboxControls.RB:0,
-                              self.XboxControls.BACK:0,
-                              self.XboxControls.START:0,
-                              self.XboxControls.XBOX:0,
-                              self.XboxControls.LEFTTHUMB:0,
-                              self.XboxControls.RIGHTTHUMB:0,
-                              self.XboxControls.DPAD:(0,0)}
+        # setup controller properties
+        self.controlValues = {self.XboxControls.LTHUMBX: 0,
+                              self.XboxControls.LTHUMBY: 0,
+                              self.XboxControls.RTHUMBX: 0,
+                              self.XboxControls.RTHUMBY: 0,
+                              self.XboxControls.RTRIGGER: 0,
+                              self.XboxControls.LTRIGGER: 0,
+                              self.XboxControls.A: 0,
+                              self.XboxControls.B: 0,
+                              self.XboxControls.X: 0,
+                              self.XboxControls.Y: 0,
+                              self.XboxControls.LB: 0,
+                              self.XboxControls.RB: 0,
+                              self.XboxControls.BACK: 0,
+                              self.XboxControls.START: 0,
+                              self.XboxControls.XBOX: 0,
+                              self.XboxControls.LEFTTHUMB: 0,
+                              self.XboxControls.RIGHTTHUMB: 0,
+                              self.XboxControls.DPAD: (0, 0)}
 
         self.setupPygame(joystickNo)
 
@@ -244,23 +245,22 @@ class XboxController(threading.Thread):
     def DPAD(self):
         return self.controlValues[self.XboxControls.DPAD]
 
-
     def setupPygame(self, joystickNo):
         pygame.init()
         screen = pygame.display.set_mode((1, 1))
         self.clock = pygame.time.Clock()
-            
+
         while not self.connected:
             pygame.joystick.init()
             if pygame.joystick.get_count() != 0:
-                joy = pygame.joystick.Joystick(joystickNo)   
+                joy = pygame.joystick.Joystick(joystickNo)
                 print("Found controller")
-                self.connected = True    
+                self.connected = True
             else:
                 print("Could not detect controller.\nCheck connection\n")
                 pygame.joystick.quit()
             time.sleep(2)
-        
+
         joy.init()
 
     def run(self):
@@ -269,19 +269,20 @@ class XboxController(threading.Thread):
             while(self.connected):
                 self.check_events()
                 self.clock.tick(10)
-            
+
             self.setupPygame(0)
-    
+
     def check_events(self):
         got_event = False
         for event in pygame.event.get():
             if event.type == JOYAXISMOTION:
                 if event.axis in self.AXISCONTROLMAP:
-                    yAxis = True if (event.axis == self.PyGameAxis.LTHUMBY or event.axis == self.PyGameAxis.RTHUMBY) else False
+                    yAxis = True if (
+                        event.axis == self.PyGameAxis.LTHUMBY or event.axis == self.PyGameAxis.RTHUMBY) else False
                     self.updateControlValue(self.AXISCONTROLMAP[event.axis],
                                             self.sortOutAxisValue(event.value, yAxis))
                     got_event = True
-                    
+
                 if event.axis in self.TRIGGERCONTROLMAP:
                     self.updateControlValue(self.TRIGGERCONTROLMAP[event.axis],
                                             self.sortOutTriggerValue(event.value))
@@ -304,33 +305,36 @@ class XboxController(threading.Thread):
     def updateControlValue(self, control, value):
         if self.controlValues[control] != value:
             self.controlValues[control] = value
-            #print(self.controlValues)
+            # print(self.controlValues)
             #self.doCallBacks(control, value)
-    
+
     def doCallBacks(self, control, value):
-        if self.controllerCallBack != None: self.controllerCallBack(control, value)
+        if self.controllerCallBack != None:
+            self.controllerCallBack(control, value)
 
         if control in self.controlCallbacks:
             self.controlCallbacks[control](value)
-            
+
     def setupControlCallback(self, control, callbackFunction):
         self.controlCallbacks[control] = callbackFunction
-                
-    def sortOutAxisValue(self, value, yAxis = False):
-        if yAxis and self.invertYAxis: value = value * -1
+
+    def sortOutAxisValue(self, value, yAxis=False):
+        if yAxis and self.invertYAxis:
+            value = value * -1
         value = value * self.scale
-        if value < self.upperDeadzone and value > self.lowerDeadzone: value = 0
+        if value < self.upperDeadzone and value > self.lowerDeadzone:
+            value = 0
         return value
 
     def sortOutTriggerValue(self, value):
-        value = max(0,(value + 1) / 2)
+        value = max(0, (value + 1) / 2)
         value = value * self.scale
         return value
 
     def sortOutButtonValue(self, eventType):
         value = 1 if eventType == JOYBUTTONDOWN else 0
         return value
-    
+
 
 # Example of usage
 if __name__ == '__main__':
@@ -340,11 +344,11 @@ if __name__ == '__main__':
 
     def leftThumbX(xValue):
         print("LX {}".format(xValue))
-        
+
     def leftThumbY(yValue):
         print("LY {}".format(yValue))
 
-    xboxCont = XboxController(None, deadzone = 30, scale = 100, invertYAxis = True)
+    xboxCont = XboxController(None, deadzone=30, scale=100, invertYAxis=True)
 
     xboxCont.setupControlCallback(xboxCont.XboxControls.LTHUMBX, None)
     xboxCont.setupControlCallback(xboxCont.XboxControls.LTHUMBY, None)
@@ -357,10 +361,10 @@ if __name__ == '__main__':
 
     except KeyboardInterrupt:
         print("User cancelled")
-     
+
     except:
         print("Unexpected error:", sys.exc_info()[0])
         raise
-        
+
     finally:
         xboxCont.stop()

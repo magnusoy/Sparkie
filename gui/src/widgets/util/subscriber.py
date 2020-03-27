@@ -35,7 +35,7 @@ class Subscriber(Process):
         self.topic = topic
         self.running = True
         self.msg = ''
-    
+
     def run(self):
         """docstring"""
 
@@ -43,7 +43,7 @@ class Subscriber(Process):
 
         while self.running:
             self.read()
-    
+
     def initialize(self):
         """docstring"""
 
@@ -52,16 +52,16 @@ class Subscriber(Process):
         self.socket = self.context.socket(zmq.SUB)
         self.socket.connect(self.address)
         self.socket.setsockopt_string(zmq.SUBSCRIBE, self.topic)
-    
+
     def read(self):
         """docstring"""
 
         self.msg = self.socket.recv_string()
-    
+
     def read_multipart(self):
         topic, data = self.socket.recv_multipart()
-        self.msg  = base64.b64decode(data)
-    
+        self.msg = base64.b64decode(data)
+
     def stop(self):
         """docstring"""
 
@@ -73,17 +73,17 @@ class Worker(Subscriber):
 
     def __init__(self, ip, port, topic):
         Subscriber.__init__(self, ip, port, topic)
-    
+
     def run(self):
         """docstring"""
 
         self.initialize()
-        
+
         while self.running:
             self.read()
             print(self.msg)
-            
-            
+
+
 # Example of usage
 if __name__ == "__main__":
     sub = Worker('localhost', 5590, 'xbox_controller')

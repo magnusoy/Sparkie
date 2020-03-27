@@ -1,5 +1,5 @@
-#ifndef _ODRIVEPARAMETERS_H_
-#define _ODRIVEPARAMETERS_H_
+#ifndef ODRIVEPARAMETERS_H_
+#define ODRIVEPARAMETERS_H_
 
 /**
    Template for writing to  oDrives
@@ -31,6 +31,27 @@ ODriveArduino odriveBackRight(BACK_RIGHT);
 
 ODriveArduino odrives[4] = {odriveFrontLeft, odriveFrontRight, odriveBackLeft, odriveBackRight};
 
+/** Odrive limitations */
+#define MOTOR_SPEED_LIMIT 40000.0f
+#define MOTOR_CURRENT_LIMIT 40.0f
+
+/** Speed increase multiplier */
+#define MOTOR_SPEED_MULTIPLIER 30
+#define MOTOR_SPEED_LOWER 0
+#define MOTOR_SPEED_UPPER 2000
+
+/** Storing the positions of the motors */
+int motorpositions[4][2] = {{0, 0},
+                            {0, 0},
+                            {0, 0},
+                            {0, 0}};
+
+/** Storing the current of the motors */
+int motorcurrent[4][2] = {{0, 0},
+                          {0, 0},
+                          {0, 0},
+                          {0, 0}};
+
 /**
   Initialize the four Odrives.
 */
@@ -52,21 +73,6 @@ void setMotorPosition(const uint8_t odriveNumber, const uint8_t motorNumber, dou
 {
   odrives[odriveNumber].SetPosition(motorNumber, pos);
 }
-
-/** Odrive limitations */
-#define MOTOR_SPEED_LIMIT 40000.0f
-#define MOTOR_CURRENT_LIMIT 40.0f
-
-/** Speed increase multiplier */
-#define MOTOR_SPEED_MULTIPLIER 30
-#define MOTOR_SPEED_LOWER 0
-#define MOTOR_SPEED_UPPER 2000
-
-/** Storing the positions of the motors */
-int motorpositions[4][2] = {{0, 0},
-                            {0, 0},
-                            {0, 0},
-                            {0, 0}};
 
 /**
   Sets the motors in desired state
@@ -95,11 +101,17 @@ void calibrateOdriveMotors()
   setOdrivesInState(requestedState, true);
 }
 
+/*
+ * Activate the motors
+*/
 void armMotors()
 {
   uint8_t requestedState = ODriveArduino::AXIS_STATE_CLOSED_LOOP_CONTROL;
   setOdrivesInState(requestedState, false);
 }
+/*
+ * Deactivate the motors
+*/
 void disarmMotors()
 {
   uint8_t requestedState = ODriveArduino::AXIS_STATE_IDLE;
@@ -119,6 +131,22 @@ void readOdriveMotorPositions(HardwareSerial hwSerials[], ODriveArduino odrives[
     {
       hwSerials[i] << "r axis" << m << ".encoder.pos_estimate\n";
       motorpositions[i][m] = odrives[i].readFloat();
+    }
+  }
+}
+
+/**
+  Read motor current from Odrive.
+  Storing them in the global motorCurrent
+  variable.
+*/
+void readOdriveMotorCurrent()
+{
+  for (uint8_t i = 0; i < 4; ++i)
+  {
+    for (uint8_t m = 0; m < 2; ++m)
+    {
+      motorcurrent[i][m] = odrives[i].GetCurrent(m);
     }
   }
 }
@@ -166,6 +194,10 @@ void readConfig()
   }
 }
 
+/**
+ * Sets the precalibrated options on the motor to true or false
+ * @param var true or false
+ */
 void setPreCalibrated(bool var)
 {
   Serial << "Pre Calibrate... \n";
@@ -181,6 +213,9 @@ void setPreCalibrated(bool var)
     }
   }
 }
+/**
+ * Saves the Odrive config
+ */
 void saveConfigOdrives()
 {
   for (uint8_t i = 0; i < 4; ++i)
@@ -190,6 +225,9 @@ void saveConfigOdrives()
   }
 }
 
+/**
+ * Reboot the Odrives
+ */
 void rebootOdrives()
 {
   for (uint8_t i = 0; i < 4; ++i)
@@ -198,4 +236,4 @@ void rebootOdrives()
     delay(200);
   }
 }
-#endif // _ODRIVEPARAMETERS_H_
+#endif // ODRIVEPARAMETERS_H_

@@ -24,4 +24,51 @@ struct xboxControllerInputs
 
 struct xboxControllerInputs XBOX_CONTROLLER_INPUT;
 
+/**
+ * Checks if xbox buttons are pressed
+ */
+void readXboxButtons()
+{
+    if (XBOX_CONTROLLER_INPUT.B == 1)
+    {
+        disarmMotors();
+        changeStateTo(S_IDLE);
+    }
+
+    if (XBOX_CONTROLLER_INPUT.Y == 1)
+    {
+        manualParams->height = 170.0;
+    }
+}
+
+/**
+ * Maps the diffrent xbox inputs to moved controll
+ */
+void mapXboxInputs()
+{
+    val = map(XBOX_CONTROLLER_INPUT.LJ_DOWN_UP, -100, 100, -PI / 55, PI / 55);
+    val = constrain(val, -PI / 55, PI / 55);
+    if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT <= 45 || XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT >= 55)
+    {
+        if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT < 45)
+        {
+            manualParams->step_left = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, 0, 44, 10, 160);
+        }
+        else if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT > 55)
+        {
+            manualParams->step_right = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, 56, 100, 160, 10);
+        }
+    }
+    else
+    {
+        manualParams->step_left = 160.0;
+        manualParams->step_right = 160.0;
+    }
+    if (XBOX_CONTROLLER_INPUT.RJ_DOWN_UP != 0)
+    {
+        manualParams->height += map(XBOX_CONTROLLER_INPUT.RJ_DOWN_UP, -100, 100, -1, 1);
+        manualParams->height = constrain(manualParams->height, (80 + manualParams->amplitude_over), (249 - manualParams->amplitude_under));
+    }
+}
+
 #endif // _XBOXCONTROLLER_H_

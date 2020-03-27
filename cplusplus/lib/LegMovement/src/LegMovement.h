@@ -15,9 +15,9 @@ public:
 	int OUTER;
 
 	LegMovement(void);
-	double compute(double x, double y, uint8_t motor, int ODrive);
-	double stepX(unsigned long n, double lenght, double frequency, double phaseShift);
-	double stepY(unsigned long n, double amplitudeOver, double amplitudeUnder, double robotHeight, double frequency, double phaseShift);
+	float compute(float x, float y, uint8_t motor, int ODrive);
+	float stepX(float n, float lenght, float frequency, float phaseShift);
+	float stepY(float n, float amplitudeOver, float amplitudeUnder, float robotHeight, float frequency, float phaseShift);
 
 private:
 };
