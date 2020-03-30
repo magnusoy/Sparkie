@@ -1,0 +1,34 @@
+[
+  {
+    "Modes": [
+      {
+        "Stand": self.stand_btn.isChecked(),
+        "Walk": self.walk_btn.isChecked(),
+        "Stairs": self.stairs_btn.isChecked()
+      }
+    ]
+  },
+  {
+    "Speed": [
+      {
+        "Low": self.slow_btn.isChecked(),
+        "Medium": self.medium_btn.isChecked,
+        "High": self.high_btn.isChecked()
+      }
+    ]
+  },
+  {
+    "Sliders": [
+      { "Speed": self.speed_slider.value() },
+      { "Height": self.height_slider.value() }
+    ]
+  },
+  {
+    "Operation": [
+      {
+        "Health": self.health_btn.isChecked()
+      },
+      { "Kill": self.emergency_btn.isChecked() }
+    ]
+  }
+]
