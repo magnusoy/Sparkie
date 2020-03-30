@@ -100,8 +100,8 @@ float LegMovement::compute(float x, float y, uint8_t motor, int ODrive)
 */
 float LegMovement::stepX(float n, float lenght, float frequency, float phaseShift)
 {
-  float x = lenght / 2 * sin(frequency * n + phaseShift);
-  return x;
+  this->x = lenght / 2 * sin(frequency * n + phaseShift);
+  return this->x;
 }
 
 /**
@@ -109,15 +109,24 @@ float LegMovement::stepX(float n, float lenght, float frequency, float phaseShif
 */
 float LegMovement::stepY(float n, float amplitudeOver, float amplitudeUnder, float robotHeight, float frequency, float phaseShift)
 {
-  float y;
+
   float wave = cos(frequency * n + phaseShift);
   if (wave > 0)
   {
-    y = -robotHeight + amplitudeOver * wave;
+    this->y = -robotHeight + amplitudeOver * wave;
   }
   else
   {
-    y = -robotHeight + amplitudeUnder * wave;
+    this->y = -robotHeight + amplitudeUnder * wave;
   }
-  return y;
+  return this->y;
+}
+float LegMovement::getX()
+{
+  return this->x;
+}
+
+float LegMovement::getY()
+{
+  return this->y;
 }

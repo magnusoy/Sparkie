@@ -76,6 +76,14 @@ void loop()
     break;
 
   case S_READY:
+    if (walkIntervall.hasTimerExpired())
+    {
+      walkIntervall.startTimer(intervall);
+      if (standUp())
+      {
+        changeStateTo(S_WALK);
+      }
+    }
     break;
 
   case S_PAUSE:
@@ -88,6 +96,11 @@ void loop()
     {
       walkIntervall.startTimer(intervall);
       locomotion(autoParams);
+
+      //if (layDown())
+      //{
+      // changeStateTo(S_READY);
+      //}
     }
     //  Serial.print("Walk Time: ");
     // Serial.println(micros() - walkTime);

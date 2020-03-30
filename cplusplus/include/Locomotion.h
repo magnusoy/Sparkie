@@ -6,13 +6,21 @@
 #include "Globals.h"
 #include "OdriveParameters.h"
 
-LegMovement legMovement;
+LegMovement legMovement0;
+LegMovement legMovement1;
+LegMovement legMovement2;
+LegMovement legMovement3;
+
+LegMovement Legs[4] = {legMovement0, legMovement1, legMovement2, legMovement3};
 
 /* Variable for jump fuction*/
 Timer airTime;
 Timer groundTime;
 bool runned = false;
 uint8_t jump = 0;
+
+/* Variable for lay down*/
+float x = 0;
 
 /**
  * 
@@ -63,7 +71,7 @@ void setIdlePosition()
     {
         for (int motor = 0; motor < 2; motor++)
         {
-            double angle = legMovement.compute(x, y, motor, Odrive);
+            double angle = Legs[Odrive].compute(x, y, motor, Odrive);
             double motorCount = map(angle, -360, 360, -6000, 6000);
             setMotorPosition(Odrive, motor, motorCount);
         }
@@ -79,38 +87,38 @@ void setIdlePosition()
 void locomotion(p *params)
 {
     int Odrive = 0;
-    double x = legMovement.stepX(params->x, params->step_left, params->frequency, PHASESHIFT0X);
-    double y = legMovement.stepY(params->x, params->amplitude_over, params->amplitude_under, params->height, params->frequency, PHASESHIFT0Y);
+    double x = Legs[Odrive].stepX(params->x, params->step_left, params->frequency, PHASESHIFT0X);
+    double y = Legs[Odrive].stepY(params->x, params->amplitude_over, params->amplitude_under, params->height, params->frequency, PHASESHIFT0Y);
     for (int motor = 0; motor < 2; motor++)
     {
-        double angle = legMovement.compute(x, y, motor, Odrive);
+        double angle = Legs[Odrive].compute(x, y, motor, Odrive);
         double motorCount = map(angle, -360, 360, -6000, 6000);
         setMotorPosition(Odrive, motor, motorCount);
     }
     Odrive = 1;
-    x = legMovement.stepX(params->x, params->step_right, params->frequency, PHASESHIFT1X);
-    y = legMovement.stepY(params->x, params->amplitude_over, params->amplitude_under, params->height, params->frequency, PHASESHIFT1Y);
+    x = Legs[Odrive].stepX(params->x, params->step_right, params->frequency, PHASESHIFT1X);
+    y = Legs[Odrive].stepY(params->x, params->amplitude_over, params->amplitude_under, params->height, params->frequency, PHASESHIFT1Y);
     for (int motor = 0; motor < 2; motor++)
     {
-        double angle = legMovement.compute(x, y, motor, Odrive);
+        double angle = Legs[Odrive].compute(x, y, motor, Odrive);
         double motorCount = map(angle, -360, 360, -6000, 6000);
         setMotorPosition(Odrive, motor, motorCount);
     }
     Odrive = 2;
-    x = legMovement.stepX(params->x, params->step_left, params->frequency, PHASESHIFT2X);
-    y = legMovement.stepY(params->x, params->amplitude_over, params->amplitude_under, params->height, params->frequency, PHASESHIFT2Y);
+    x = Legs[Odrive].stepX(params->x, params->step_left, params->frequency, PHASESHIFT2X);
+    y = Legs[Odrive].stepY(params->x, params->amplitude_over, params->amplitude_under, params->height, params->frequency, PHASESHIFT2Y);
     for (int motor = 0; motor < 2; motor++)
     {
-        double angle = legMovement.compute(x, y, motor, Odrive);
+        double angle = Legs[Odrive].compute(x, y, motor, Odrive);
         double motorCount = map(angle, -360, 360, -6000, 6000);
         setMotorPosition(Odrive, motor, motorCount);
     }
     Odrive = 3;
-    x = legMovement.stepX(params->x, params->step_right, params->frequency, PHASESHIFT3X);
-    y = legMovement.stepY(params->x, params->amplitude_over, params->amplitude_under, params->height, params->frequency, PHASESHIFT3Y);
+    x = Legs[Odrive].stepX(params->x, params->step_right, params->frequency, PHASESHIFT3X);
+    y = Legs[Odrive].stepY(params->x, params->amplitude_over, params->amplitude_under, params->height, params->frequency, PHASESHIFT3Y);
     for (int motor = 0; motor < 2; motor++)
     {
-        double angle = legMovement.compute(x, y, motor, Odrive);
+        double angle = Legs[Odrive].compute(x, y, motor, Odrive);
         double motorCount = map(angle, -360, 360, -6000, 6000);
         setMotorPosition(Odrive, motor, motorCount);
     }
@@ -135,7 +143,7 @@ void jumpCommand()
             {
                 for (int motor = 0; motor < 2; motor++)
                 {
-                    double angle = legMovement.compute(x, y, motor, Odrive);
+                    double angle = Legs[Odrive].compute(x, y, motor, Odrive);
                     double motorCount = map(angle, -360, 360, -6000, 6000);
                     setMotorPosition(Odrive, motor, motorCount);
                 }
@@ -158,7 +166,7 @@ void jumpCommand()
             {
                 for (int motor = 0; motor < 2; motor++)
                 {
-                    double angle = legMovement.compute(x, y, motor, Odrive);
+                    double angle = Legs[Odrive].compute(x, y, motor, Odrive);
                     double motorCount = map(angle, -360, 360, -6000, 6000);
                     setMotorPosition(Odrive, motor, motorCount);
                 }
@@ -174,4 +182,69 @@ void jumpCommand()
         break;
     }
 }
+
+bool layDown()
+{
+    if (x > 80 * 10)
+    {
+        return true;
+    }
+    else
+    {
+        float y = 1.9375 * (x / 10) - 158.33;
+        for (int Odrive = 1; Odrive < 3; Odrive++)
+        {
+            for (int motor = 0; motor < 2; motor++)
+            {
+                double angle = Legs[Odrive].compute(x / 10, y, motor, Odrive);
+                double motorCount = map(angle, -360, 360, -6000, 6000);
+                setMotorPosition(Odrive, motor, motorCount);
+            }
+        }
+        for (int Odrive = 0; Odrive < 4; Odrive += 3)
+        {
+            for (int motor = 0; motor < 2; motor++)
+            {
+                double angle = Legs[Odrive].compute(-x / 10, y, motor, Odrive);
+                double motorCount = map(angle, -360, 360, -6000, 6000);
+                setMotorPosition(Odrive, motor, motorCount);
+            }
+        }
+        x += 1;
+        return false;
+    }
+}
+
+bool standUp()
+{
+    if (x < 0)
+    {
+        return true;
+    }
+    else
+    {
+        float y = 1.9375 * (x / 10) - 158.33;
+        for (int Odrive = 1; Odrive < 3; Odrive++)
+        {
+            for (int motor = 0; motor < 2; motor++)
+            {
+                double angle = Legs[Odrive].compute(x / 10, y, motor, Odrive);
+                double motorCount = map(angle, -360, 360, -6000, 6000);
+                setMotorPosition(Odrive, motor, motorCount);
+            }
+        }
+        for (int Odrive = 0; Odrive < 4; Odrive += 3)
+        {
+            for (int motor = 0; motor < 2; motor++)
+            {
+                double angle = Legs[Odrive].compute(-x / 10, y, motor, Odrive);
+                double motorCount = map(angle, -360, 360, -6000, 6000);
+                setMotorPosition(Odrive, motor, motorCount);
+            }
+        }
+        x -= 1;
+        return false;
+    }
+}
+
 #endif // LOCOMOTION_H_
