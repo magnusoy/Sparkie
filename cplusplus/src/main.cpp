@@ -38,6 +38,9 @@ uint8_t XboxIntervall = 100;
 unsigned long loopTime;
 unsigned long walkTime;
 
+Timer idleTimer;
+int idleTime = 10000;
+
 void readXboxControllerInputs();
 
 void setup()
@@ -66,7 +69,13 @@ void loop()
     if (!idlePosition && calibrated)
     {
       setIdlePosition();
+      idleTimer.startTimer(idleTime);
     }
+    if (idleTimer.hasTimerExpired())
+    {
+      disarmMotors();
+    }
+
     break;
 
   case S_CALIBRATE:
@@ -76,14 +85,6 @@ void loop()
     break;
 
   case S_READY:
-    if (walkIntervall.hasTimerExpired())
-    {
-      walkIntervall.startTimer(intervall);
-      if (standUp())
-      {
-        changeStateTo(S_WALK);
-      }
-    }
     break;
 
   case S_PAUSE:
@@ -97,10 +98,11 @@ void loop()
       walkIntervall.startTimer(intervall);
       locomotion(autoParams);
 
-      //if (layDown())
-      //{
-      // changeStateTo(S_READY);
-      //}
+      /*--------------------------------------*/
+      //Testing fuctions
+      //layDown();
+      //turnLeft();
+      //turnRight();
     }
     //  Serial.print("Walk Time: ");
     // Serial.println(micros() - walkTime);

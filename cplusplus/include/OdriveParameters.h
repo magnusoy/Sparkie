@@ -71,9 +71,13 @@ void initializeOdrives()
 */
 void setMotorPosition(const uint8_t odriveNumber, const uint8_t motorNumber, double pos)
 {
-  odrives[odriveNumber].SetPosition(motorNumber, pos);
+  odrives[odriveNumber].SetPosition1(motorNumber, pos, 50000.000);
 }
 
+void linearMove(const uint8_t odriveNumber, const uint8_t motorNumber, double pos)
+{
+  odrives[odriveNumber].SetPosition1(motorNumber, pos, 5000.000);
+}
 /**
   Sets the motors in desired state
 */

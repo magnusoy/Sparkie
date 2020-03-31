@@ -58,26 +58,37 @@ void set_frequency(float freq, p *par)
     par->frequency = freq;             // set frequency
 }
 
+void transitionToPoint(float x, float y)
+{
+    for (int Odrive = 1; Odrive < 3; Odrive++)
+    {
+        for (int motor = 0; motor < 2; motor++)
+        {
+            double angle = Legs[Odrive].compute(x, y, motor, Odrive);
+            double motorCount = map(angle, -360, 360, -6000, 6000);
+            linearMove(Odrive, motor, motorCount);
+        }
+    }
+    for (int Odrive = 0; Odrive < 4; Odrive += 3)
+    {
+        for (int motor = 0; motor < 2; motor++)
+        {
+            double angle = Legs[Odrive].compute(-x, y, motor, Odrive);
+            double motorCount = map(angle, -360, 360, -6000, 6000);
+            linearMove(Odrive, motor, motorCount);
+        }
+    }
+}
+
 /**
  * Sets the motors in idle position
 */
 void setIdlePosition()
 {
     armMotors();
-    delay(100);
-    double x = 0;
-    double y = -160;
-    for (int Odrive = 0; Odrive < 4; Odrive++)
-    {
-        for (int motor = 0; motor < 2; motor++)
-        {
-            double angle = Legs[Odrive].compute(x, y, motor, Odrive);
-            double motorCount = map(angle, -360, 360, -6000, 6000);
-            setMotorPosition(Odrive, motor, motorCount);
-        }
-    }
     delay(10);
-    disarmMotors();
+    transitionToPoint(0, -160);
+    //disarmMotors();
     idlePosition = true;
 }
 
@@ -183,68 +194,28 @@ void jumpCommand()
     }
 }
 
-bool layDown()
+void layDown()
 {
-    if (x > 80 * 10)
-    {
-        return true;
-    }
-    else
-    {
-        float y = 1.9375 * (x / 10) - 158.33;
-        for (int Odrive = 1; Odrive < 3; Odrive++)
-        {
-            for (int motor = 0; motor < 2; motor++)
-            {
-                double angle = Legs[Odrive].compute(x / 10, y, motor, Odrive);
-                double motorCount = map(angle, -360, 360, -6000, 6000);
-                setMotorPosition(Odrive, motor, motorCount);
-            }
-        }
-        for (int Odrive = 0; Odrive < 4; Odrive += 3)
-        {
-            for (int motor = 0; motor < 2; motor++)
-            {
-                double angle = Legs[Odrive].compute(-x / 10, y, motor, Odrive);
-                double motorCount = map(angle, -360, 360, -6000, 6000);
-                setMotorPosition(Odrive, motor, motorCount);
-            }
-        }
-        x += 1;
-        return false;
-    }
+    transitionToPoint(80, -5);
 }
 
-bool standUp()
+void standUp()
 {
-    if (x < 0)
-    {
-        return true;
-    }
-    else
-    {
-        float y = 1.9375 * (x / 10) - 158.33;
-        for (int Odrive = 1; Odrive < 3; Odrive++)
-        {
-            for (int motor = 0; motor < 2; motor++)
-            {
-                double angle = Legs[Odrive].compute(x / 10, y, motor, Odrive);
-                double motorCount = map(angle, -360, 360, -6000, 6000);
-                setMotorPosition(Odrive, motor, motorCount);
-            }
-        }
-        for (int Odrive = 0; Odrive < 4; Odrive += 3)
-        {
-            for (int motor = 0; motor < 2; motor++)
-            {
-                double angle = Legs[Odrive].compute(-x / 10, y, motor, Odrive);
-                double motorCount = map(angle, -360, 360, -6000, 6000);
-                setMotorPosition(Odrive, motor, motorCount);
-            }
-        }
-        x -= 1;
-        return false;
-    }
+    transitionToPoint(0, -160);
+}
+
+void turnLeft()
+{
+    autoParams->step_left = 0;
+    autoParams->step_right = 160;
+    locomotion(autoParams);
+}
+
+void turnRight()
+{
+    autoParams->step_left = 160;
+    autoParams->step_right = 0;
+    locomotion(autoParams);
 }
 
 #endif // LOCOMOTION_H_
