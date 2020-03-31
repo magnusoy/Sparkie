@@ -82,47 +82,34 @@ uint8_t currentWarnings[3] = {NONE};
 uint8_t idlePosition = false;
 uint8_t calibrated = true; //Put false;
 
-/* Variable for leg tracjetory */
-typedef struct
-{
-  float amplitude_over = 70.0;  //NORMAL 70.0;
-  float amplitude_under = 30.0; //NORMAL 30.0;
-  float step_left = 160.0;      //NORMAL 160.0;
-  float step_right = 160.0;     //NORMAL 160.0;
-  float height = 170.0;         //NORMAL 170.0;
-  float frequency = 0;          //NORMAL 0; is set in setup
-  float period = 0;
-  float x = 0;
-  float dx = 0;
-} p;
-
-p *autoParams;
-p *manualParams;
+#include "types.h"
+p autoParams;
+p manualParams;
 
 /**
  * Sets the standard values for the leg tracjetory
  */
 void initializeLegTracjetory()
 {
-  autoParams->amplitude_over = 70.0;
-  autoParams->amplitude_under = 30.0;
-  autoParams->step_left = 160.0;
-  autoParams->step_right = 160.0,
-  autoParams->height = 170.0;
-  autoParams->frequency = 0;
-  autoParams->period = 0;
-  autoParams->x = 0;
-  autoParams->dx = 0;
+  autoParams.amplitude_over = 70.0;
+  autoParams.amplitude_under = 30.0;
+  autoParams.step_left = 160.0;
+  autoParams.step_right = 160.0,
+  autoParams.height = 170.0;
+  autoParams.frequency = 0;
+  autoParams.period = 0;
+  autoParams.x = 0;
+  autoParams.dx = 0;
 
-  manualParams->amplitude_over = 70.0;
-  manualParams->amplitude_under = 30.0;
-  manualParams->step_left = 160.0;
-  manualParams->step_right = 160.0,
-  manualParams->height = 170.0;
-  manualParams->frequency = 0;
-  manualParams->period = 0;
-  manualParams->x = 0;
-  manualParams->dx = 0;
+  manualParams.amplitude_over = 70.0;
+  manualParams.amplitude_under = 30.0;
+  manualParams.step_left = 160.0;
+  manualParams.step_right = 160.0,
+  manualParams.height = 170.0;
+  manualParams.frequency = 0;
+  manualParams.period = 0;
+  manualParams.x = 0;
+  manualParams.dx = 0;
 }
 
 /* How fast the motors moves */

@@ -37,7 +37,7 @@ void readXboxButtons()
 
     if (XBOX_CONTROLLER_INPUT.Y == 1)
     {
-        manualParams->height = 170.0;
+        manualParams.height = 170.0;
     }
 }
 
@@ -52,22 +52,22 @@ void mapXboxInputs()
     {
         if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT < 45)
         {
-            manualParams->step_left = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, 0, 44, 10, 160);
+            manualParams.step_left = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, 0, 44, 10, 160);
         }
         else if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT > 55)
         {
-            manualParams->step_right = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, 56, 100, 160, 10);
+            manualParams.step_right = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, 56, 100, 160, 10);
         }
     }
     else
     {
-        manualParams->step_left = 160.0;
-        manualParams->step_right = 160.0;
+        manualParams.step_left = 160.0;
+        manualParams.step_right = 160.0;
     }
     if (XBOX_CONTROLLER_INPUT.RJ_DOWN_UP != 0)
     {
-        manualParams->height += map(XBOX_CONTROLLER_INPUT.RJ_DOWN_UP, -100, 100, -1, 1);
-        manualParams->height = constrain(manualParams->height, (80 + manualParams->amplitude_over), (249 - manualParams->amplitude_under));
+        manualParams.height += map(XBOX_CONTROLLER_INPUT.RJ_DOWN_UP, -100, 100, -1, 1);
+        manualParams.height = constrain(manualParams.height, (80 + manualParams.amplitude_over), (249 - manualParams.amplitude_under));
     }
 }
 

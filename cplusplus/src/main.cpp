@@ -19,6 +19,7 @@
 
 #include "Globals.h"
 #include "Constants.h"
+#include "types.h"
 #include "OdriveParameters.h"
 #include "IO.h"
 #include "XboxController.h"
