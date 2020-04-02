@@ -162,6 +162,7 @@ void checkForErrors()
 {
   for (uint8_t i = 0; i < 4; ++i)
   {
+    Serial << "Odrive number: " << i << "\n";
     for (uint8_t axis = 0; axis < 2; ++axis)
     {
       odrives[i].checkForErrors(axis);
@@ -214,6 +215,22 @@ void setPreCalibrated(bool var)
       {
         odrives[i].setPreCalibrated(axis, var);
       }
+    }
+  }
+}
+
+/**
+ * Sets the precalibrated options on the motor to true or false
+ * @param var true or false
+ */
+void writeConfig()
+{
+  for (uint8_t i = 0; i < 4; ++i)
+  {
+
+    for (uint8_t axis = 0; axis < 2; ++axis)
+    {
+      odrives[i].writeConfig(axis);
     }
   }
 }

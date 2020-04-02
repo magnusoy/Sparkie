@@ -198,43 +198,44 @@ void ODriveArduino::readConfig(int motor_number)
 {
   serial_ << "r axis" << motor_number << ".controller.config.pos_gain\n";
   Serial << "Pos gain: " << readString() << '\n';
-  delay(10);
+  delay(100);
   serial_ << "r axis" << motor_number << ".controller.config.vel_limit\n";
   Serial << "Vel limit: " << readString() << '\n';
-  delay(10);
+  delay(100);
   serial_ << "r axis" << motor_number << ".controller.config.vel_integrator_gain\n";
   Serial << "Vel integrator gain: " << readString() << '\n';
-  delay(10);
+  delay(100);
   serial_ << "r axis" << motor_number << ".motor.config.pole_pairs\n";
   Serial << "Pole pairs: " << readString() << '\n';
-  delay(10);
+  delay(100);
   serial_ << "r axis" << motor_number << ".motor.config.resistance_calib_max_voltage\n";
   Serial << "Calib max voltage: " << readString() << '\n';
-  delay(10);
+  delay(100);
   serial_ << "r axis" << motor_number << ".encoder.config.cpr\n";
   Serial << "Encoder cpr: " << readString() << '\n';
-  delay(10);
+  delay(100);
   serial_ << "r axis" << motor_number << ".motor.config.current_lim\n";
   Serial << "Current lim: " << readString() << '\n';
-  delay(10);
+  delay(100);
   serial_ << "r axis" << motor_number << ".motor.config.calibration_current\n";
   Serial << "Calibration current: " << readString() << '\n';
-  delay(10);
+  delay(100);
   serial_ << "r axis" << motor_number << ".motor.config.pre_calibrated\n";
   Serial << "Pre calibrated: " << readString() << '\n';
-  delay(10);
+  delay(100);
   Serial << '\n';
 }
 void ODriveArduino::writeConfig(int motor_number)
 {
-  serial_ << "w axis" << motor_number << ".controller.config.pos_gain " << 20.0 << "\n";
-  serial_ << "w axis" << motor_number << ".controller.config.vel_limit " << 50000.0 << "\n";
-  serial_ << "w axis" << motor_number << ".controller.config.vel_integrator_gain " << 0 << "\n";
-  serial_ << "w axis" << motor_number << ".motor.config.pole_pairs " << 11 << "\n";
-  serial_ << "w axis" << motor_number << ".motor.config.resistance_calib_max_voltage " << 4.0 << "\n";
-  serial_ << "w axis" << motor_number << ".encoder.config.cpr " << 2000 << "\n";
-  serial_ << "w axis" << motor_number << ".motor.config.current_lim " << 40 << "\n";
-  serial_ << "w axis" << motor_number << ".motor.config.calibration_current " << 10 << "\n";
+  //serial_ << "w axis" << motor_number << ".controller.config.pos_gain " << 20.0 << "\n";
+  //serial_ << "w axis" << motor_number << ".controller.config.vel_limit " << 50000.0 << "\n";
+  //serial_ << "w axis" << motor_number << ".controller.config.vel_integrator_gain " << 0 << "\n";
+  //serial_ << "w axis" << motor_number << ".motor.config.pole_pairs " << 11 << "\n";
+  //serial_ << "w axis" << motor_number << ".motor.config.resistance_calib_max_voltage " << 4.0 << "\n";
+  //serial_ << "w axis" << motor_number << ".encoder.config.cpr " << 2000 << "\n";
+  //serial_ << "w axis" << motor_number << ".motor.config.current_lim " << 40 << "\n";
+  serial_ << "w axis" << motor_number << ".motor.config.calibration_current " << 15 << "\n";
+  delay(100);
 }
 
 void ODriveArduino::setPreCalibrated(int motor_number, bool var)

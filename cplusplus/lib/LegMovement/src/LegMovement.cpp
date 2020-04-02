@@ -2,11 +2,9 @@
 #include "math.h"
 #include <Arduino.h>
 
-
 LegMovement::LegMovement(ODriveArduino &_odrive, int _leg_number)
-  : odrive(_odrive), leg_number(_leg_number)
+    : odrive(_odrive), leg_number(_leg_number)
 {
-
 }
 
 /**
@@ -101,9 +99,11 @@ float LegMovement::compute(float x, float y, uint8_t motor)
 */
 float LegMovement::stepX(p &params, float phase_shift)
 {
-  if (leg_number == 0 || leg_number == 3){
+  if (leg_number == 0 || leg_number == 3)
+  {
     this->x = params.step_right / 2 * sin(params.frequency * params.x + phase_shift);
-  }else
+  }
+  else
   {
     this->x = params.step_left / 2 * sin(params.frequency * params.x + phase_shift);
   }
@@ -129,21 +129,25 @@ float LegMovement::stepY(p &params, float phase_shift)
   return this->y;
 }
 
-void LegMovement::linearMove(float x, float y, int velocity){
-  for (int motor = 0; motor < 2; motor++){
+void LegMovement::linearMove(float x, float y, int velocity)
+{
+  for (int motor = 0; motor < 2; motor++)
+  {
     double angle = this->compute(x, y, motor);
     double motor_count = map(angle, -360, 360, -6000, 6000);
-    this->odrive.SetPosition1(motor, motor_count,5000.000);
+    this->odrive.SetPosition1(motor, motor_count, 5000.000);
   }
 }
 
-void LegMovement::move(p &params, float phase_shift){
+void LegMovement::move(p &params, float phase_shift)
+{
   double x = this->stepX(params, phase_shift);
   double y = this->stepY(params, phase_shift);
-  for (int motor = 0; motor < 2; motor++){
+  for (int motor = 0; motor < 2; motor++)
+  {
     double angle = this->compute(x, y, motor);
     double motor_count = map(angle, -360, 360, -6000, 6000);
-    this->odrive.SetPosition1(motor, motor_count,5000.000);
+    this->odrive.SetPosition1(motor, motor_count, 50000.000);
   }
 }
 

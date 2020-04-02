@@ -155,10 +155,12 @@ void loop()
     //checkForErrors();
     //readConfig();
     //delay(500);
+    //writeConfig();
     //setPreCalibrated(true);
     //saveConfigOdrives();
     //delay(500);
     //rebootOdrives();
+    //delay(500);
     //readConfig();
     changeStateTo(S_IDLE);
     break;
