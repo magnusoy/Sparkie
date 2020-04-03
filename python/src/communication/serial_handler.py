@@ -160,7 +160,7 @@ class SerialPublisher(Publisher):
         @data : msg to be sent out
         """
 
-        content = data + '\n'
+        content = str(data).replace("'", '"')
         self.connection.write(content.encode())
 
     def disconnect(self):
