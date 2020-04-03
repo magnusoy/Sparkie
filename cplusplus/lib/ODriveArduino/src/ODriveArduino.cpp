@@ -238,6 +238,16 @@ void ODriveArduino::writeConfig(int motor_number)
   delay(100);
 }
 
+void ODriveArduino::writePID(int motor_number, float P, float I, float D)
+{
+  serial_ << "w axis" << motor_number << ".controller.config.pos_gain " << P << "\n";
+  delay(10);
+  serial_ << "w axis" << motor_number << ".controller.config.vel_integrator_gain " << I << "\n";
+  delay(10);
+  serial_ << "w axis" << motor_number << ".controller.config.vel_gain " << D << "\n";
+  delay(10);
+}
+
 void ODriveArduino::setPreCalibrated(int motor_number, bool var)
 {
   serial_ << "w axis" << motor_number << ".motor.config.pre_calibrated " << var << "\n";

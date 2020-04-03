@@ -1,6 +1,8 @@
 #ifndef IO_H_
 #define IO_H_
 
+#include "Locomotion.h"
+
 /*  Variables used for blinking a led without delay*/
 uint8_t ledState = LOW;
 unsigned long previousMillis = 0;
@@ -86,6 +88,7 @@ void readButtons()
     armMotors();
     changeStateTo(S_WALK);
     digitalWrite(GREEN_LED, HIGH);
+    setLegMotorPID(25.0f, 0.001f, 0.0005f);
   }
 }
 #endif // IO_H_

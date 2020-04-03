@@ -21,13 +21,13 @@ inline Print &operator<<(Print &obj, float arg)
 }
 
 /*Serial connection for each odrive*/
-HardwareSerial hwSerials[4] = {FRONT_LEFT, FRONT_RIGHT, BACK_LEFT, BACK_RIGHT};
+HardwareSerial hwSerials[4] = {FRONT_LEFT_SERIAL, FRONT_RIGHT_SERIAL, BACK_LEFT_SERIAL, BACK_RIGHT_SERIAL};
 
 /*Odrive motordrivers, one Odrive per foot*/
-ODriveArduino odriveFrontLeft(FRONT_LEFT);
-ODriveArduino odriveFrontRight(FRONT_RIGHT);
-ODriveArduino odriveBackLeft(BACK_LEFT);
-ODriveArduino odriveBackRight(BACK_RIGHT);
+ODriveArduino odriveFrontLeft(FRONT_LEFT_SERIAL);
+ODriveArduino odriveFrontRight(FRONT_RIGHT_SERIAL);
+ODriveArduino odriveBackLeft(BACK_LEFT_SERIAL);
+ODriveArduino odriveBackRight(BACK_RIGHT_SERIAL);
 
 ODriveArduino odrives[4] = {odriveFrontLeft, odriveFrontRight, odriveBackLeft, odriveBackRight};
 

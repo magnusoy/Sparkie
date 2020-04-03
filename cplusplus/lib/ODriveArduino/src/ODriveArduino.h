@@ -35,6 +35,7 @@ public:
     void resetErrors(int motor_number);
     void readConfig(int motor_number);
     void writeConfig(int motor_number);
+    void writePID(int motor_number, float P, float I, float D);
     void setPreCalibrated(int motor_number, bool var);
     void saveConfig();
     void reboot();

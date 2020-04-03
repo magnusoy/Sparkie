@@ -2,9 +2,10 @@
 #include "math.h"
 #include <Arduino.h>
 
-LegMovement::LegMovement(ODriveArduino &_odrive, int _leg_number)
-    : odrive(_odrive), leg_number(_leg_number)
+LegMovement::LegMovement(ODriveArduino &_odrive, int _leg_number, float _phase_shift_x, float _phase_shift_y)
+    : odrive(_odrive), leg_number(_leg_number), phase_shift_x(_phase_shift_x), phase_shift_y(_phase_shift_y) 
 {
+  height = -1; // Not set
 }
 
 /**
@@ -129,25 +130,25 @@ float LegMovement::stepY(p &params, float phase_shift)
   return this->y;
 }
 
-void LegMovement::linearMove(float x, float y, int velocity)
+void LegMovement::linearMove(float x, float y, float velocity)
 {
   for (int motor = 0; motor < 2; motor++)
   {
     double angle = this->compute(x, y, motor);
     double motor_count = map(angle, -360, 360, -6000, 6000);
-    this->odrive.SetPosition1(motor, motor_count, 5000.000);
+    this->odrive.SetPosition1(motor, motor_count, velocity);
   }
 }
 
-void LegMovement::move(p &params, float phase_shift)
+void LegMovement::move(p &params)
 {
-  double x = this->stepX(params, phase_shift);
-  double y = this->stepY(params, phase_shift);
+  double x = this->stepX(params, phase_shift_x);
+  double y = this->stepY(params, phase_shift_y);
   for (int motor = 0; motor < 2; motor++)
   {
     double angle = this->compute(x, y, motor);
     double motor_count = map(angle, -360, 360, -6000, 6000);
-    this->odrive.SetPosition1(motor, motor_count, 50000.000);
+    this->odrive.SetPosition1(motor, motor_count, 50000.0);
   }
 }
 
@@ -159,4 +160,14 @@ float LegMovement::getX()
 float LegMovement::getY()
 {
   return this->y;
+}
+
+float LegMovement::setHeight(float height){
+  this->height = height;
+}
+
+void LegMovement::setPID(float P, float I, float D){
+  for (int motor_number = 0; motor_number<2; motor_number++){
+    odrive.writePID(motor_number, P, I, D);
+  }
 }

@@ -80,7 +80,7 @@ uint8_t currentState = S_IDLE;
 uint8_t currentErrors[3] = {NONE};
 uint8_t currentWarnings[3] = {NONE};
 uint8_t idlePosition = false;
-uint8_t calibrated = false; //Put false;
+uint8_t calibrated = true; //Put false;
 
 #include "types.h"
 p autoParams;

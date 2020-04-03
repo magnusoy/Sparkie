@@ -74,7 +74,7 @@ void loop()
     }
     if (idleTimer.hasTimerExpired())
     {
-      disarmMotors();
+      //disarmMotors();
     }
 
     break;
@@ -97,11 +97,11 @@ void loop()
     if (walkIntervall.hasTimerExpired())
     {
       walkIntervall.startTimer(intervall);
-      locomotion(autoParams);
+      //locomotion(autoParams);
 
       /*--------------------------------------*/
       //Testing fuctions
-      //layDown();
+      layDown();
       //turnLeft();
       //turnRight();
     }

@@ -7,10 +7,10 @@
 #include "OdriveParameters.h"
 #include "types.h"
 
-LegMovement legMovement0(odrives[0], 0);
-LegMovement legMovement1(odrives[1], 1);
-LegMovement legMovement2(odrives[2], 2);
-LegMovement legMovement3(odrives[3], 3);
+LegMovement legMovement0(odrives[0], 0, PHASESHIFT0X, PHASESHIFT0Y);
+LegMovement legMovement1(odrives[1], 1, PHASESHIFT1X, PHASESHIFT1Y);
+LegMovement legMovement2(odrives[2], 2, PHASESHIFT2X, PHASESHIFT2Y);
+LegMovement legMovement3(odrives[3], 3, PHASESHIFT3X, PHASESHIFT3Y);
 
 LegMovement Legs[4] = {legMovement0, legMovement1, legMovement2, legMovement3};
 
@@ -53,12 +53,21 @@ void set_frequency(float freq, p &par)
     par.frequency = freq;             // set frequency
 }
 
+void setLegMotorPID(float P, float I, float D)
+{
+    for (int i = 0; i>3; i++){ // Adjust PID gain on all legs
+        Legs[i].setPID(P, I, D);
+    }
+}
+
 void transitionToPoint(float x, float y)
 {
-    for (int Odrive = 0; Odrive < 4; Odrive++)
-    {
-        Legs[Odrive].linearMove(x, y, 500.000);
-    }
+    setLegMotorPID(5.0f, 0.001f, 0.0f);
+    float speed = 10000;
+    Legs[0].linearMove(-x, y, speed);
+    Legs[1].linearMove(x, y, speed);
+    Legs[2].linearMove(x, y, speed);
+    Legs[3].linearMove(-x, y, speed);
 }
 
 /**
@@ -68,7 +77,7 @@ void setIdlePosition()
 {
     armMotors();
     delay(10);
-    transitionToPoint(0, -160);
+    transitionToPoint(70, -120);
     //disarmMotors();
     idlePosition = true;
 }
@@ -78,12 +87,13 @@ void setIdlePosition()
 */
 void locomotion(p &params)
 {
-    Legs[0].move(params, PHASESHIFT0X);
-    Legs[1].move(params, PHASESHIFT1X);
-    Legs[3].move(params, PHASESHIFT2X);
-    Legs[4].move(params, PHASESHIFT3X);
+    Legs[0].move(params);
+    Legs[1].move(params);
+    Legs[2].move(params);
+    Legs[3].move(params);
     shift(val, params);
 }
+
 
 /**
  * Making the robot jump
@@ -101,7 +111,7 @@ void jumpCommand()
         {
             for (int Odrive = 0; Odrive < 4; Odrive++)
             {
-                Legs[Odrive].linearMove(x, y, 500.000);
+                Legs[Odrive].linearMove(x, y, 5000.0);
                 
             }
             groundTime.startTimer(500);
@@ -120,7 +130,7 @@ void jumpCommand()
         {
             for (int Odrive = 0; Odrive < 4; Odrive++)
             {
-                Legs[Odrive].linearMove(x, y, 500.000);
+                Legs[Odrive].linearMove(x, y, 50000.0);
             }
             airTime.startTimer(1000);
             runned = true;
