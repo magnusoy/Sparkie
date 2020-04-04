@@ -44,6 +44,18 @@ int idleTime = 10000;
 
 void readXboxControllerInputs();
 
+/*------Variables for reading PID parameters from serial------*/
+// Defining global variables for recieving data
+boolean newData = false;
+const byte numChars = 32;
+char receivedChars[numChars]; // An array to store the received data
+float kp = 25.0f;
+float ki = 0.001f;
+float kd = 0.0005f;
+void readStringFromSerial();
+void changeConfigurations();
+String getValueFromSerial(String data, char separator, int index);
+
 void setup()
 {
   serial.initialize();
@@ -152,7 +164,6 @@ void loop()
     checkForErrors();
     delay(200);
     resetMotorsErrors();
-    //checkForErrors();
     //readConfig();
     //delay(500);
     //writeConfig();
@@ -160,8 +171,9 @@ void loop()
     //saveConfigOdrives();
     //delay(500);
     //rebootOdrives();
-    //delay(500);
-    //readConfig();
+    changeConfigurations();
+    delay(200);
+    readConfig();
     changeStateTo(S_IDLE);
     break;
 
@@ -236,4 +248,63 @@ void readXboxControllerInputs()
     XBOX_CONTROLLER_INPUT.LJ = obj["15"];
     XBOX_CONTROLLER_INPUT.RJ = obj["16"];
   }
+}
+
+/**
+  Reads a string from Serial Monitor.
+*/
+void readStringFromSerial()
+{
+  static byte ndx = 0;
+  char endMarker = '\n';
+  char rc;
+
+  while ((Serial.available() > 0) && (!newData))
+  {
+    rc = Serial.read();
+    if (rc != endMarker)
+    {
+      receivedChars[ndx] = rc;
+      ndx++;
+      if (ndx >= numChars)
+      {
+        ndx = numChars - 1;
+      }
+    }
+    else
+    {
+      receivedChars[ndx] = '\0'; // Terminate the string
+      ndx = 0;
+      newData = true;
+    }
+  }
+}
+void changeConfigurations()
+{
+  if (newData)
+  {
+    kp = getValueFromSerial(receivedChars, ':', 0).toFloat();
+    ki = getValueFromSerial(receivedChars, ':', 1).toFloat();
+    kd = getValueFromSerial(receivedChars, ':', 2).toFloat();
+    setLegMotorPID(kp, ki, kd);
+    newData = false;
+  }
+}
+
+String getValueFromSerial(String data, char separator, int index)
+{
+  int found = 0;
+  int strIndex[] = {0, -1};
+  int maxIndex = data.length() - 1;
+
+  for (int i = 0; i <= maxIndex && found <= index; i++)
+  {
+    if (data.charAt(i) == separator || i == maxIndex)
+    {
+      found++;
+      strIndex[0] = strIndex[1] + 1;
+      strIndex[1] = (i == maxIndex) ? i + 1 : i;
+    }
+  }
+  return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
 }

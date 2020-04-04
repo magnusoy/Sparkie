@@ -4,8 +4,18 @@ import math as m
 
 from nav_msgs.msg import Odometry
 from sensor_msgs.msg import Joy
+from std_msgs.msg import Empty
+from std_msgs.msg import String
 
-def xbox_2_json(data):
+
+global_data = ""
+global_xbox_data = {}
+global_odom_data = {}
+
+pub = rospy.Publisher('/teensy/input', String, queue_size=1000)
+
+
+def xbox_2_dict(data):
     buttons = data.buttons
     axes = data.axes
     msg = {"0": axes[0], "1": axes[1], "2": axes[2], "3": axes[3], "4": axes[4], "5": axes[5],
@@ -14,7 +24,7 @@ def xbox_2_json(data):
     "16": buttons[10]}
     return msg
 
-def odom_2_json(data):
+def odom_2_dict(data):
     position = data.pose.pose.position
     orientation = data.pose.pose.orientation
     w = orientation.w
@@ -29,38 +39,37 @@ def odom_2_json(data):
 
 def callback0(data):
     #rospy.loginfo(rospy.get_caller_id() + "I heard %s", data)
-    msg = odom_2_json(data)
+    global global_odom_data
+    msg = odom_2_dict(data)
+    global_odom_data = msg
     #print(msg)
 
 def callback1(data):
     #rospy.loginfo(rospy.get_caller_id() + "I heard %s", data)
-    msg = xbox_2_json(data)
+    global global_xbox_data
+    msg = xbox_2_dict(data)
+    global_xbox_data = msg
     #print(msg)
 
+def timer_callback(event):
+    global global_data, global_odom_data, global_xbox_data
+    global_data = {**global_odom_data, **global_xbox_data}
+    data = str(global_data) # .replace("'", '"')
+    #print(data)
+    pub.publish(data)
 
-"""
-def callback2(data):
-    rospy.loginfo(rospy.get_caller_id() + "I heard %s", data)
-
-
-def callback3(data):
-    rospy.loginfo(rospy.get_caller_id() + "I heard %s", data)
-"""
 
 def listener():
-    # In ROS, nodes are uniquely named. If two nodes with the same
-    # node are launched, the previous one is kicked off. The
-    # anonymous=True flag means that rospy will choose a unique
-    # name for our 'listener' node so that multiple listeners can
-    # run simultaneously.
     rospy.init_node('listener', anonymous=True)
     rospy.Subscriber("/camera/odom/sample", Odometry, callback0)
     rospy.Subscriber("/joy", Joy, callback1)
-    #rospy.Subscriber("/controller/gui", Range, callback2)
-    #rospy.Subscriber("/rviz/goal/out", Range, callback3)
-    #rospy.loginfo(rospy.get_caller_id() + "I heard %s %s %s %s", sonar0,sonar1,sonar2,sonar3)
-    # spin() simply keeps python from exiting until this node is stopped
+    
+    timer = rospy.Timer(rospy.Duration(0.05), timer_callback)
     rospy.spin()
+    timer.shutdown()
+
+
+
 
 if __name__ == '__main__':
     listener()
