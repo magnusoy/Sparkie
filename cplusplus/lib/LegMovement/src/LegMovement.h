@@ -26,7 +26,7 @@ public:
 	void move(p &params);
 	float getX();
 	float getY();
-	float setHeight(float height);
+	void setHeight(float height);
 	void setPID(float P, float I, float D);
 
 private:

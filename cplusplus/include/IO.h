@@ -71,7 +71,7 @@ void readButtons()
   uint8_t orange = digitalRead(ORANGE_BTN);
   if (red)
   {
-    disarmMotors();
+    //disarmMotors();
     changeStateTo(S_IDLE);
   }
   else if (orange)
@@ -88,7 +88,7 @@ void readButtons()
     armMotors();
     changeStateTo(S_WALK);
     digitalWrite(GREEN_LED, HIGH);
-    setLegMotorPID(25.0f, 0.001f, 0.0005f);
+    //setLegMotorPID(25.0f, 0.001f, 0.0005f);
   }
 }
 #endif // IO_H_

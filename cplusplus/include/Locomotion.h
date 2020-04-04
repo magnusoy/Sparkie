@@ -55,14 +55,15 @@ void set_frequency(float freq, p &par)
 
 void setLegMotorPID(float P, float I, float D)
 {
-    for (int i = 0; i>3; i++){ // Adjust PID gain on all legs
+    for (uint8_t i = 0; i < 4; i++)
+    { // Adjust PID gain on all legs
         Legs[i].setPID(P, I, D);
     }
 }
 
 void transitionToPoint(float x, float y)
 {
-    setLegMotorPID(5.0f, 0.001f, 0.0f);
+    //setLegMotorPID(5.0f, 0.001f, 0.0f);
     float speed = 10000;
     Legs[0].linearMove(-x, y, speed);
     Legs[1].linearMove(x, y, speed);
@@ -94,7 +95,6 @@ void locomotion(p &params)
     shift(val, params);
 }
 
-
 /**
  * Making the robot jump
 */
@@ -109,10 +109,9 @@ void jumpCommand()
 
         if (!runned)
         {
-            for (int Odrive = 0; Odrive < 4; Odrive++)
+            for (uint8_t Odrive = 0; Odrive < 4; Odrive++)
             {
                 Legs[Odrive].linearMove(x, y, 5000.0);
-                
             }
             groundTime.startTimer(500);
             runned = true;
@@ -128,7 +127,7 @@ void jumpCommand()
         y = -200;
         if (!runned)
         {
-            for (int Odrive = 0; Odrive < 4; Odrive++)
+            for (uint8_t Odrive = 0; Odrive < 4; Odrive++)
             {
                 Legs[Odrive].linearMove(x, y, 50000.0);
             }
