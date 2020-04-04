@@ -157,10 +157,6 @@ class ManualWindow(QtWidgets.QDialog):
             self.slow_btn.setChecked(False)
             self.medium_btn.setChecked(False)
 
-    @QtCore.pyqtSlot(QtGui.QImage)
-    def set_image(self, image):
-        self.video_frame.setPixmap(QtGui.QPixmap.fromImage(image))
-
     def power_on(self):
         active = self.powerBtn.isChecked()
         if active:
@@ -175,7 +171,7 @@ class ManualWindow(QtWidgets.QDialog):
             self.signal_btn.setChecked(False)
 
     def initUI(self):
-        
+
         self.show()
 
 
