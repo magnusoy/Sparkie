@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import rospy
 import math as m
+from communication.serial_handler import SerialThread
+import json
 
 from nav_msgs.msg import Odometry
 from sensor_msgs.msg import Joy
@@ -12,7 +14,14 @@ global_data = ""
 global_xbox_data = {}
 global_odom_data = {}
 
-pub = rospy.Publisher('/teensy/input', String, queue_size=1000)
+
+SERIAL_PORT = "/dev/ttyACM0"
+SERIAL_BAUDRATE = 921600
+SERIAL_INTERVAL = 0.02
+
+serial = SerialThread(port=SERIAL_PORT, baudrate=SERIAL_BAUDRATE)
+serial.connect()
+print(serial.isConnected())
 
 
 def xbox_2_dict(data):
@@ -54,9 +63,9 @@ def callback1(data):
 def timer_callback(event):
     global global_data, global_odom_data, global_xbox_data
     global_data = {**global_odom_data, **global_xbox_data}
-    data = str(global_data) # .replace("'", '"')
-    #print(data)
-    pub.publish(data)
+    #data = str(global_data).replace("'", '"')
+    json_msg = json.dumps(global_data)
+    serial.sendOutputStream(json.loads(json_msg))
 
 
 def listener():
@@ -64,11 +73,9 @@ def listener():
     rospy.Subscriber("/camera/odom/sample", Odometry, callback0)
     rospy.Subscriber("/joy", Joy, callback1)
     
-    timer = rospy.Timer(rospy.Duration(0.05), timer_callback)
+    #timer = rospy.Timer(rospy.Duration(0.02), timer_callback)
     rospy.spin()
-    timer.shutdown()
-
-
+    #timer.shutdown()
 
 
 if __name__ == '__main__':
