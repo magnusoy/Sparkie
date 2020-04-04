@@ -3,7 +3,7 @@
 #include <Arduino.h>
 
 LegMovement::LegMovement(ODriveArduino &_odrive, int _leg_number, float _phase_shift_x, float _phase_shift_y)
-    : odrive(_odrive), leg_number(_leg_number), phase_shift_x(_phase_shift_x), phase_shift_y(_phase_shift_y) 
+    : odrive(_odrive), leg_number(_leg_number), phase_shift_x(_phase_shift_x), phase_shift_y(_phase_shift_y)
 {
   height = -1; // Not set
 }
@@ -162,12 +162,15 @@ float LegMovement::getY()
   return this->y;
 }
 
-float LegMovement::setHeight(float height){
+void LegMovement::setHeight(float height)
+{
   this->height = height;
 }
 
-void LegMovement::setPID(float P, float I, float D){
-  for (int motor_number = 0; motor_number<2; motor_number++){
+void LegMovement::setPID(float P, float I, float D)
+{
+  for (int motor_number = 0; motor_number < 2; motor_number++)
+  {
     odrive.writePID(motor_number, P, I, D);
   }
 }
