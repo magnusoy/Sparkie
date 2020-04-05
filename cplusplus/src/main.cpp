@@ -68,6 +68,7 @@ void setup()
   initializeLegTracjetory();
   set_frequency(1.0f, autoParams);
   set_frequency(1.0f, manualParams);
+  initializePIDs();
 }
 
 void loop()
@@ -75,6 +76,9 @@ void loop()
   //loopTime = micros();
   //readOdriveMotorPositions(hwSerials, odrives);
   //readOdriveMotorCurrent();
+  readXboxControllerInputs();
+  computePIDs();
+
   switch (currentState)
   {
   case S_IDLE:
@@ -86,15 +90,29 @@ void loop()
     }
     if (idleTimer.hasTimerExpired())
     {
-      //disarmMotors();
+      disarmMotors();
+    }
+
+    break;
+
+  case S_STAND:
+    blinkLight(ORANGE_LED);
+    if (walkIntervall.hasTimerExpired())
+    {
+      walkIntervall.startTimer(intervall);
+      stand();
     }
 
     break;
 
   case S_CALIBRATE:
-    calibrateOdriveMotors();
-    calibrated = true;
-    changeStateTo(S_IDLE);
+    if (!calibrated)
+    {
+      calibrateOdriveMotors();
+      calibrated = true;
+      armMotors();
+    }
+    changeStateTo(S_STAND);
     break;
 
   case S_READY:
@@ -109,11 +127,11 @@ void loop()
     if (walkIntervall.hasTimerExpired())
     {
       walkIntervall.startTimer(intervall);
-      //locomotion(autoParams);
+      locomotion(autoParams);
 
       /*--------------------------------------*/
       //Testing fuctions
-      layDown();
+      //layDown();
       //turnLeft();
       //turnRight();
     }
@@ -138,7 +156,6 @@ void loop()
     if (XboxReadIntervall.hasTimerExpired())
     {
       XboxReadIntervall.startTimer(XboxIntervall);
-      readXboxControllerInputs();
       readXboxButtons();
       mapXboxInputs();
     }
@@ -189,7 +206,7 @@ void loop()
     break;
   }
   readButtons();
-  //serial.flush();
+  serial.flush();
   //Serial.print("Loop Time: ");
   //Serial.println(micros() - loopTime);
 }
@@ -251,7 +268,7 @@ void readXboxControllerInputs()
     POSITION.x = obj["x"];
     POSITION.y = obj["y"];
     POSITION.z = obj["z"];
-    
+
     ORIENTAION.pitch = obj["pitch"];
     ORIENTAION.roll = obj["roll"];
     ORIENTAION.yaw = obj["yaw"];

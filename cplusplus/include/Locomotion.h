@@ -2,6 +2,7 @@
 #define LOCOMOTION_H_
 
 #include "../lib/Timer/src/Timer.h"
+#include "../lib/PID/src/PID.h"
 #include "LegMovement.h"
 #include "Globals.h"
 #include "OdriveParameters.h"
@@ -22,6 +23,27 @@ uint8_t jump = 0;
 
 /* Variable for lay down*/
 float x = 0;
+
+PID pitchPID(3, 0, 0, REVERSE);
+PID rollPID(2, 0, 0, REVERSE);
+PID yawPID(1, 0, 0, REVERSE);
+double pitchOutput;
+double rollOutput;
+double yawOutput;
+
+void initializePIDs()
+{
+    pitchPID.setUpdateTime(1);
+    pitchPID.setOutputLimits(-50, 50);
+    rollPID.setUpdateTime(1);
+    rollPID.setOutputLimits(-50, 50);
+}
+
+void computePIDs()
+{
+    pitchOutput = pitchPID.compute(ORIENTAION.pitch, 0);
+    rollOutput = rollPID.compute(ORIENTAION.roll, 0);
+}
 
 /**
  * 
@@ -69,6 +91,18 @@ void transitionToPoint(float x, float y)
     Legs[1].linearMove(x, y, speed);
     Legs[2].linearMove(x, y, speed);
     Legs[3].linearMove(-x, y, speed);
+}
+
+void stand()
+{
+    float x = 70;
+    float y = -120;
+    //setLegMotorPID(5.0f, 0.001f, 0.0f);
+    float speed = 10000;
+    Legs[0].linearMove(-x, y + pitchOutput - rollOutput, speed);
+    Legs[1].linearMove(x, y + pitchOutput + rollOutput, speed);
+    Legs[2].linearMove(x, y - pitchOutput - rollOutput, speed);
+    Legs[3].linearMove(-x, y - pitchOutput + rollOutput, speed);
 }
 
 /**

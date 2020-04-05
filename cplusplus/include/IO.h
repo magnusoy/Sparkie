@@ -1,12 +1,19 @@
 #ifndef IO_H_
 #define IO_H_
 
+#include "../lib/ButtonTimer/src/ButtonTimer.h"
 #include "Locomotion.h"
 
 /*  Variables used for blinking a led without delay*/
 uint8_t ledState = LOW;
 unsigned long previousMillis = 0;
 const long INTERVAL = 1000;
+
+#define TIME_DELAY 50
+ButtonTimer TON1(TIME_DELAY);
+ButtonTimer TON2(TIME_DELAY);
+ButtonTimer TON3(TIME_DELAY);
+ButtonTimer TON4(TIME_DELAY);
 
 /** Initialize switches to inputs. */
 void initializeButtons()
@@ -65,25 +72,21 @@ void changeStateTo(uint8_t newState)
 /** Reads all the buttons and change the state if a button is pressed */
 void readButtons()
 {
-  uint8_t green = digitalRead(GREEN_BTN);
-  uint8_t red = digitalRead(RED_BTN);
-  uint8_t blue = digitalRead(BLUE_BTN);
-  uint8_t orange = digitalRead(ORANGE_BTN);
-  if (red)
+  if (TON1.isSwitchOn(RED_BTN))
   {
     //disarmMotors();
     changeStateTo(S_IDLE);
   }
-  else if (orange)
+  else if (TON2.isSwitchOn(ORANGE_BTN))
   {
     changeStateTo(S_RESET);
   }
-  else if (blue)
+  else if (TON3.isSwitchOn(BLUE_BTN))
   {
     changeStateTo(S_CALIBRATE);
     digitalWrite(BLUE_LED, HIGH);
   }
-  else if (green)
+  else if (TON4.isSwitchOn(GREEN_BTN))
   {
     armMotors();
     changeStateTo(S_WALK);

@@ -4,9 +4,9 @@
 
 struct orientation
 {
-  double yaw;
   double pitch;
   double roll;
+  double yaw;
 };
 struct orientation ORIENTAION;
 
@@ -52,6 +52,7 @@ enum warnings
 enum states
 {
   S_IDLE,
+  S_STAND,
   S_CALIBRATE,
   S_READY,
   S_PAUSE,
@@ -68,11 +69,11 @@ enum states
 
 };
 
-uint8_t currentState = S_IDLE;
+uint8_t currentState = S_STAND;
 uint8_t currentErrors[3] = {NONE};
 uint8_t currentWarnings[3] = {NONE};
 uint8_t idlePosition = false;
-uint8_t calibrated = true; //Put false;
+uint8_t calibrated = false; //Put false;
 
 #include "types.h"
 p autoParams;
