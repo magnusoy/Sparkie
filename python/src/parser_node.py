@@ -16,7 +16,9 @@ global_data = ""
 global_xbox_data = {}
 global_odom_data = {}
 
+pub = rospy.Publisher('/teensy/input', String, queue_size=1000)
 
+"""
 SERIAL_PORT = "/dev/ttyACM0"
 SERIAL_BAUDRATE = 921600
 SERIAL_INTERVAL = 0.02
@@ -24,7 +26,7 @@ SERIAL_INTERVAL = 0.02
 serial = SerialThread(port=SERIAL_PORT, baudrate=SERIAL_BAUDRATE)
 serial.connect()
 print(serial.isConnected())
-
+"""
 
 def xbox_2_dict(data):
     buttons = data.buttons
@@ -46,7 +48,6 @@ def odom_2_dict(data):
     roll  =  m.atan2(2.0 * (w*x + y*z), w*w - x*x - y*y + z*z) * 180.0 / m.pi;
     yaw   =  m.atan2(2.0 * (w*z + x*y), w*w + x*x - y*y - z*z) * 180.0 / m.pi;
     msg = {"x": position.x, "y": position.y, "z": position.z, "pitch": pitch, "roll": roll, "yaw": yaw}
-    rospy.loginfo((pitch, roll, yaw))
     return msg
 
 def callback0(data):
@@ -68,7 +69,10 @@ def timer_callback(event):
     global_data = {**global_odom_data, **global_xbox_data}
     #data = str(global_data).replace("'", '"')
     json_msg = json.dumps(global_data)
-    serial.sendOutputStream(json.loads(json_msg))
+    #serial.sendOutputStream(json.loads(json_msg))
+    data = json.loads(json_msg)
+    rospy.loginfo("%s", data)
+    pub.publish("Hello")
     
 
 def listener():
@@ -76,16 +80,18 @@ def listener():
     rospy.Subscriber("/camera/odom/sample", Odometry, callback0)
     rospy.Subscriber("/joy", Joy, callback1)
     
-    timer = rospy.Timer(rospy.Duration(0.02), timer_callback)
+    timer = rospy.Timer(rospy.Duration(1.0), timer_callback)
     rospy.spin()
     timer.shutdown()
 
+"""
 def reader():
     while True:
         reply = serial.readInputStream()
         print(reply)
         
 read_thread = Thread(target=reader, daemon=True)
+"""
 
 if __name__ == '__main__':
     #read_thread.start()

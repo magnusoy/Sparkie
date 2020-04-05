@@ -12,10 +12,11 @@
 
 // Including libraries and headers
 #include <Arduino.h>
-#include "../lib/ArduinoJson/src/ArduinoJson.h"
 #include "../lib/ODriveArduino/src/ODriveArduino.h"
-#include "../lib/SerialHandler/src/SerialHandler.h"
 #include "../lib/Timer/src/Timer.h"
+#include "../lib/ros_lib/ros.h"
+#include "../lib/ros_lib/nav_msgs/Odometry.h"
+#include "../lib/ros_lib/sensor_msgs/Joy.h"
 
 #include "Globals.h"
 #include "Constants.h"
@@ -25,7 +26,47 @@
 #include "XboxController.h"
 #include "Locomotion.h"
 
-SerialHandler serial(BAUDRATE, CAPACITY);
+ros::NodeHandle nh;
+
+void joyCallback(const sensor_msgs::Joy &joy)
+{
+  XBOX_CONTROLLER_INPUT.LJ_LEFT_RIGHT = joy.axes[0];
+  XBOX_CONTROLLER_INPUT.LJ_DOWN_UP = joy.axes[1];
+  XBOX_CONTROLLER_INPUT.LT = joy.axes[2];
+  XBOX_CONTROLLER_INPUT.RJ_DOWN_UP = joy.axes[3];
+  XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT = joy.axes[4];
+  XBOX_CONTROLLER_INPUT.RT = joy.axes[5];
+  XBOX_CONTROLLER_INPUT.A = joy.buttons[0];
+  XBOX_CONTROLLER_INPUT.B = joy.buttons[1];
+  XBOX_CONTROLLER_INPUT.X = joy.buttons[2];
+  XBOX_CONTROLLER_INPUT.Y = joy.buttons[3];
+  XBOX_CONTROLLER_INPUT.LB = joy.buttons[4];
+  XBOX_CONTROLLER_INPUT.RB = joy.buttons[5];
+  XBOX_CONTROLLER_INPUT.MLB = joy.buttons[6];
+  XBOX_CONTROLLER_INPUT.MRB = joy.buttons[7];
+  XBOX_CONTROLLER_INPUT.MB = joy.buttons[8];
+  XBOX_CONTROLLER_INPUT.LJ = joy.buttons[9];
+  XBOX_CONTROLLER_INPUT.RJ = joy.buttons[10];
+}
+
+void odomCallback(const nav_msgs::Odometry &odom)
+{
+  POSITION.x = odom.pose.pose.position.x;
+  POSITION.y = odom.pose.pose.position.y;
+  POSITION.z = odom.pose.pose.position.z;
+
+  float x = -odom.pose.pose.orientation.x;
+  float y = odom.pose.pose.orientation.y;
+  float z = -odom.pose.pose.orientation.z;
+  float w = odom.pose.pose.orientation.w;
+
+  ORIENTAION.pitch = -asin(2.0 * (x * z - w * y)) * 180.0 / PI;
+  ORIENTAION.roll = atan2(2.0 * (w * x + y * z), w * w - x * x - y * y + z * z) * 180.0 / PI;
+  ORIENTAION.yaw = atan2(2.0 * (w * z + x * y), w * w + x * x - y * y - z * z) * 180.0 / PI;
+}
+
+ros::Subscriber<sensor_msgs::Joy> joySub("joy", joyCallback);
+ros::Subscriber<nav_msgs::Odometry> odomSub("camera/odom/sample", odomCallback); // TODO: Change to t265/odom/sample under deployment
 
 /* Variable for the intervall time for walking case*/
 Timer walkIntervall;
@@ -42,8 +83,6 @@ unsigned long walkTime;
 Timer idleTimer;
 int idleTime = 10000;
 
-void readXboxControllerInputs();
-
 /*------Variables for reading PID parameters from serial------*/
 // Defining global variables for recieving data
 boolean newData = false;
@@ -58,17 +97,17 @@ String getValueFromSerial(String data, char separator, int index);
 
 void setup()
 {
-  serial.initialize();
-  Serial.println("Setup started");
+  nh.initNode();
+  nh.subscribe(joySub);
+  nh.subscribe(odomSub);
   initializeButtons();
   initializeLights();
   initializeOdrives();
-  Serial.println("Setup finished");
-  Serial.setTimeout(1);
   initializeLegTracjetory();
   set_frequency(1.0f, autoParams);
   set_frequency(1.0f, manualParams);
   initializePIDs();
+  pinMode(13, OUTPUT);
 }
 
 void loop()
@@ -76,7 +115,7 @@ void loop()
   //loopTime = micros();
   //readOdriveMotorPositions(hwSerials, odrives);
   //readOdriveMotorCurrent();
-  readXboxControllerInputs();
+  nh.spinOnce();
   computePIDs();
 
   switch (currentState)
@@ -160,7 +199,6 @@ void loop()
     break;
 
   case S_CONFIGURE:
-    //readXboxControllerInputs();
     //readOdriveMotorCurrent();
     //Serial.println(motorcurrent[0][0]);
     break;
@@ -195,73 +233,6 @@ void loop()
     break;
   }
   readButtons();
-  serial.flush();
-  //Serial.print("Loop Time: ");
-  //Serial.println(micros() - loopTime);
-}
-
-/**
-  Generate a JSON document and sends it
-  over Serial.
-*/
-void sendJSONDocumentToSerial()
-{
-  DynamicJsonDocument doc(220);
-  //TODO make correct JSON
-  doc["state"] = currentState;
-  serial.write(doc);
-}
-
-/**
-  Reads a JSON document from serial
-  and decode it.
-*/
-void readJSONDocumentFromSerial()
-{
-  //JsonObject obj = serial.read();
-  //TODO decode JSON
-  //recCommand = obj["command"];
-}
-
-/**
- * Maps the Serial input to corresponding variables
-*/
-void readXboxControllerInputs()
-{
-  if (Serial.available() > 0)
-  {
-    //const size_t capacity = JSON_ARRAY_SIZE(17) + JSON_ARRAY_SIZE(20);
-    const size_t capacity = JSON_OBJECT_SIZE(32) + 512;
-    DynamicJsonDocument doc(capacity);
-    deserializeJson(doc, Serial);
-    JsonObject obj = doc.as<JsonObject>();
-
-    XBOX_CONTROLLER_INPUT.LJ_LEFT_RIGHT = obj["0"];
-    XBOX_CONTROLLER_INPUT.LJ_DOWN_UP = obj["1"];
-    XBOX_CONTROLLER_INPUT.LT = obj["2"];
-    XBOX_CONTROLLER_INPUT.RJ_DOWN_UP = obj["3"];
-    XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT = obj["4"];
-    XBOX_CONTROLLER_INPUT.RT = obj["5"];
-    XBOX_CONTROLLER_INPUT.A = obj["6"];
-    XBOX_CONTROLLER_INPUT.B = obj["7"];
-    XBOX_CONTROLLER_INPUT.X = obj["8"];
-    XBOX_CONTROLLER_INPUT.Y = obj["9"];
-    XBOX_CONTROLLER_INPUT.LB = obj["10"];
-    XBOX_CONTROLLER_INPUT.RB = obj["11"];
-    XBOX_CONTROLLER_INPUT.MLB = obj["12"];
-    XBOX_CONTROLLER_INPUT.MRB = obj["13"];
-    XBOX_CONTROLLER_INPUT.MB = obj["14"];
-    XBOX_CONTROLLER_INPUT.LJ = obj["15"];
-    XBOX_CONTROLLER_INPUT.RJ = obj["16"];
-
-    POSITION.x = obj["x"];
-    POSITION.y = obj["y"];
-    POSITION.z = obj["z"];
-
-    ORIENTAION.pitch = obj["pitch"];
-    ORIENTAION.roll = obj["roll"];
-    ORIENTAION.yaw = obj["yaw"];
-  }
 }
 
 /**

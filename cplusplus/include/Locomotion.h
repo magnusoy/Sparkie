@@ -29,7 +29,7 @@ PID rollPID(2, 0, 0, REVERSE);
 PID yawPID(1, 0, 0, REVERSE);
 double pitchOutput;
 double rollOutput;
-double yawOutput;
+double yawOutput;   
 
 void initializePIDs()
 {
