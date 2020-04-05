@@ -43,9 +43,9 @@ bool ButtonTimer::buttonTimerHasExpired()
    @param btn button pin to be read
   
  */
-bool ButtonTimer::isSwitchOn(int btn)
+bool ButtonTimer::isSwitchOn(uint8_t btn)
 {
-    int btnState = digitalRead(btn);
+    uint8_t btnState = digitalRead(btn);
     if (btnState)
     {
         if ((btnState != oldBtnState))

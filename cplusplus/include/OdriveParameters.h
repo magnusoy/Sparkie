@@ -169,6 +169,7 @@ void checkForErrors()
     }
   }
 }
+
 /**
    Resets all errors on all motors
 */
@@ -234,6 +235,7 @@ void writeConfig()
     }
   }
 }
+
 /**
  * Saves the Odrive config
  */
@@ -257,4 +259,5 @@ void rebootOdrives()
     delay(200);
   }
 }
+
 #endif // ODRIVEPARAMETERS_H_

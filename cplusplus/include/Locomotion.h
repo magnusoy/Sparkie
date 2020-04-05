@@ -29,7 +29,7 @@ PID rollPID(2, 0, 0, REVERSE);
 PID yawPID(1, 0, 0, REVERSE);
 double pitchOutput;
 double rollOutput;
-double yawOutput;   
+double yawOutput;
 
 void initializePIDs()
 {
@@ -75,6 +75,9 @@ void set_frequency(float freq, p &par)
     par.frequency = freq;             // set frequency
 }
 
+/**
+ TODO: Add docstring
+ */
 void setLegMotorPID(float P, float I, float D)
 {
     for (uint8_t i = 0; i < 4; i++)
@@ -83,6 +86,9 @@ void setLegMotorPID(float P, float I, float D)
     }
 }
 
+/**
+ TODO: Add docstring
+ */
 void transitionToPoint(float x, float y)
 {
     //setLegMotorPID(5.0f, 0.001f, 0.0f);
@@ -93,6 +99,9 @@ void transitionToPoint(float x, float y)
     Legs[3].linearMove(-x, y, speed);
 }
 
+/**
+ TODO: Add docstring
+ */
 void stand()
 {
     float x = 70;
@@ -177,16 +186,25 @@ void jumpCommand()
     }
 }
 
+/**
+ TODO: Add docstring
+ */
 void layDown()
 {
     transitionToPoint(80, -5);
 }
 
+/**
+ TODO: Add docstring
+ */
 void standUp()
 {
     transitionToPoint(0, -160);
 }
 
+/**
+ TODO: Add docstring
+ */
 void turnLeft()
 {
     autoParams.step_left = 0;
@@ -194,6 +212,9 @@ void turnLeft()
     locomotion(autoParams);
 }
 
+/**
+ TODO: Add docstring
+ */
 void turnRight()
 {
     autoParams.step_left = 160;

@@ -23,13 +23,6 @@ Arduino/libraries/PID_Controller/keywords.txt                (the syntax colorin
 Arduino/libraries/PID_Controller/examples                    (the examples in the "open" menu)
 Arduino/libraries/PID_Controller/readme.txt                  (the readme file)
 
-Arduino/libraries/SerialHandler                              (this library's folder)
-Arduino/libraries/SerialHandler/SerialHandler.cpp            (the library implementation file)
-Arduino/libraries/SerialHandler/SerialHandler.h              (the library description file)
-Arduino/libraries/SerialHandler/keywords.txt                 (the syntax coloring file)
-Arduino/libraries/SerialHandler/examples                     (the examples in the "open" menu)
-Arduino/libraries/SerialHandler/readme.txt                   (the readme file)
-
 Arduino/libraries/Timer                                      (this library's folder)
 Arduino/libraries/Timer/Timer.cpp                            (the library implementation file)
 Arduino/libraries/Timer/Timer.h                              (the library description file)

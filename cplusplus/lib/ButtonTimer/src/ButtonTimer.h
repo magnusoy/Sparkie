@@ -13,7 +13,7 @@ class ButtonTimer
 public:
     // Defining Functions
     ButtonTimer(unsigned long timeOut);
-    bool isSwitchOn(int btn);
+    bool isSwitchOn(uint8_t btn);
     bool buttonTimerHasExpired();
     void startButtonTimer(unsigned long duration);
 
@@ -22,7 +22,7 @@ private:
     unsigned long nextButtonTimeout;
     unsigned long timeOut;
     bool running;
-    int oldBtnState;
+    uint8_t oldBtnState;
     bool result;
 };
 #endif // _BUTTONTIMER_H_

@@ -120,4 +120,5 @@ float PHASESHIFT2Y = 3.14; //All legs togheter 0;       //Trot 3.14;
 
 float PHASESHIFT3X = 0; //All legs togheter 0;        //Trot 0;
 float PHASESHIFT3Y = 0; //All legs togheter 0;        //Trot 0;
+
 #endif                  // GLOBALS_H_

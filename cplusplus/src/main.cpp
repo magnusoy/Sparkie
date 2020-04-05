@@ -26,8 +26,17 @@
 #include "XboxController.h"
 #include "Locomotion.h"
 
+
+/* ROS Nodehandlers */
 ros::NodeHandle nh;
 
+
+/**
+ Joystick callback function for updating
+ robot xbox controller inputs
+
+ @param joy is the joystick msg
+*/
 void joyCallback(const sensor_msgs::Joy &joy)
 {
   XBOX_CONTROLLER_INPUT.LJ_LEFT_RIGHT = joy.axes[0];
@@ -49,6 +58,12 @@ void joyCallback(const sensor_msgs::Joy &joy)
   XBOX_CONTROLLER_INPUT.RJ = joy.buttons[10];
 }
 
+/**
+ Odometry callback function for updating
+ robot position and orientation.
+
+ @param odom is the odometry msg
+*/
 void odomCallback(const nav_msgs::Odometry &odom)
 {
   POSITION.x = odom.pose.pose.position.x;
@@ -65,16 +80,17 @@ void odomCallback(const nav_msgs::Odometry &odom)
   ORIENTAION.yaw = atan2(2.0 * (w * z + x * y), w * w + x * x - y * y - z * z) * 180.0 / PI;
 }
 
+/* ROS Subcribers */
 ros::Subscriber<sensor_msgs::Joy> joySub("joy", joyCallback);
 ros::Subscriber<nav_msgs::Odometry> odomSub("camera/odom/sample", odomCallback); // TODO: Change to t265/odom/sample under deployment
 
 /* Variable for the intervall time for walking case*/
-Timer walkIntervall;
-uint8_t intervall = 1; //1
+Timer walkInterval;
+uint8_t interval = 1; //1
 
 /*  */
-Timer XboxReadIntervall;
-uint8_t XboxIntervall = 100;
+Timer XboxReadInterval;
+uint8_t XboxInterval = 100;
 
 /* Variable for storing loop time */
 unsigned long loopTime;
@@ -113,8 +129,6 @@ void setup()
 void loop()
 {
   //loopTime = micros();
-  //readOdriveMotorPositions(hwSerials, odrives);
-  //readOdriveMotorCurrent();
   nh.spinOnce();
   computePIDs();
 
@@ -126,12 +140,11 @@ void loop()
 
   case S_STAND:
     blinkLight(ORANGE_LED);
-    if (walkIntervall.hasTimerExpired())
+    if (walkInterval.hasTimerExpired())
     {
-      walkIntervall.startTimer(intervall);
+      walkInterval.startTimer(interval);
       stand();
     }
-
     break;
 
   case S_CALIBRATE:
@@ -152,9 +165,9 @@ void loop()
 
   case S_WALK:
     // walkTime = micros();
-    if (walkIntervall.hasTimerExpired())
+    if (walkInterval.hasTimerExpired())
     {
-      walkIntervall.startTimer(intervall);
+      walkInterval.startTimer(interval);
       locomotion(autoParams);
 
       /*--------------------------------------*/
@@ -163,7 +176,6 @@ void loop()
       //turnLeft();
       //turnRight();
     }
-    //  Serial.print("Walk Time: ");
     // Serial.println(micros() - walkTime);
     break;
 
@@ -181,16 +193,16 @@ void loop()
     break;
 
   case S_MANUAL:
-    if (XboxReadIntervall.hasTimerExpired())
+    if (XboxReadInterval.hasTimerExpired())
     {
-      XboxReadIntervall.startTimer(XboxIntervall);
+      XboxReadInterval.startTimer(XboxInterval);
       readXboxButtons();
       mapXboxInputs();
     }
 
-    if (walkIntervall.hasTimerExpired())
+    if (walkInterval.hasTimerExpired())
     {
-      walkIntervall.startTimer(intervall);
+      walkInterval.startTimer(interval);
       locomotion(manualParams);
     }
     break;
@@ -264,6 +276,7 @@ void readStringFromSerial()
     }
   }
 }
+
 void changeConfigurations()
 {
   if (newData)

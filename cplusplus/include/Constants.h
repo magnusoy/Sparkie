@@ -19,8 +19,7 @@ const uint8_t ORANGE_LED = 9;
 #define FRONT_LEFT_SERIAL Serial3  // RX, TX (15, 14)
 #define BACK_LEFT_SERIAL Serial4   // RX, TX (16, 17)
 
-/** JSON Serial */
+/** ROS Serial */
 #define BAUDRATE 921600 // Bits per second
-#define CAPACITY 255    // Bits payload
 
 #endif // _CONSTANTS_H_

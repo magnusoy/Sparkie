@@ -11,7 +11,7 @@ PID pid(kp, ki, kd, REVERSE);
 void setup() {
   Serial.begin(115200);
   pid.setUpdateTime(10);
-  pid.setLimits(LL, LH);
+  pid.setOutputLimits(LL, LH);
 }
 
 void loop() {

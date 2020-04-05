@@ -76,15 +76,15 @@ void readButtons()
 {
   if (TON1.isSwitchOn(RED_BTN))
   {
-   if (currentState==S_STAND)
-   {
-     disarmMotors();
-     changeStateTo(S_IDLE);
-   }
-   else
-   {
-     changeStateTo(S_STAND);
-   }
+    if (currentState == S_STAND)
+    {
+      disarmMotors();
+      changeStateTo(S_IDLE);
+    }
+    else
+    {
+      changeStateTo(S_STAND);
+    }
   }
   else if (TON2.isSwitchOn(ORANGE_BTN))
   {
@@ -102,15 +102,13 @@ void readButtons()
       armMotors();
       changeStateTo(S_STAND);
     }
-    
+
     else
     {
       changeStateTo(S_WALK);
-    digitalWrite(GREEN_LED, HIGH);
-    //setLegMotorPID(25.0f, 0.001f, 0.0005f);
+      digitalWrite(GREEN_LED, HIGH);
+      //setLegMotorPID(25.0f, 0.001f, 0.0005f);
     }
-    
-    
   }
 }
 #endif // IO_H_
