@@ -23,12 +23,9 @@ import zmq
 import base64
 from PyQt5 import QtWidgets, uic, QtCore, QtGui
 
-import rospy
-from std_msgs.msg import String
-
 # Importing from local source
 from config import *
-#from .util.xbox_controller import XboxController
+from .util.xbox_controller import XboxController
 from .util.navigation import Path
 
 
@@ -126,6 +123,11 @@ class ManualWindow(QtWidgets.QDialog):
             self.change_mode_btn.setText("ROBOT CAMERAS")
             self.xbox_controller_frame.hide()
             self.video_frame.show()
+        elif self.mode == 2:
+            self.change_mode_btn.setText("WAYPOINTS")
+            self.xbox_controller_frame.hide()
+            self.video_frame.hide()
+            #self.path_frame.show()
 
     def set_walk_btn(self):
         if self.walk_btn.isChecked():
@@ -157,6 +159,10 @@ class ManualWindow(QtWidgets.QDialog):
             self.slow_btn.setChecked(False)
             self.medium_btn.setChecked(False)
 
+    @QtCore.pyqtSlot(QtGui.QImage)
+    def set_image(self, image):
+        self.video_frame.setPixmap(QtGui.QPixmap.fromImage(image))
+
     def power_on(self):
         active = self.powerBtn.isChecked()
         if active:
@@ -171,11 +177,61 @@ class ManualWindow(QtWidgets.QDialog):
             self.signal_btn.setChecked(False)
 
     def initUI(self):
-
+        self.activate.connect(self.active_all)
+        self.init_camera()
+        self.init_pose()
+        self.init_serial()
+        self.init_xbox_controller()
+        # self.init_command()
         self.show()
 
+    def init_camera(self):
+        self.camera = CameraThread(self)
+        self.camera.change_pixmap.connect(self.set_image)
+        self.camera.blink_signal.connect(self.blink_connection)
+        self.stop_camera.connect(self.camera.close_socket)
+        self.change_camera.connect(self.change_camera_output)
+        self.camera.start()
+
+    def init_pose(self):
+        self.pose = PoseThread(self)
+        self.stop_pose.connect(self.pose.close_socket)
+        self.pose.start()
+
+    def init_serial(self):
+        self.serial = SerialThread(self)
+        self.stop_serial.connect(self.serial.close_socket)
+        self.serial.start()
+
+    def init_command(self):
+        self.command = CommandThread(self)
+        self.stop_command.connect(self.command.close_socket)
+        self.command.start()
+
+    def init_xbox_controller(self):
+        self.xbox_controller = XboxControllerThread()
+        self.stop_xbox_controller.connect(self.xbox_controller.close_socket)
+        self.xbox_controller.start()
+
+    def change_camera_output(self):
+        self.current_camera_topic += 1
+        self.camera.change_topic(self.camera_topics[self.current_camera_topic])
+        if self.current_camera_topic == 2:
+            self.current_camera_topic = -1
+
+    def active_all(self):
+        self.camera.activate(self.powerBtn.isChecked())
+        self.pose.activate(self.powerBtn.isChecked())
+        self.serial.activate(self.powerBtn.isChecked())
+        self.xbox_controller.activate(self.powerBtn.isChecked())
+        # self.command.activate(self.powerBtn.isChecked())
 
     def close_window(self):
+        self.stop_camera.emit()
+        self.stop_pose.emit()
+        self.stop_serial.emit()
+        self.stop_xbox_controller.emit()
+        # self.stop_command.emit()
         self.close()
 
     def turn_robot_off(self):
@@ -343,7 +399,7 @@ class CommandThread(QtCore.QThread):
                     print(self.command)
                     self.old_command = self.command
 
-"""
+
 class XboxControllerThread(QtCore.QThread):
 
     power_on = QtCore.pyqtSignal()
@@ -382,18 +438,39 @@ class XboxControllerThread(QtCore.QThread):
                         str(self.xbox_controller.controlValues).encode())])
                     print(self.xbox_controller.controlValues)
                 time.sleep(0.1)
-"""
 
-class ROS_Subscriber(QtCore.QThread):
 
-    def __init__(self, topic, msg_type):
-        self.topic = topic
-        self.msg_type = msg_type
-          
-    def callback(self, data):
-        rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
-    
+class WaypointThread(QtCore.QThread):
+
+    power_on = QtCore.pyqtSignal()
+
+    PORT = 5592
+
+    context = zmq.Context()
+    waypoint_socket = context.socket(zmq.PUB)
+    waypoint_socket.bind(f'tcp://*:{PORT}')
+
+    path = Path()
+
+    threadactive = True
+    active = False
+
+    @QtCore.pyqtSlot()
+    def close_socket(self):
+        self.threadactive = False
+        print("Closing --> waypoint thread")
+
+    @QtCore.pyqtSlot(bool)
+    def activate(self, power_on):
+        self.active = power_on
+        print("Active being called")
+
     def run(self):
-        rospy.init_node('listener', anonymous=True)
-        rospy.Subscriber(self.topic, self.msg_type, self.callback)
-        rospy.spin()
+        while self.threadactive:
+            if self.active:
+                if self.waypoint_socket.check_events():
+                    self.waypoint_socket.send_multipart([b'waypoint', base64.b64encode(
+                        str(self.xbox_controller.controlValues).encode())])
+                    print(self.xbox_controller.controlValues)
+                time.sleep(0.1)
+
