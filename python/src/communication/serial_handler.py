@@ -83,6 +83,7 @@ class SerialThread(Thread):
         Send data trough Serial.
         """
         content = str(data).replace("'", '"')  # + '\n'
+        #print(content)
         self.connection.write(content.encode())
 
     def disconnect(self):

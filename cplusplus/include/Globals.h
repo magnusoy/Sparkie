@@ -2,29 +2,21 @@
 #define GLOBALS_H_
 #include "Constants.h"
 
-/** IMU structure */
-typedef struct
+struct orientation
 {
-  float yaw;
-  float pitch;
-  float roll;
-} IMU;
+  double yaw;
+  double pitch;
+  double roll;
+};
+struct orientation ORIENTAION;
 
-/** Accelerometer structure */
-typedef struct
+struct position
 {
-  float x;
-  float y;
-  float z;
-} Accelerometer;
-
-/** Gyroscope structure */
-typedef struct
-{
-  float x;
-  float y;
-  float z;
-} Gyroscope;
+  double x;
+  double y;
+  double z;
+};
+struct position POSITION;
 
 /** Error codes */
 enum errors

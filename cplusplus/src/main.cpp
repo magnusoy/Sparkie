@@ -247,6 +247,14 @@ void readXboxControllerInputs()
     XBOX_CONTROLLER_INPUT.MB = obj["14"];
     XBOX_CONTROLLER_INPUT.LJ = obj["15"];
     XBOX_CONTROLLER_INPUT.RJ = obj["16"];
+
+    POSITION.x = obj["x"];
+    POSITION.y = obj["y"];
+    POSITION.z = obj["z"];
+    
+    ORIENTAION.pitch = obj["pitch"];
+    ORIENTAION.roll = obj["roll"];
+    ORIENTAION.yaw = obj["yaw"];
   }
 }
 

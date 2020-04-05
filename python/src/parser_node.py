@@ -3,6 +3,8 @@ import rospy
 import math as m
 from communication.serial_handler import SerialThread
 import json
+from threading import Thread
+
 
 from nav_msgs.msg import Odometry
 from sensor_msgs.msg import Joy
@@ -44,6 +46,7 @@ def odom_2_dict(data):
     roll  =  m.atan2(2.0 * (w*x + y*z), w*w - x*x - y*y + z*z) * 180.0 / m.pi;
     yaw   =  m.atan2(2.0 * (w*z + x*y), w*w + x*x - y*y - z*z) * 180.0 / m.pi;
     msg = {"x": position.x, "y": position.y, "z": position.z, "pitch": pitch, "roll": roll, "yaw": yaw}
+    rospy.loginfo((pitch, roll, yaw))
     return msg
 
 def callback0(data):
@@ -66,17 +69,24 @@ def timer_callback(event):
     #data = str(global_data).replace("'", '"')
     json_msg = json.dumps(global_data)
     serial.sendOutputStream(json.loads(json_msg))
-
+    
 
 def listener():
     rospy.init_node('listener', anonymous=True)
     rospy.Subscriber("/camera/odom/sample", Odometry, callback0)
     rospy.Subscriber("/joy", Joy, callback1)
     
-    #timer = rospy.Timer(rospy.Duration(0.02), timer_callback)
+    timer = rospy.Timer(rospy.Duration(0.02), timer_callback)
     rospy.spin()
-    #timer.shutdown()
+    timer.shutdown()
 
+def reader():
+    while True:
+        reply = serial.readInputStream()
+        print(reply)
+        
+read_thread = Thread(target=reader, daemon=True)
 
 if __name__ == '__main__':
+    #read_thread.start()
     listener()
