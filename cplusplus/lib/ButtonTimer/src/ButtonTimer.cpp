@@ -46,10 +46,20 @@ bool ButtonTimer::buttonTimerHasExpired()
 bool ButtonTimer::isSwitchOn(int btn)
 {
     int btnState = digitalRead(btn);
-    if (btnState != oldBtnState)
+    if (btnState)
     {
-        oldBtnState = btnState;
-        startButtonTimer(this->timeOut);
+        if ((btnState != oldBtnState))
+        {
+            startButtonTimer(this->timeOut);
+            this->result = true;
+        }
     }
-    return ((buttonTimerHasExpired()) && (btnState)) ? true : false;
+    oldBtnState = btnState;
+    if (buttonTimerHasExpired() && (this->result)) {
+        this->result = false;
+        return true;
+    }
+    else {
+        return false;
+    }
 }

@@ -3,6 +3,7 @@
 
 #include "../lib/ButtonTimer/src/ButtonTimer.h"
 #include "Locomotion.h"
+#include "Globals.h"
 
 /*  Variables used for blinking a led without delay*/
 uint8_t ledState = LOW;
@@ -10,6 +11,7 @@ unsigned long previousMillis = 0;
 const long INTERVAL = 1000;
 
 #define TIME_DELAY 50
+
 ButtonTimer TON1(TIME_DELAY);
 ButtonTimer TON2(TIME_DELAY);
 ButtonTimer TON3(TIME_DELAY);
@@ -74,8 +76,15 @@ void readButtons()
 {
   if (TON1.isSwitchOn(RED_BTN))
   {
-    //disarmMotors();
-    changeStateTo(S_IDLE);
+   if (currentState==S_STAND)
+   {
+     disarmMotors();
+     changeStateTo(S_IDLE);
+   }
+   else
+   {
+     changeStateTo(S_STAND);
+   }
   }
   else if (TON2.isSwitchOn(ORANGE_BTN))
   {
@@ -88,10 +97,20 @@ void readButtons()
   }
   else if (TON4.isSwitchOn(GREEN_BTN))
   {
-    armMotors();
-    changeStateTo(S_WALK);
+    if (currentState == S_IDLE)
+    {
+      armMotors();
+      changeStateTo(S_STAND);
+    }
+    
+    else
+    {
+      changeStateTo(S_WALK);
     digitalWrite(GREEN_LED, HIGH);
     //setLegMotorPID(25.0f, 0.001f, 0.0005f);
+    }
+    
+    
   }
 }
 #endif // IO_H_

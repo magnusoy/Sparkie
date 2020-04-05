@@ -23,5 +23,6 @@ private:
     unsigned long timeOut;
     bool running;
     int oldBtnState;
+    bool result;
 };
 #endif // _BUTTONTIMER_H_

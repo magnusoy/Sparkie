@@ -98,7 +98,7 @@ void stand()
     float x = 70;
     float y = -120;
     //setLegMotorPID(5.0f, 0.001f, 0.0f);
-    float speed = 10000;
+    float speed = 50000;
     Legs[0].linearMove(-x, y + pitchOutput - rollOutput, speed);
     Legs[1].linearMove(x, y + pitchOutput + rollOutput, speed);
     Legs[2].linearMove(x, y - pitchOutput - rollOutput, speed);

@@ -83,16 +83,6 @@ void loop()
   {
   case S_IDLE:
     blinkLight(GREEN_LED);
-    if (!idlePosition && calibrated)
-    {
-      setIdlePosition();
-      idleTimer.startTimer(idleTime);
-    }
-    if (idleTimer.hasTimerExpired())
-    {
-      disarmMotors();
-    }
-
     break;
 
   case S_STAND:
@@ -110,9 +100,8 @@ void loop()
     {
       calibrateOdriveMotors();
       calibrated = true;
-      armMotors();
     }
-    changeStateTo(S_STAND);
+    changeStateTo(S_IDLE);
     break;
 
   case S_READY:
