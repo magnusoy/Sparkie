@@ -22,12 +22,13 @@ public:
 	float compute(float x, float y, uint8_t motor);
 	float stepX(p &params, float phaseShift);
 	float stepY(p &params, float phaseShift);
-	void linearMove(float x, float y, float velocity);
+	void linearMove(float x, float y);
 	void move(p &params);
 	float getX();
 	float getY();
 	void setHeight(float height);
 	void setPID(float P, float I, float D);
+	void setTrapTraj(float vel_limit, float accel_limit, float decel_limit);
 
 private:
 	ODriveArduino &odrive;

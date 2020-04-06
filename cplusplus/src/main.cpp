@@ -26,10 +26,8 @@
 #include "XboxController.h"
 #include "Locomotion.h"
 
-
 /* ROS Nodehandlers */
 ros::NodeHandle nh;
-
 
 /**
  Joystick callback function for updating
@@ -101,18 +99,16 @@ int idleTime = 10000;
 
 /*------Variables for reading PID parameters from serial------*/
 // Defining global variables for recieving data
-boolean newData = false;
-const byte numChars = 32;
-char receivedChars[numChars]; // An array to store the received data
-float kp = 25.0f;
-float ki = 0.001f;
-float kd = 0.0005f;
-void readStringFromSerial();
+//TODO Remove
+float kp = 40.0f;  //STAND = 40.0f    moveToPoint = 
+float ki = 0.01f; //STAND = 0.01f    moveToPoint =
+float kd = 0.002f; //STAND = 0.002f   moveToPoint =
 void changeConfigurations();
-String getValueFromSerial(String data, char separator, int index);
 
 void setup()
 {
+  Serial.begin(57600);
+  nh.getHardware()->setBaud(57600);
   nh.initNode();
   nh.subscribe(joySub);
   nh.subscribe(odomSub);
@@ -123,7 +119,6 @@ void setup()
   set_frequency(1.0f, autoParams);
   set_frequency(1.0f, manualParams);
   initializePIDs();
-  pinMode(13, OUTPUT);
 }
 
 void loop()
@@ -148,11 +143,8 @@ void loop()
     break;
 
   case S_CALIBRATE:
-    if (!calibrated)
-    {
-      calibrateOdriveMotors();
-      calibrated = true;
-    }
+    calibrateOdriveMotors();
+    calibrated = true;
     changeStateTo(S_IDLE);
     break;
 
@@ -220,15 +212,13 @@ void loop()
     checkForErrors();
     delay(200);
     resetMotorsErrors();
-    //readConfig();
-    //delay(500);
-    //writeConfig();
-    //setPreCalibrated(true);
-    //saveConfigOdrives();
-    //delay(500);
-    //rebootOdrives();
-    changeConfigurations();
     delay(200);
+    //writeConfig();;
+    //setPreCalibrated(true);
+    //rebootOdrives();
+    //changeConfigurations();
+    //saveConfigOdrives();
+    //rebootOdrives();
     readConfig();
     changeStateTo(S_IDLE);
     break;
@@ -247,62 +237,11 @@ void loop()
   readButtons();
 }
 
-/**
-  Reads a string from Serial Monitor.
-*/
-void readStringFromSerial()
-{
-  static byte ndx = 0;
-  char endMarker = '\n';
-  char rc;
-
-  while ((Serial.available() > 0) && (!newData))
-  {
-    rc = Serial.read();
-    if (rc != endMarker)
-    {
-      receivedChars[ndx] = rc;
-      ndx++;
-      if (ndx >= numChars)
-      {
-        ndx = numChars - 1;
-      }
-    }
-    else
-    {
-      receivedChars[ndx] = '\0'; // Terminate the string
-      ndx = 0;
-      newData = true;
-    }
-  }
-}
-
 void changeConfigurations()
 {
-  if (newData)
-  {
-    kp = getValueFromSerial(receivedChars, ':', 0).toFloat();
-    ki = getValueFromSerial(receivedChars, ':', 1).toFloat();
-    kd = getValueFromSerial(receivedChars, ':', 2).toFloat();
-    setLegMotorPID(kp, ki, kd);
-    newData = false;
-  }
-}
-
-String getValueFromSerial(String data, char separator, int index)
-{
-  int found = 0;
-  int strIndex[] = {0, -1};
-  int maxIndex = data.length() - 1;
-
-  for (int i = 0; i <= maxIndex && found <= index; i++)
-  {
-    if (data.charAt(i) == separator || i == maxIndex)
-    {
-      found++;
-      strIndex[0] = strIndex[1] + 1;
-      strIndex[1] = (i == maxIndex) ? i + 1 : i;
-    }
-  }
-  return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
+  setLegMotorPID(kp, ki, kd);
+  delay(500);
+  setLegMotorTrapTraj(500,500,500);
+  //newData = false;
+  //}
 }

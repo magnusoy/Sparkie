@@ -228,13 +228,13 @@ void ODriveArduino::readConfig(int motor_number)
 void ODriveArduino::writeConfig(int motor_number)
 {
   //serial_ << "w axis" << motor_number << ".controller.config.pos_gain " << 20.0 << "\n";
-  //serial_ << "w axis" << motor_number << ".controller.config.vel_limit " << 50000.0 << "\n";
+  serial_ << "w axis" << motor_number << ".controller.config.vel_limit " << 50000.0 << "\n";
   //serial_ << "w axis" << motor_number << ".controller.config.vel_integrator_gain " << 0 << "\n";
   //serial_ << "w axis" << motor_number << ".motor.config.pole_pairs " << 11 << "\n";
   //serial_ << "w axis" << motor_number << ".motor.config.resistance_calib_max_voltage " << 4.0 << "\n";
   //serial_ << "w axis" << motor_number << ".encoder.config.cpr " << 2000 << "\n";
   //serial_ << "w axis" << motor_number << ".motor.config.current_lim " << 40 << "\n";
-  serial_ << "w axis" << motor_number << ".motor.config.calibration_current " << 15 << "\n";
+  //serial_ << "w axis" << motor_number << ".motor.config.calibration_current " << 15 << "\n";
   delay(100);
 }
 
@@ -245,6 +245,16 @@ void ODriveArduino::writePID(int motor_number, float P, float I, float D)
   serial_ << "w axis" << motor_number << ".controller.config.vel_integrator_gain " << I << "\n";
   delay(10);
   serial_ << "w axis" << motor_number << ".controller.config.vel_gain " << D << "\n";
+  delay(10);
+}
+
+void ODriveArduino::writeTrapTraj(int motor_number, float vel_limit, float accel_limit, float decel_limit)
+{
+  serial_ << "w axis" << motor_number << ".trap_traj.config.vel_limit " << vel_limit << "\n";
+  delay(10);
+  serial_ << "w axis" << motor_number << ".trap_traj.config.accel_limit " << accel_limit << "\n";
+  delay(10);
+  serial_ << "w axis" << motor_number << ".trap_traj.config.decel_limit " << decel_limit << "\n";
   delay(10);
 }
 

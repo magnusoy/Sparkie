@@ -130,13 +130,13 @@ float LegMovement::stepY(p &params, float phase_shift)
   return this->y;
 }
 
-void LegMovement::linearMove(float x, float y, float velocity)
+void LegMovement::linearMove(float x, float y)
 {
   for (int motor = 0; motor < 2; motor++)
   {
     double angle = this->compute(x, y, motor);
     double motor_count = map(angle, -360, 360, -6000, 6000);
-    this->odrive.SetPosition1(motor, motor_count, velocity);
+    this->odrive.TrapezoidalMove(motor, motor_count);
   }
 }
 
@@ -172,5 +172,13 @@ void LegMovement::setPID(float P, float I, float D)
   for (int motor_number = 0; motor_number < 2; motor_number++)
   {
     odrive.writePID(motor_number, P, I, D);
+  }
+}
+
+void LegMovement::setTrapTraj(float vel_limit, float accel_limit, float decel_limit)
+{
+  for (int motor_number = 0; motor_number < 2; motor_number++)
+  {
+    odrive.writeTrapTraj(motor_number, vel_limit, accel_limit, decel_limit);
   }
 }

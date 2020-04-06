@@ -24,8 +24,8 @@ uint8_t jump = 0;
 /* Variable for lay down*/
 float x = 0;
 
-PID pitchPID(3, 0, 0, REVERSE);
-PID rollPID(2, 0, 0, REVERSE);
+PID pitchPID(6, 0.001, 0, DIRECT);
+PID rollPID(4, 0.001, 0, REVERSE);
 PID yawPID(1, 0, 0, REVERSE);
 double pitchOutput;
 double rollOutput;
@@ -89,14 +89,25 @@ void setLegMotorPID(float P, float I, float D)
 /**
  TODO: Add docstring
  */
+void setLegMotorTrapTraj(float vel_limit, float accel_limit, float decel_limit)
+{
+    for (uint8_t i = 0; i < 4; i++)
+    { // Adjust PID gain on all legs
+        Legs[i].setTrapTraj(vel_limit, accel_limit, decel_limit);
+    }
+}
+
+
+/**
+ TODO: Add docstring
+ */
 void transitionToPoint(float x, float y)
 {
     //setLegMotorPID(5.0f, 0.001f, 0.0f);
-    float speed = 10000;
-    Legs[0].linearMove(-x, y, speed);
-    Legs[1].linearMove(x, y, speed);
-    Legs[2].linearMove(x, y, speed);
-    Legs[3].linearMove(-x, y, speed);
+    Legs[0].linearMove(-x, y);
+    Legs[1].linearMove(x, y);
+    Legs[2].linearMove(x, y);
+    Legs[3].linearMove(-x, y);
 }
 
 /**
@@ -106,12 +117,10 @@ void stand()
 {
     float x = 70;
     float y = -120;
-    //setLegMotorPID(5.0f, 0.001f, 0.0f);
-    float speed = 50000;
-    Legs[0].linearMove(-x, y + pitchOutput - rollOutput, speed);
-    Legs[1].linearMove(x, y + pitchOutput + rollOutput, speed);
-    Legs[2].linearMove(x, y - pitchOutput - rollOutput, speed);
-    Legs[3].linearMove(-x, y - pitchOutput + rollOutput, speed);
+    Legs[0].linearMove(-x, y + pitchOutput - rollOutput);
+    Legs[1].linearMove(x, y + pitchOutput + rollOutput);
+    Legs[2].linearMove(x, y - pitchOutput - rollOutput);
+    Legs[3].linearMove(-x, y - pitchOutput + rollOutput);
 }
 
 /**
@@ -122,7 +131,6 @@ void setIdlePosition()
     armMotors();
     delay(10);
     transitionToPoint(70, -120);
-    //disarmMotors();
     idlePosition = true;
 }
 
@@ -154,7 +162,7 @@ void jumpCommand()
         {
             for (uint8_t Odrive = 0; Odrive < 4; Odrive++)
             {
-                Legs[Odrive].linearMove(x, y, 5000.0);
+                Legs[Odrive].linearMove(x, y);
             }
             groundTime.startTimer(500);
             runned = true;
@@ -172,7 +180,7 @@ void jumpCommand()
         {
             for (uint8_t Odrive = 0; Odrive < 4; Odrive++)
             {
-                Legs[Odrive].linearMove(x, y, 50000.0);
+                Legs[Odrive].linearMove(x, y);
             }
             airTime.startTimer(1000);
             runned = true;
