@@ -10,7 +10,8 @@
 	@param kd  derivative gain factor
 	@param direction - DIRECT or REVERSE
 */
-PID::PID(double kp, double ki, double kd, int direction) {
+PID::PID(double kp, double ki, double kd, int direction)
+{
 	this->direction = direction;
 	PID::setParams(kp, ki, kd);
 	lastUpdateTime = millis();
@@ -25,19 +26,23 @@ PID::PID(double kp, double ki, double kd, int direction) {
 
 	@return outputValue - calculated output
 */
-double PID::compute(double actual, double target) {
+double PID::compute(double actual, double target)
+{
 
-	if (lastUpdateTime + updateTime <= millis()) {
+	if (lastUpdateTime + updateTime <= millis())
+	{
 		double lastError = error;
 		error = target - actual;
 		double output = error * kp;
 		outputSum += error * ki;
 		double outputLast = (lastError - error) * kd;
 		outputValue = offset + output + outputSum + outputLast;
-		if (outputValue > outputLimitHigh) {
+		if (outputValue > outputLimitHigh)
+		{
 			outputValue = outputLimitHigh;
 		}
-		if (outputValue < outputLimitLow) {
+		if (outputValue < outputLimitLow)
+		{
 			outputValue = outputLimitLow;
 		}
 		lastUpdateTime = millis();
@@ -48,8 +53,9 @@ double PID::compute(double actual, double target) {
 /*
 	Resets the global variables.
 */
-bool PID::reset(void) {
-	bool reset = false;
+void PID::reset(void)
+{
+	//bool reset = false;
 	lastUpdateTime = millis();
 	error = 0.0f;
 	outputSum = 0.0f;
@@ -62,7 +68,8 @@ bool PID::reset(void) {
 	@param low - the lowest output
 	@param high - the highest output
 */
-void PID::setOutputLimits(double low, double high) {
+void PID::setOutputLimits(double low, double high)
+{
 	this->outputLimitLow = low;
 	this->outputLimitHigh = high;
 }
@@ -88,13 +95,16 @@ void PID::setUpdateTime(unsigned long updateTime) { this->updateTime = updateTim
 	@param ki - integral gain factor
 	@param kd  derivative gain factor
 */
-void PID::setParams(double kp, double ki, double kd) {
-	if (direction == 0) {
+void PID::setParams(double kp, double ki, double kd)
+{
+	if (direction == 0)
+	{
 		this->kp = kp;
 		this->ki = ki;
 		this->kd = kd;
 	}
-	else if (direction == 1) {
+	else if (direction == 1)
+	{
 		this->kp = -kp;
 		this->ki = -ki;
 		this->kd = -kd;

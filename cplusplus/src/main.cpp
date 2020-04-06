@@ -82,9 +82,9 @@ void odomCallback(const nav_msgs::Odometry &odom)
 ros::Subscriber<sensor_msgs::Joy> joySub("joy", joyCallback);
 ros::Subscriber<nav_msgs::Odometry> odomSub("camera/odom/sample", odomCallback); // TODO: Change to t265/odom/sample under deployment
 
-/* Variable for the intervall time for walking case*/
-Timer walkInterval;
-uint8_t interval = 1; //1
+/* Variable for the interval time for walking case*/
+Timer moveTimer;
+uint8_t moveInterval = 1; //1
 
 /*  */
 Timer XboxReadInterval;
@@ -94,14 +94,14 @@ uint8_t XboxInterval = 100;
 unsigned long loopTime;
 unsigned long walkTime;
 
-Timer idleTimer;
-int idleTime = 10000;
+Timer transitionTimer;
+int transitionTime = 5000;
 
 /*------Variables for reading PID parameters from serial------*/
 // Defining global variables for recieving data
 //TODO Remove
-float kp = 40.0f;  //STAND = 40.0f    moveToPoint = 
-float ki = 0.01f; //STAND = 0.01f    moveToPoint =
+float kp = 40.0f;  //STAND = 40.0f    moveToPoint =
+float ki = 0.01f;  //STAND = 0.01f    moveToPoint =
 float kd = 0.002f; //STAND = 0.002f   moveToPoint =
 void changeConfigurations();
 
@@ -133,18 +133,37 @@ void loop()
     blinkLight(GREEN_LED);
     break;
 
+  case S_TRANSITION:
+    blinkLight(RED_LED);
+    setIdlePosition();
+    if (transition == false)
+    {
+      transitionTimer.startTimer(transitionTime);
+      transition = true;
+    }
+    if (transitionTimer.hasTimerExpired())
+    {
+      changeStateTo(S_STAND);
+    }
+
+    break;
+
   case S_STAND:
     blinkLight(ORANGE_LED);
-    if (walkInterval.hasTimerExpired())
+    if (moveTimer.hasTimerExpired())
     {
-      walkInterval.startTimer(interval);
+      moveTimer.startTimer(moveInterval);
       stand();
     }
     break;
 
+  case S_LAYDOWN:
+    blinkLight(BLUE_LED);
+    layDown();
+    break;
+
   case S_CALIBRATE:
     calibrateOdriveMotors();
-    calibrated = true;
     changeStateTo(S_IDLE);
     break;
 
@@ -157,9 +176,9 @@ void loop()
 
   case S_WALK:
     // walkTime = micros();
-    if (walkInterval.hasTimerExpired())
+    if (moveTimer.hasTimerExpired())
     {
-      walkInterval.startTimer(interval);
+      moveTimer.startTimer(moveInterval);
       locomotion(autoParams);
 
       /*--------------------------------------*/
@@ -192,9 +211,9 @@ void loop()
       mapXboxInputs();
     }
 
-    if (walkInterval.hasTimerExpired())
+    if (moveTimer.hasTimerExpired())
     {
-      walkInterval.startTimer(interval);
+      moveTimer.startTimer(moveInterval);
       locomotion(manualParams);
     }
     break;
@@ -210,9 +229,9 @@ void loop()
   case S_RESET:
     turnOffAllLights();
     checkForErrors();
-    delay(200);
+    delay(100);
     resetMotorsErrors();
-    delay(200);
+    delay(100);
     //writeConfig();;
     //setPreCalibrated(true);
     //rebootOdrives();
@@ -241,7 +260,7 @@ void changeConfigurations()
 {
   setLegMotorPID(kp, ki, kd);
   delay(500);
-  setLegMotorTrapTraj(500,500,500);
+  setLegMotorTrapTraj(500, 500, 500);
   //newData = false;
   //}
 }

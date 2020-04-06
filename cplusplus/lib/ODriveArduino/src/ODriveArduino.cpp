@@ -44,12 +44,6 @@ void ODriveArduino::SetPosition(int motor_number, float position, float velocity
   serial_ << "p " << motor_number << " " << position << " " << velocity_feedforward << " " << current_feedforward << "\n";
 }
 
-/* Work in progress */
-void ODriveArduino::SetPosition1(int motor_number, float position, float speed_limit)
-{
-  serial_ << "q " << motor_number << " " << position << " " << speed_limit << "\n";
-}
-
 void ODriveArduino::SetVelocity(int motor_number, float velocity)
 {
   SetVelocity(motor_number, velocity, 0.0f);

@@ -92,18 +92,16 @@ void setLegMotorPID(float P, float I, float D)
 void setLegMotorTrapTraj(float vel_limit, float accel_limit, float decel_limit)
 {
     for (uint8_t i = 0; i < 4; i++)
-    { // Adjust PID gain on all legs
+    { // Adjust trap settings on all legs
         Legs[i].setTrapTraj(vel_limit, accel_limit, decel_limit);
     }
 }
-
 
 /**
  TODO: Add docstring
  */
 void transitionToPoint(float x, float y)
 {
-    //setLegMotorPID(5.0f, 0.001f, 0.0f);
     Legs[0].linearMove(-x, y);
     Legs[1].linearMove(x, y);
     Legs[2].linearMove(x, y);
@@ -117,10 +115,10 @@ void stand()
 {
     float x = 70;
     float y = -120;
-    Legs[0].linearMove(-x, y + pitchOutput - rollOutput);
-    Legs[1].linearMove(x, y + pitchOutput + rollOutput);
-    Legs[2].linearMove(x, y - pitchOutput - rollOutput);
-    Legs[3].linearMove(-x, y - pitchOutput + rollOutput);
+    Legs[0].holdPosition(-x, y + pitchOutput - rollOutput);
+    Legs[1].holdPosition(x, y + pitchOutput + rollOutput);
+    Legs[2].holdPosition(x, y - pitchOutput - rollOutput);
+    Legs[3].holdPosition(-x, y - pitchOutput + rollOutput);
 }
 
 /**
@@ -128,10 +126,7 @@ void stand()
 */
 void setIdlePosition()
 {
-    armMotors();
-    delay(10);
     transitionToPoint(70, -120);
-    idlePosition = true;
 }
 
 /**
@@ -207,7 +202,7 @@ void layDown()
  */
 void standUp()
 {
-    transitionToPoint(0, -160);
+    transitionToPoint(70, -120);
 }
 
 /**

@@ -2,17 +2,18 @@
 #define _PID_H_
 
 #if (ARDUINO >= 100)
- #include "Arduino.h"
+#include "Arduino.h"
 #else
- #include "WProgram.h"
+#include "WProgram.h"
 #endif
 
-class PID {
+class PID
+{
 
 public:
-	//Defining Constants
-	#define DIRECT  0
-    #define REVERSE  1
+//Defining Constants
+#define DIRECT 0
+#define REVERSE 1
 
 	// Defining Functions
 	PID(double kp, double ki, double kd, int direction);
@@ -22,7 +23,7 @@ public:
 	void setDirection(int direction);
 	void setOutputOffset(double offset);
 	void setOutputLimits(double low, double high);
-	bool reset(void);
+	void reset(void);
 
 private:
 	// Defining varibales
@@ -38,10 +39,6 @@ private:
 	unsigned long updateTime;
 	unsigned long lastUpdateTime;
 	int direction;
-
 };
 
 #endif // _PID_H_
-
-
-

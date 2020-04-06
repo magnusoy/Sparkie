@@ -140,6 +140,16 @@ void LegMovement::linearMove(float x, float y)
   }
 }
 
+void LegMovement::holdPosition(float x, float y)
+{
+  for (int motor = 0; motor < 2; motor++)
+  {
+    double angle = this->compute(x, y, motor);
+    double motor_count = map(angle, -360, 360, -6000, 6000);
+    this->odrive.SetPosition(motor, motor_count);
+  }
+}
+
 void LegMovement::move(p &params)
 {
   double x = this->stepX(params, phase_shift_x);
@@ -148,7 +158,7 @@ void LegMovement::move(p &params)
   {
     double angle = this->compute(x, y, motor);
     double motor_count = map(angle, -360, 360, -6000, 6000);
-    this->odrive.SetPosition1(motor, motor_count, 50000.0);
+    this->odrive.SetPosition(motor, motor_count);
   }
 }
 

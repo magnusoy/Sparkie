@@ -60,6 +60,42 @@ void blinkLight(uint8_t pin)
 }
 
 /**
+ * 
+ */
+void setSettings(uint8_t newState)
+{
+  if (currentState == S_IDLE && (newState == S_STAND || newState == S_TRANSITION))
+  {
+    armMotors();
+  }
+  else if ((currentState == S_STAND || currentState == S_TRANSITION) && newState == S_IDLE)
+  {
+    disarmMotors();
+  }
+
+  if (currentState == S_TRANSITION)
+  {
+    transition = false;
+  }
+
+  if (newState == S_CALIBRATE)
+  {
+    digitalWrite(BLUE_LED, HIGH);
+  }
+
+  if (newState == S_WALK || newState == S_MANUAL || newState == S_AUTONOMOUS)
+  {
+    digitalWrite(GREEN_LED, HIGH);
+  }
+
+  if (currentState == S_WALK || currentState == S_MANUAL || currentState == S_AUTONOMOUS)
+  {
+    autoParams.x = 0;
+    manualParams.x = 0;
+  }
+}
+
+/**
    Change the state of the statemachine to the new state
    given by the parameter newState
    @param newState The new state to set the statemachine to
@@ -67,7 +103,7 @@ void blinkLight(uint8_t pin)
 void changeStateTo(uint8_t newState)
 {
   turnOffAllLights();
-  idlePosition = false;
+  setSettings(newState);
   currentState = newState;
 }
 
@@ -78,36 +114,37 @@ void readButtons()
   {
     if (currentState == S_STAND)
     {
-      disarmMotors();
       changeStateTo(S_IDLE);
     }
-    else
+    else if (currentState == S_WALK)
     {
       changeStateTo(S_STAND);
     }
   }
+
   else if (TON2.isSwitchOn(ORANGE_BTN))
   {
     changeStateTo(S_RESET);
   }
+
   else if (TON3.isSwitchOn(BLUE_BTN))
   {
     changeStateTo(S_CALIBRATE);
-    digitalWrite(BLUE_LED, HIGH);
   }
+
   else if (TON4.isSwitchOn(GREEN_BTN))
   {
     if (currentState == S_IDLE)
     {
-      armMotors();
-      changeStateTo(S_STAND);
+      changeStateTo(S_TRANSITION);
     }
-
-    else
+    else if (currentState == S_STAND)
     {
-      changeStateTo(S_WALK);
-      digitalWrite(GREEN_LED, HIGH);
-      //setLegMotorPID(25.0f, 0.001f, 0.0005f);
+      changeStateTo(S_WALK); //Change to S_LAYDOWN for laydown  test
+    }
+    else if (currentState == S_LAYDOWN)
+    {
+      changeStateTo(S_TRANSITION);
     }
   }
 }

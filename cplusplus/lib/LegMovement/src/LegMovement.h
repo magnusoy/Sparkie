@@ -23,6 +23,7 @@ public:
 	float stepX(p &params, float phaseShift);
 	float stepY(p &params, float phaseShift);
 	void linearMove(float x, float y);
+	void holdPosition(float x, float y);
 	void move(p &params);
 	float getX();
 	float getY();

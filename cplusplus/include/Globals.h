@@ -52,7 +52,9 @@ enum warnings
 enum states
 {
   S_IDLE,
+  S_TRANSITION,
   S_STAND,
+  S_LAYDOWN,
   S_CALIBRATE,
   S_READY,
   S_PAUSE,
@@ -72,8 +74,7 @@ enum states
 uint8_t currentState = S_IDLE;
 uint8_t currentErrors[3] = {NONE};
 uint8_t currentWarnings[3] = {NONE};
-uint8_t idlePosition = false;
-uint8_t calibrated = false; //Put false;
+boolean transition = false;
 
 #include "types.h"
 p autoParams;
@@ -121,4 +122,4 @@ float PHASESHIFT2Y = 3.14; //All legs togheter 0;       //Trot 3.14;
 float PHASESHIFT3X = 0; //All legs togheter 0;        //Trot 0;
 float PHASESHIFT3Y = 0; //All legs togheter 0;        //Trot 0;
 
-#endif                  // GLOBALS_H_
+#endif // GLOBALS_H_
