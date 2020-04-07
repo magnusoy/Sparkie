@@ -112,13 +112,13 @@ void readButtons()
 {
   if (TON1.isSwitchOn(RED_BTN))
   {
-    if (currentState == S_STAND)
+    if (currentState == S_WALK)
+    {
+      changeStateTo(S_TRANSITION);
+    }
+    else
     {
       changeStateTo(S_IDLE);
-    }
-    else if (currentState == S_WALK)
-    {
-      changeStateTo(S_STAND);
     }
   }
 

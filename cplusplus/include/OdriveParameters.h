@@ -88,7 +88,7 @@ void setOdrivesInState(uint8_t requestedState, uint8_t wait)
     for (uint8_t m = 0; m < 2; ++m)
     {
       odrives[i].run_state(m, requestedState, wait);
-      delay(10);
+      delay(30);
     }
   }
 }

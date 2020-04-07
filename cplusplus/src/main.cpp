@@ -231,14 +231,14 @@ void loop()
     checkForErrors();
     delay(100);
     resetMotorsErrors();
-    delay(100);
+    //delay(100);
     //writeConfig();;
     //setPreCalibrated(true);
     //rebootOdrives();
     //changeConfigurations();
     //saveConfigOdrives();
     //rebootOdrives();
-    readConfig();
+    //readConfig();
     changeStateTo(S_IDLE);
     break;
 
