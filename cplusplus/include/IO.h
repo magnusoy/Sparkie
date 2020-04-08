@@ -140,7 +140,8 @@ void readButtons()
     }
     else if (currentState == S_STAND)
     {
-      changeStateTo(S_WALK); //Change to S_LAYDOWN for laydown  test
+      changeStateTo(S_TRANSITIONWALK); //Change to S_LAYDOWN for laydown  test
+      nextState = S_WALK;
     }
     else if (currentState == S_LAYDOWN)
     {

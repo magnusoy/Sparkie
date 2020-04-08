@@ -37,12 +37,31 @@ void initializePIDs()
     pitchPID.setOutputLimits(-50, 50);
     rollPID.setUpdateTime(1);
     rollPID.setOutputLimits(-50, 50);
+    yawPID.setUpdateTime(1);
+    yawPID.setOutputLimits(-160, 160);
 }
 
 void computePIDs()
 {
     pitchOutput = pitchPID.compute(ORIENTAION.pitch, 0);
     rollOutput = rollPID.compute(ORIENTAION.roll, 0);
+    //yawOutput = yawOutput.compute(ORIENTAION.yaw,)
+}
+
+void computeAutoParams()
+{
+    legMovement0.setHeight(autoParams.height + pitchOutput - rollOutput);
+    legMovement1.setHeight(autoParams.height + pitchOutput + rollOutput);
+    legMovement2.setHeight(autoParams.height - pitchOutput - rollOutput);
+    legMovement3.setHeight(autoParams.height - pitchOutput + rollOutput);
+}
+
+void computeManualParams()
+{
+    legMovement0.setHeight(manualParams.height + pitchOutput - rollOutput);
+    legMovement1.setHeight(manualParams.height + pitchOutput + rollOutput);
+    legMovement2.setHeight(manualParams.height - pitchOutput - rollOutput);
+    legMovement3.setHeight(manualParams.height - pitchOutput + rollOutput);
 }
 
 /**

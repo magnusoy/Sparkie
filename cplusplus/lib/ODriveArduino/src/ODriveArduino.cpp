@@ -222,7 +222,7 @@ void ODriveArduino::readConfig(int motor_number)
 void ODriveArduino::writeConfig(int motor_number)
 {
   //serial_ << "w axis" << motor_number << ".controller.config.pos_gain " << 20.0 << "\n";
-  serial_ << "w axis" << motor_number << ".controller.config.vel_limit " << 50000.0 << "\n";
+  serial_ << "w axis" << motor_number << ".controller.config.vel_limit " << 70000.0 << "\n";
   //serial_ << "w axis" << motor_number << ".controller.config.vel_integrator_gain " << 0 << "\n";
   //serial_ << "w axis" << motor_number << ".motor.config.pole_pairs " << 11 << "\n";
   //serial_ << "w axis" << motor_number << ".motor.config.resistance_calib_max_voltage " << 4.0 << "\n";

@@ -58,6 +58,7 @@ enum states
   S_CALIBRATE,
   S_READY,
   S_PAUSE,
+  S_TRANSITIONWALK,
   S_WALK,
   S_RUN,
   S_JUMP,
@@ -71,6 +72,7 @@ enum states
 
 };
 
+uint8_t nextState = NONE;
 uint8_t currentState = S_IDLE;
 uint8_t currentErrors[3] = {NONE};
 uint8_t currentWarnings[3] = {NONE};
@@ -85,7 +87,7 @@ p manualParams;
  */
 void initializeLegTracjetory()
 {
-  autoParams.amplitude_over = 70.0;
+  autoParams.amplitude_over = 50.0;
   autoParams.amplitude_under = 30.0;
   autoParams.step_left = 160.0;
   autoParams.step_right = 160.0,
@@ -95,7 +97,7 @@ void initializeLegTracjetory()
   autoParams.x = 0;
   autoParams.dx = 0;
 
-  manualParams.amplitude_over = 70.0;
+  manualParams.amplitude_over = 50.0;
   manualParams.amplitude_under = 30.0;
   manualParams.step_left = 160.0;
   manualParams.step_right = 160.0,
@@ -107,7 +109,7 @@ void initializeLegTracjetory()
 }
 
 /* How fast the motors moves */
-float val = PI / 70;
+float val = PI / 140;
 
 /*Makes it possible to trot*/
 float PHASESHIFT0X = 3.14; //All legs togheter 3.14;    //Trot 3.14;

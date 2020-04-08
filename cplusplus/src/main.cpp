@@ -100,7 +100,7 @@ int transitionTime = 5000;
 /*------Variables for reading PID parameters from serial------*/
 // Defining global variables for recieving data
 //TODO Remove
-float kp = 40.0f;  //STAND = 40.0f    moveToPoint =
+float kp = 30.0f;  //STAND = 40.0f    moveToPoint =
 float ki = 0.01f;  //STAND = 0.01f    moveToPoint =
 float kd = 0.002f; //STAND = 0.002f   moveToPoint =
 void changeConfigurations();
@@ -135,7 +135,12 @@ void loop()
 
   case S_TRANSITION:
     blinkLight(RED_LED);
-    setIdlePosition();
+
+    if (moveTimer.hasTimerExpired())
+    {
+      moveTimer.startTimer(moveInterval);
+      setIdlePosition();
+    }
     if (transition == false)
     {
       transitionTimer.startTimer(transitionTime);
@@ -174,8 +179,22 @@ void loop()
     blinkLight(RED_LED);
     break;
 
+  case S_TRANSITIONWALK:
+    transitionToPoint(0, -150);
+    if (transition == false)
+    {
+      transitionTimer.startTimer(2000);
+      transition = true;
+    }
+    if (transitionTimer.hasTimerExpired())
+    {
+      changeStateTo(nextState);
+    }
+    break;
+
   case S_WALK:
     // walkTime = micros();
+    computeAutoParams();
     if (moveTimer.hasTimerExpired())
     {
       moveTimer.startTimer(moveInterval);
@@ -201,16 +220,16 @@ void loop()
   break;
 
   case S_AUTONOMOUS:
+    computeAutoParams();
     break;
 
   case S_MANUAL:
     if (XboxReadInterval.hasTimerExpired())
     {
       XboxReadInterval.startTimer(XboxInterval);
-      readXboxButtons();
       mapXboxInputs();
     }
-
+    computeManualParams();
     if (moveTimer.hasTimerExpired())
     {
       moveTimer.startTimer(moveInterval);
@@ -227,15 +246,15 @@ void loop()
     break;
 
   case S_RESET:
-    turnOffAllLights();
     checkForErrors();
     delay(100);
     resetMotorsErrors();
     //delay(100);
-    //writeConfig();;
+    //writeConfig();
     //setPreCalibrated(true);
     //rebootOdrives();
-    //changeConfigurations();
+    delay(100);
+    changeConfigurations();
     //saveConfigOdrives();
     //rebootOdrives();
     //readConfig();
@@ -254,12 +273,13 @@ void loop()
     break;
   }
   readButtons();
+  readXboxButtons();
 }
 
 void changeConfigurations()
 {
   setLegMotorPID(kp, ki, kd);
-  delay(500);
+  //delay(500);
   setLegMotorTrapTraj(500, 500, 500);
   //newData = false;
   //}
