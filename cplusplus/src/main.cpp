@@ -1,12 +1,13 @@
 /**
   The purpose of this project ...
+  
   Libraries used:
   ArduinoOdrive - https://github.com/madcowswe/ODrive/tree/master/Arduino/ODriveArduino
-  ArduinoJSON - https://github.com/bblanchon/ArduinoJson
+  ROS - https://github.com/ros-drivers/rosserial
   -----------------------------------------------------------
   Code by: Magnus Kvendseth Øye, Vegard Solheim, Petter Drønnen
-  Date: 27.03-2020
-  Version: 0.5
+  Date: 08.04-2020
+  Version: 0.9
   Website: https://github.com/magnusoy/Sparkie
 */
 
@@ -17,6 +18,7 @@
 #include "../lib/ros_lib/ros.h"
 #include "../lib/ros_lib/nav_msgs/Odometry.h"
 #include "../lib/ros_lib/sensor_msgs/Joy.h"
+#include "../lib/ros_lib/geometry_msgs/Twist.h"
 
 #include "Globals.h"
 #include "Constants.h"
@@ -25,9 +27,27 @@
 #include "IO.h"
 #include "XboxController.h"
 #include "Locomotion.h"
+#include "Navigation.h"
 
 /* ROS Nodehandlers */
 ros::NodeHandle nh;
+
+
+/**
+ Navigation callback function for updating
+ robot velocity inputs
+
+ @param nav is the navigation msg
+*/
+void navCallback(const geometry_msgs::Twist &nav) {
+  NAVIGATION.VEL_LINEAR_X = nav.linear.x;
+  NAVIGATION.VEL_LINEAR_Y = nav.linear.y;
+  NAVIGATION.VEL_LINEAR_Z = nav.linear.z;
+
+  NAVIGATION.VEL_ANGULAR_X = nav.angular.x;
+  NAVIGATION.VEL_ANGULAR_Y = nav.angular.y;
+  NAVIGATION.VEL_ANGULAR_Z = nav.angular.z;
+}
 
 /**
  Joystick callback function for updating
@@ -81,6 +101,7 @@ void odomCallback(const nav_msgs::Odometry &odom)
 /* ROS Subcribers */
 ros::Subscriber<sensor_msgs::Joy> joySub("joy", joyCallback);
 ros::Subscriber<nav_msgs::Odometry> odomSub("camera/odom/sample", odomCallback); // TODO: Change to t265/odom/sample under deployment
+ros::Subscriber<geometry_msgs::Twist> navSub("cmd_vel", navCallback);
 
 /* Variable for the interval time for walking case*/
 Timer moveTimer;
@@ -99,7 +120,7 @@ int transitionTime = 5000;
 
 /*------Variables for reading PID parameters from serial------*/
 // Defining global variables for recieving data
-//TODO Remove
+//TODO: Remove
 float kp = 30.0f;  //STAND = 40.0f    moveToPoint =
 float ki = 0.01f;  //STAND = 0.01f    moveToPoint =
 float kd = 0.002f; //STAND = 0.002f   moveToPoint =
@@ -112,6 +133,7 @@ void setup()
   nh.initNode();
   nh.subscribe(joySub);
   nh.subscribe(odomSub);
+  nh.subscribe(navSub);
   initializeButtons();
   initializeLights();
   initializeOdrives();
