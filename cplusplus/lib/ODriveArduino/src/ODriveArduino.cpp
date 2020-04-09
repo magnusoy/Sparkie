@@ -246,10 +246,28 @@ void ODriveArduino::writeTrapTraj(int motor_number, float vel_limit, float accel
 {
   serial_ << "w axis" << motor_number << ".trap_traj.config.vel_limit " << vel_limit << "\n";
   delay(10);
+  //Serial << "error: " << readString() << '\n';
+  //delay(10);
   serial_ << "w axis" << motor_number << ".trap_traj.config.accel_limit " << accel_limit << "\n";
   delay(10);
+  //Serial << "error: " << readString() << '\n';
+  //delay(10);
   serial_ << "w axis" << motor_number << ".trap_traj.config.decel_limit " << decel_limit << "\n";
   delay(10);
+  //Serial << "error: " << readString() << '\n';
+}
+
+void ODriveArduino::readTrapTraj(int motor_number)
+{
+  serial_ << "r axis" << motor_number << ".trap_traj.config.vel_limit\n";
+  Serial << "vel limit: " << readString() << '\n';
+  delay(100);
+  serial_ << "r axis" << motor_number << ".trap_traj.config.accel_limit\n";
+  Serial << "accel limit: " << readString() << '\n';
+  delay(100);
+  serial_ << "r axis" << motor_number << ".trap_traj.config.decel_limit\n";
+  Serial << "decel limit: " << readString() << '\n';
+  delay(100);
 }
 
 void ODriveArduino::setPreCalibrated(int motor_number, bool var)

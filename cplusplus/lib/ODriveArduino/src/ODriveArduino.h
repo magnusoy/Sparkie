@@ -37,6 +37,7 @@ public:
     void writeConfig(int motor_number);
     void writePID(int motor_number, float P, float I, float D);
     void writeTrapTraj(int motor_number, float vel_limit, float accel_limit, float decel_limit);
+    void readTrapTraj(int motor_number);
     void setPreCalibrated(int motor_number, bool var);
     void saveConfig();
     void reboot();

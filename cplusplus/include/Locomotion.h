@@ -24,7 +24,7 @@ uint8_t jump = 0;
 /* Variable for lay down*/
 float x = 0;
 
-PID pitchPID(6, 0.001, 0, DIRECT);
+PID pitchPID(6, 0.001, 0, DIRECT); //I = 0.001
 PID rollPID(4, 0.001, 0, REVERSE);
 PID yawPID(1, 0, 0, REVERSE);
 double pitchOutput;
@@ -37,8 +37,8 @@ void initializePIDs()
     pitchPID.setOutputLimits(-50, 50);
     rollPID.setUpdateTime(1);
     rollPID.setOutputLimits(-50, 50);
-    yawPID.setUpdateTime(1);
-    yawPID.setOutputLimits(-160, 160);
+    //yawPID.setUpdateTime(1);
+    //yawPID.setOutputLimits(-160, 160);
 }
 
 void computePIDs()
@@ -153,11 +153,42 @@ void setIdlePosition()
 */
 void locomotion(p &params)
 {
-    Legs[0].move(params);
-    Legs[1].move(params);
-    Legs[2].move(params);
-    Legs[3].move(params);
-    shift(val, params);
+    if (currentState == S_MANUAL)
+    {
+        if (XBOX_CONTROLLER_INPUT.LJ_DOWN_UP == 0)
+        {
+            Legs[0].moveToGround(params);
+            Legs[1].moveToGround(params);
+            Legs[2].moveToGround(params);
+            Legs[3].moveToGround(params);
+        }
+        else
+        {
+            Legs[0].move(params);
+            Legs[1].move(params);
+            Legs[2].move(params);
+            Legs[3].move(params);
+            shift(val, params);
+        }
+    }
+    else if (currentState == S_WALK || currentState == S_AUTONOMOUS)
+    {
+        if (val == 0)
+        {
+            Legs[0].moveToGround(params);
+            Legs[1].moveToGround(params);
+            Legs[2].moveToGround(params);
+            Legs[3].moveToGround(params);
+        }
+        else
+        {
+            Legs[0].move(params);
+            Legs[1].move(params);
+            Legs[2].move(params);
+            Legs[3].move(params);
+            shift(val, params);
+        }
+    }
 }
 
 /**

@@ -32,14 +32,14 @@
 /* ROS Nodehandlers */
 ros::NodeHandle nh;
 
-
 /**
  Navigation callback function for updating
  robot velocity inputs
 
  @param nav is the navigation msg
 */
-void navCallback(const geometry_msgs::Twist &nav) {
+void navCallback(const geometry_msgs::Twist &nav)
+{
   NAVIGATION.VEL_LINEAR_X = nav.linear.x;
   NAVIGATION.VEL_LINEAR_Y = nav.linear.y;
   NAVIGATION.VEL_LINEAR_Z = nav.linear.z;
@@ -60,8 +60,8 @@ void joyCallback(const sensor_msgs::Joy &joy)
   XBOX_CONTROLLER_INPUT.LJ_LEFT_RIGHT = joy.axes[0];
   XBOX_CONTROLLER_INPUT.LJ_DOWN_UP = joy.axes[1];
   XBOX_CONTROLLER_INPUT.LT = joy.axes[2];
-  XBOX_CONTROLLER_INPUT.RJ_DOWN_UP = joy.axes[3];
-  XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT = joy.axes[4];
+  XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT = joy.axes[3];
+  XBOX_CONTROLLER_INPUT.RJ_DOWN_UP = joy.axes[4];
   XBOX_CONTROLLER_INPUT.RT = joy.axes[5];
   XBOX_CONTROLLER_INPUT.A = joy.buttons[0];
   XBOX_CONTROLLER_INPUT.B = joy.buttons[1];
@@ -246,11 +246,7 @@ void loop()
     break;
 
   case S_MANUAL:
-    if (XboxReadInterval.hasTimerExpired())
-    {
-      XboxReadInterval.startTimer(XboxInterval);
-      mapXboxInputs();
-    }
+    mapXboxInputs();
     computeManualParams();
     if (moveTimer.hasTimerExpired())
     {
@@ -275,11 +271,14 @@ void loop()
     //writeConfig();
     //setPreCalibrated(true);
     //rebootOdrives();
-    delay(100);
-    changeConfigurations();
+    //delay(100);
+    //changeConfigurations();
     //saveConfigOdrives();
     //rebootOdrives();
     //readConfig();
+    //changeConfigurations();
+    //delay(1000);
+    //readTrap();
     changeStateTo(S_IDLE);
     break;
 
@@ -300,9 +299,9 @@ void loop()
 
 void changeConfigurations()
 {
-  setLegMotorPID(kp, ki, kd);
+  //setLegMotorPID(kp, ki, kd);
   //delay(500);
-  setLegMotorTrapTraj(500, 500, 500);
+  setLegMotorTrapTraj(3000, 3000, 3000);
   //newData = false;
   //}
 }

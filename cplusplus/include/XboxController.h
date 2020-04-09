@@ -1,28 +1,7 @@
 #ifndef _XBOXCONTROLLER_H_
 #define _XBOXCONTROLLER_H_
 
-struct xboxControllerInputs
-{
-    float LJ_LEFT_RIGHT; // (-1.00 - 1.00) Default: 0.00
-    float LJ_DOWN_UP;    // (-1.00 - 1.00) Default: 0.00
-    float LT;            // (-1.00 - 1.00) Default: -1.00
-    float RJ_LEFT_RIGHT; // (0.00 - 1.00) Default: 0.50
-    float RJ_DOWN_UP;    // (-1.00 - 1.00) Default: 0.00
-    float RT;            // (-1.00 - 1.00) Default: -1.00
-    bool A;              // (0 - 1) Default: 0
-    bool B;              // (0 - 1) Default: 0
-    bool X;              // (0 - 1) Default: 0
-    bool Y;              // (0 - 1) Default: 0
-    bool LB;             // (0 - 1) Default: 0
-    bool RB;             // (0 - 1) Default: 0
-    bool MLB;            // (0 - 1) Default: 0
-    bool MRB;            // (0 - 1) Default: 0
-    bool MB;             // (0 - 1) Default: 0
-    bool LJ;             // (0 - 1) Default: 0
-    bool RJ;             // (0 - 1) Default: 0
-};
-
-struct xboxControllerInputs XBOX_CONTROLLER_INPUT;
+#include "IO.h"
 
 bool oldStateA = false;
 bool oldStateB = false;
@@ -73,27 +52,28 @@ void readXboxButtons()
  */
 void mapXboxInputs()
 {
-    val = map(XBOX_CONTROLLER_INPUT.LJ_DOWN_UP, -1, 1, -PI / 55, PI / 55);
-    val = constrain(val, -PI / 55, PI / 55);
-    if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT != 0)
+    val = map(XBOX_CONTROLLER_INPUT.LJ_DOWN_UP, -1, 1, -PI / 100, PI / 100);
+    val = constrain(val, -PI / 100, PI / 100);
+    if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT > 0.1 || XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT < -0.1)
     {
         if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT < 0)
         {
-            manualParams.step_left = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, -1, 0, 10, 160);
+            manualParams.step_left = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, -1, 0, 10, 80);
         }
         else if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT > 0)
         {
-            manualParams.step_right = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, 0, 1, 160, 10);
+            manualParams.step_right = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, 0, 1, 80, 10);
         }
     }
     else
     {
-        manualParams.step_left = 160.0;
-        manualParams.step_right = 160.0;
+        manualParams.step_left = 80.0;
+        manualParams.step_right = 80.0;
     }
-    if (XBOX_CONTROLLER_INPUT.RJ_DOWN_UP != 0)
+    if (XBOX_CONTROLLER_INPUT.RJ_DOWN_UP != 1)
     {
-        manualParams.height += map(XBOX_CONTROLLER_INPUT.RJ_DOWN_UP, -1, 1, -1, 1);
+        manualParams.height += map(XBOX_CONTROLLER_INPUT.RT, 1, -1, 0, 0.0005);
+        manualParams.height += map(XBOX_CONTROLLER_INPUT.LT, 1, -1, 0, -0.0005);
         manualParams.height = constrain(manualParams.height, (80 + manualParams.amplitude_over), (249 - manualParams.amplitude_under));
     }
 }

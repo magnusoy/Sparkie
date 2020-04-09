@@ -200,6 +200,19 @@ void readConfig()
   }
 }
 
+void readTrap()
+{
+  Serial << "Reading ODrive trap settings... \n";
+  for (uint8_t i = 0; i < 4; ++i)
+  {
+    Serial << "Odrive number: " << i << "\n";
+    for (uint8_t axis = 0; axis < 2; ++axis)
+    {
+      odrives[i].readTrapTraj(axis);
+    }
+  }
+}
+
 /**
  * Sets the precalibrated options on the motor to true or false
  * @param var true or false

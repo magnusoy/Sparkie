@@ -83,15 +83,31 @@ void setSettings(uint8_t newState)
     digitalWrite(BLUE_LED, HIGH);
   }
 
+  if (nextState == S_STAND)
+  {
+    pitchPID.reset();
+    rollPID.reset();
+    yawPID.reset();
+  }
+
   if (newState == S_WALK || newState == S_MANUAL || newState == S_AUTONOMOUS)
   {
+
+    setLegMotorTrapTraj(50000, 50000, 50000);
+    pitchPID.reset();
+    rollPID.reset();
+    yawPID.reset();
     digitalWrite(GREEN_LED, HIGH);
+    setLegMotorTrapTraj(50000, 50000, 50000);
   }
 
   if (currentState == S_WALK || currentState == S_MANUAL || currentState == S_AUTONOMOUS)
   {
+    setLegMotorTrapTraj(500, 500, 500);
+    val = PI / 140;
     autoParams.x = 0;
     manualParams.x = 0;
+    setLegMotorTrapTraj(500, 500, 500);
   }
 }
 
@@ -112,7 +128,7 @@ void readButtons()
 {
   if (TON1.isSwitchOn(RED_BTN))
   {
-    if (currentState == S_WALK)
+    if (currentState == S_WALK || currentState == S_MANUAL || currentState == S_AUTONOMOUS)
     {
       changeStateTo(S_TRANSITION);
     }

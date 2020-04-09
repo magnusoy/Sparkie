@@ -87,20 +87,20 @@ p manualParams;
  */
 void initializeLegTracjetory()
 {
-  autoParams.amplitude_over = 50.0;
-  autoParams.amplitude_under = 30.0;
-  autoParams.step_left = 160.0;
-  autoParams.step_right = 160.0,
+  autoParams.amplitude_over = 20.0;
+  autoParams.amplitude_under = 10.0;
+  autoParams.step_left = 80.0;
+  autoParams.step_right = 80.0,
   autoParams.height = 170.0;
   autoParams.frequency = 0;
   autoParams.period = 0;
   autoParams.x = 0;
   autoParams.dx = 0;
 
-  manualParams.amplitude_over = 50.0;
-  manualParams.amplitude_under = 30.0;
-  manualParams.step_left = 160.0;
-  manualParams.step_right = 160.0,
+  manualParams.amplitude_over = 10.0;
+  manualParams.amplitude_under = 20.0;
+  manualParams.step_left = 80.0;
+  manualParams.step_right = 80.0,
   manualParams.height = 170.0;
   manualParams.frequency = 0;
   manualParams.period = 0;
@@ -123,5 +123,28 @@ float PHASESHIFT2Y = 3.14; //All legs togheter 0;       //Trot 3.14;
 
 float PHASESHIFT3X = 0; //All legs togheter 0;        //Trot 0;
 float PHASESHIFT3Y = 0; //All legs togheter 0;        //Trot 0;
+
+struct xboxControllerInputs
+{
+  float LJ_LEFT_RIGHT; // (-1.00 - 1.00) Default: 0.00
+  float LJ_DOWN_UP;    // (-1.00 - 1.00) Default: 0.00
+  float LT;            // (-1.00 - 1.00) Default: -1.00
+  float RJ_LEFT_RIGHT; // (0.00 - 1.00) Default: 0.50
+  float RJ_DOWN_UP;    // (-1.00 - 1.00) Default: 0.00
+  float RT;            // (-1.00 - 1.00) Default: -1.00
+  bool A;              // (0 - 1) Default: 0
+  bool B;              // (0 - 1) Default: 0
+  bool X;              // (0 - 1) Default: 0
+  bool Y;              // (0 - 1) Default: 0
+  bool LB;             // (0 - 1) Default: 0
+  bool RB;             // (0 - 1) Default: 0
+  bool MLB;            // (0 - 1) Default: 0
+  bool MRB;            // (0 - 1) Default: 0
+  bool MB;             // (0 - 1) Default: 0
+  bool LJ;             // (0 - 1) Default: 0
+  bool RJ;             // (0 - 1) Default: 0
+};
+
+struct xboxControllerInputs XBOX_CONTROLLER_INPUT;
 
 #endif // GLOBALS_H_

@@ -100,7 +100,7 @@ float LegMovement::compute(float x, float y, uint8_t motor)
 */
 float LegMovement::stepX(p &params, float phase_shift)
 {
-  if (leg_number == 0 || leg_number == 3)
+  if (leg_number == 0 || leg_number == 2)
   {
     this->x = params.step_right / 2 * sin(params.frequency * params.x + phase_shift);
   }
@@ -146,7 +146,7 @@ void LegMovement::holdPosition(float x, float y)
   {
     double angle = this->compute(x, y, motor);
     double motor_count = map(angle, -360, 360, -6000, 6000);
-    this->odrive.SetPosition(motor, motor_count);
+    this->odrive.TrapezoidalMove(motor, motor_count);
   }
 }
 
@@ -158,8 +158,15 @@ void LegMovement::move(p &params)
   {
     double angle = this->compute(x, y, motor);
     double motor_count = map(angle, -360, 360, -6000, 6000);
-    this->odrive.SetPosition(motor, motor_count);
+    this->odrive.TrapezoidalMove(motor, motor_count);
   }
+}
+
+void LegMovement::moveToGround(p &params)
+{
+  float x = getX();
+  float y = params.height;
+  holdPosition(x, -y);
 }
 
 float LegMovement::getX()

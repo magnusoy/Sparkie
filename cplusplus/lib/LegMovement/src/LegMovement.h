@@ -25,6 +25,7 @@ public:
 	void linearMove(float x, float y);
 	void holdPosition(float x, float y);
 	void move(p &params);
+	void moveToGround(p &params);
 	float getX();
 	float getY();
 	void setHeight(float height);
