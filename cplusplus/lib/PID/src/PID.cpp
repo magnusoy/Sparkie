@@ -28,7 +28,6 @@ PID::PID(double kp, double ki, double kd, int direction)
 */
 double PID::compute(double actual, double target)
 {
-
 	if (lastUpdateTime + updateTime <= millis())
 	{
 		double lastError = error;

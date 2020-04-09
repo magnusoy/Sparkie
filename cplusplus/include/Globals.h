@@ -8,6 +8,7 @@ struct orientation
   double roll;
   double yaw;
 };
+
 struct orientation ORIENTAION;
 
 struct position
@@ -16,6 +17,7 @@ struct position
   double y;
   double z;
 };
+
 struct position POSITION;
 
 /** Error codes */
@@ -97,8 +99,8 @@ void initializeLegTracjetory()
   autoParams.x = 0;
   autoParams.dx = 0;
 
-  manualParams.amplitude_over = 10.0;
-  manualParams.amplitude_under = 20.0;
+  manualParams.amplitude_over = 20.0;
+  manualParams.amplitude_under = 10.0;
   manualParams.step_left = 80.0;
   manualParams.step_right = 80.0,
   manualParams.height = 170.0;

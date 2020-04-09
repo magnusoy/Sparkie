@@ -121,11 +121,11 @@ float LegMovement::stepY(p &params, float phase_shift)
   float wave = cos(params.frequency * params.x + phase_shift);
   if (wave > 0)
   {
-    this->y = -params.height + params.amplitude_over * wave;
+    this->y = -this->height + params.amplitude_over * wave;
   }
   else
   {
-    this->y = -params.height + params.amplitude_under * wave;
+    this->y = -this->height + params.amplitude_under * wave;
   }
   return this->y;
 }
@@ -164,19 +164,8 @@ void LegMovement::move(p &params)
 
 void LegMovement::moveToGround(p &params)
 {
-  float x = getX();
   float y = params.height;
-  holdPosition(x, -y);
-}
-
-float LegMovement::getX()
-{
-  return this->x;
-}
-
-float LegMovement::getY()
-{
-  return this->y;
+  holdPosition(this->x, -y);
 }
 
 void LegMovement::setHeight(float height)

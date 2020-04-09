@@ -107,10 +107,6 @@ ros::Subscriber<geometry_msgs::Twist> navSub("cmd_vel", navCallback);
 Timer moveTimer;
 uint8_t moveInterval = 1; //1
 
-/*  */
-Timer XboxReadInterval;
-uint8_t XboxInterval = 100;
-
 /* Variable for storing loop time */
 unsigned long loopTime;
 unsigned long walkTime;
@@ -163,7 +159,7 @@ void loop()
       moveTimer.startTimer(moveInterval);
       setIdlePosition();
     }
-    if (transition == false)
+    if (!transition)
     {
       transitionTimer.startTimer(transitionTime);
       transition = true;
@@ -203,7 +199,7 @@ void loop()
 
   case S_TRANSITIONWALK:
     transitionToPoint(0, -150);
-    if (transition == false)
+    if (!transition)
     {
       transitionTimer.startTimer(2000);
       transition = true;

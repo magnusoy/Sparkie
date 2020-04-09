@@ -24,8 +24,8 @@ uint8_t jump = 0;
 /* Variable for lay down*/
 float x = 0;
 
-PID pitchPID(6, 0.001, 0, DIRECT); //I = 0.001
-PID rollPID(4, 0.001, 0, REVERSE);
+PID pitchPID(12, 0.0001, 0, DIRECT); //I = 0.001
+PID rollPID(8, 0.0001, 0, REVERSE);
 PID yawPID(1, 0, 0, REVERSE);
 double pitchOutput;
 double rollOutput;
@@ -33,11 +33,11 @@ double yawOutput;
 
 void initializePIDs()
 {
-    pitchPID.setUpdateTime(1);
+    pitchPID.setUpdateTime(5);
     pitchPID.setOutputLimits(-50, 50);
-    rollPID.setUpdateTime(1);
+    rollPID.setUpdateTime(5);
     rollPID.setOutputLimits(-50, 50);
-    //yawPID.setUpdateTime(1);
+    //yawPID.setUpdateTime(5);
     //yawPID.setOutputLimits(-160, 160);
 }
 
@@ -153,41 +153,20 @@ void setIdlePosition()
 */
 void locomotion(p &params)
 {
-    if (currentState == S_MANUAL)
+    if (val == 0)
     {
-        if (XBOX_CONTROLLER_INPUT.LJ_DOWN_UP == 0)
-        {
-            Legs[0].moveToGround(params);
-            Legs[1].moveToGround(params);
-            Legs[2].moveToGround(params);
-            Legs[3].moveToGround(params);
-        }
-        else
-        {
-            Legs[0].move(params);
-            Legs[1].move(params);
-            Legs[2].move(params);
-            Legs[3].move(params);
-            shift(val, params);
-        }
+        Legs[0].moveToGround(params);
+        Legs[1].moveToGround(params);
+        Legs[2].moveToGround(params);
+        Legs[3].moveToGround(params);
     }
-    else if (currentState == S_WALK || currentState == S_AUTONOMOUS)
+    else
     {
-        if (val == 0)
-        {
-            Legs[0].moveToGround(params);
-            Legs[1].moveToGround(params);
-            Legs[2].moveToGround(params);
-            Legs[3].moveToGround(params);
-        }
-        else
-        {
-            Legs[0].move(params);
-            Legs[1].move(params);
-            Legs[2].move(params);
-            Legs[3].move(params);
-            shift(val, params);
-        }
+        Legs[0].move(params);
+        Legs[1].move(params);
+        Legs[2].move(params);
+        Legs[3].move(params);
+        shift(val, params);
     }
 }
 
