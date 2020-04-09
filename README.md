@@ -1,5 +1,5 @@
 # Sparkie, Autonomous inspections for process industry by a quadruped robot with use of neural networks
-We seek to prove that an autonomous industrial robot can optimize inspections operations ina process industry. With doing so, we wish to eliminate unnecessary human interaction, as thiscan be dangerous, complicated and expensive.  In this paper, the emphasis is on design, ma-chine learning, and finally the usability of the robot.  During consideration of different choices,the priority will be on robustness, speed and accuracy.
+We seek to prove that an autonomous industrial robot can optimize inspections operations in a process industry. With doing so, we wish to eliminate unnecessary human interaction, as this can be dangerous, complicated and expensive. In this paper, the emphasis is on design, machine learning, and finally the usability of the robot. During consideration of different choices,the priority will be on robustness, speed and accuracy.
 
 In development ...
 
