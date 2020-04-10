@@ -240,7 +240,7 @@ void standUp()
 void turnLeft()
 {
     autoParams.step_left = 0;
-    autoParams.step_right = 160;
+    autoParams.step_right = 40;
     locomotion(autoParams);
 }
 
@@ -249,7 +249,7 @@ void turnLeft()
  */
 void turnRight()
 {
-    autoParams.step_left = 160;
+    autoParams.step_left = 40;
     autoParams.step_right = 0;
     locomotion(autoParams);
 }

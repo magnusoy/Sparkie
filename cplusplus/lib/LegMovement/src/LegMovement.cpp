@@ -164,8 +164,7 @@ void LegMovement::move(p &params)
 
 void LegMovement::moveToGround(p &params)
 {
-  float y = params.height;
-  holdPosition(this->x, -y);
+  holdPosition(this->x, -(this->height));
 }
 
 void LegMovement::setHeight(float height)
