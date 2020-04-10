@@ -243,7 +243,7 @@ void loop()
 
   case S_MANUAL:
     mapXboxInputs();
-    computeManualParams();
+    //computeManualParams();
     if (moveTimer.hasTimerExpired())
     {
       moveTimer.startTimer(moveInterval);

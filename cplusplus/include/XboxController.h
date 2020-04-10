@@ -52,8 +52,8 @@ void readXboxButtons()
  */
 void mapXboxInputs()
 {
-    val = map(XBOX_CONTROLLER_INPUT.LJ_DOWN_UP, -1, 1, -PI / 100, PI / 100);
-    val = constrain(val, -PI / 100, PI / 100);
+    val = map(XBOX_CONTROLLER_INPUT.LJ_DOWN_UP, -1, 1, -PI / 55, PI / 55);
+    val = constrain(val, -PI / 55, PI / 55);
     if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT > 0.1 || XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT < -0.1)
     {
         if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT < 0)

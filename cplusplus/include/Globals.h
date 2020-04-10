@@ -99,10 +99,10 @@ void initializeLegTracjetory()
   autoParams.x = 0;
   autoParams.dx = 0;
 
-  manualParams.amplitude_over = 20.0;
-  manualParams.amplitude_under = 10.0;
-  manualParams.step_left = 80.0;
-  manualParams.step_right = 80.0,
+  manualParams.amplitude_over = 40.0;
+  manualParams.amplitude_under = 20.0;
+  manualParams.step_left = 30.0;
+  manualParams.step_right = 30.0,
   manualParams.height = 170.0;
   manualParams.frequency = 0;
   manualParams.period = 0;
@@ -111,7 +111,7 @@ void initializeLegTracjetory()
 }
 
 /* How fast the motors moves */
-float val = PI / 140;
+float val = PI / 55;
 
 /*Makes it possible to trot*/
 float PHASESHIFT0X = 3.14; //All legs togheter 3.14;    //Trot 3.14;

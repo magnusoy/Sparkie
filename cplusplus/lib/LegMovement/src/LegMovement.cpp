@@ -5,7 +5,7 @@
 LegMovement::LegMovement(ODriveArduino &_odrive, int _leg_number, float _phase_shift_x, float _phase_shift_y)
     : odrive(_odrive), leg_number(_leg_number), phase_shift_x(_phase_shift_x), phase_shift_y(_phase_shift_y)
 {
-  height = -1; // Not set
+  height = 170; // Not set
 }
 
 /**
@@ -164,7 +164,8 @@ void LegMovement::move(p &params)
 
 void LegMovement::moveToGround(p &params)
 {
-  holdPosition(this->x, -(this->height));
+  float y = params.height;
+  holdPosition(this->x, -y);
 }
 
 void LegMovement::setHeight(float height)
