@@ -25,10 +25,10 @@ public:
 	void linearMove(float x, float y);
 	void holdPosition(float x, float y);
 	void move(p &params);
-	void moveToGround(p &params);
+	void moveToGround(float y);
 	float getX();
 	float getY();
-	void setHeight(float height);
+	void setHeight(p &params, float height);
 	void setPID(float P, float I, float D);
 	void setTrapTraj(float vel_limit, float accel_limit, float decel_limit);
 

@@ -143,8 +143,6 @@ void loop()
 {
   //loopTime = micros();
   nh.spinOnce();
-  computePIDs();
-
   switch (currentState)
   {
   case S_IDLE:
@@ -212,7 +210,7 @@ void loop()
 
   case S_WALK:
     // walkTime = micros();
-    computeAutoParams();
+    computeHeight(autoParams);
     if (moveTimer.hasTimerExpired())
     {
       moveTimer.startTimer(moveInterval);
@@ -238,12 +236,18 @@ void loop()
   break;
 
   case S_AUTONOMOUS:
-    computeAutoParams();
+    computeHeight(autoParams);
+    //TODO add function for adjust speed and turning value from trajectory planner
+    if (moveTimer.hasTimerExpired())
+    {
+      moveTimer.startTimer(moveInterval);
+      locomotion(autoParams);
+    }
     break;
 
   case S_MANUAL:
     mapXboxInputs();
-    //computeManualParams();
+    //computeHeight(manualParams);
     if (moveTimer.hasTimerExpired())
     {
       moveTimer.startTimer(moveInterval);

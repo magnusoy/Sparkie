@@ -5,7 +5,7 @@
 LegMovement::LegMovement(ODriveArduino &_odrive, int _leg_number, float _phase_shift_x, float _phase_shift_y)
     : odrive(_odrive), leg_number(_leg_number), phase_shift_x(_phase_shift_x), phase_shift_y(_phase_shift_y)
 {
-  height = 170; // Not set
+  height = 170;
 }
 
 /**
@@ -130,6 +130,9 @@ float LegMovement::stepY(p &params, float phase_shift)
   return this->y;
 }
 
+/**
+ * Moves the legs to the desired point 
+ */
 void LegMovement::linearMove(float x, float y)
 {
   for (int motor = 0; motor < 2; motor++)
@@ -140,8 +143,12 @@ void LegMovement::linearMove(float x, float y)
   }
 }
 
+/**
+ * Moves the legs to the desired point 
+ */
 void LegMovement::holdPosition(float x, float y)
 {
+  y = constrain(y, -80, -249);
   for (int motor = 0; motor < 2; motor++)
   {
     double angle = this->compute(x, y, motor);
@@ -150,6 +157,9 @@ void LegMovement::holdPosition(float x, float y)
   }
 }
 
+/**
+ * Moves the legs in a sinussoidal motion 
+ */
 void LegMovement::move(p &params)
 {
   double x = this->stepX(params, phase_shift_x);
@@ -162,17 +172,25 @@ void LegMovement::move(p &params)
   }
 }
 
-void LegMovement::moveToGround(p &params)
+/**
+ * Puts the legs level on the ground
+ */
+void LegMovement::moveToGround(float y)
 {
-  float y = params.height;
   holdPosition(this->x, -y);
 }
 
-void LegMovement::setHeight(float height)
+/**
+ * Sets the desired height of the robor
+ */
+void LegMovement::setHeight(p &params, float height)
 {
-  this->height = height;
+  this->height = constrain(height, (80 + params.amplitude_over), (249 - params.amplitude_under));
 }
 
+/**
+ * Sets the PID parameters for the motors
+ */
 void LegMovement::setPID(float P, float I, float D)
 {
   for (int motor_number = 0; motor_number < 2; motor_number++)
@@ -181,6 +199,9 @@ void LegMovement::setPID(float P, float I, float D)
   }
 }
 
+/**
+ * Sets the trapezoidal trajectory limits for the motors
+ */
 void LegMovement::setTrapTraj(float vel_limit, float accel_limit, float decel_limit)
 {
   for (int motor_number = 0; motor_number < 2; motor_number++)

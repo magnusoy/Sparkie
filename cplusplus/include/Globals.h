@@ -130,10 +130,10 @@ struct xboxControllerInputs
 {
   float LJ_LEFT_RIGHT; // (-1.00 - 1.00) Default: 0.00
   float LJ_DOWN_UP;    // (-1.00 - 1.00) Default: 0.00
-  float LT;            // (-1.00 - 1.00) Default: -1.00
-  float RJ_LEFT_RIGHT; // (0.00 - 1.00) Default: 0.50
+  float LT;            // (-1.00 - 1.00) Default: 1.00
+  float RJ_LEFT_RIGHT; // (-1.00 - 1.00) Default: 0.00
   float RJ_DOWN_UP;    // (-1.00 - 1.00) Default: 0.00
-  float RT;            // (-1.00 - 1.00) Default: -1.00
+  float RT;            // (-1.00 - 1.00) Default: 1.00
   bool A;              // (0 - 1) Default: 0
   bool B;              // (0 - 1) Default: 0
   bool X;              // (0 - 1) Default: 0

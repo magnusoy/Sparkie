@@ -74,10 +74,6 @@ void setMotorPosition(const uint8_t odriveNumber, const uint8_t motorNumber, dou
   odrives[odriveNumber].SetPosition(motorNumber, pos);
 }
 
-void linearMove(const uint8_t odriveNumber, const uint8_t motorNumber, double pos)
-{
-  odrives[odriveNumber].SetPosition(motorNumber, pos);
-}
 /**
   Sets the motors in desired state
 */
@@ -200,6 +196,9 @@ void readConfig()
   }
 }
 
+/**
+ * Read the current Trapezoidal trajectory limits 
+ */
 void readTrap()
 {
   Serial << "Reading ODrive trap settings... \n";

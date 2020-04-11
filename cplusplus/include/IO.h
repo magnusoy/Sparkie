@@ -60,7 +60,7 @@ void blinkLight(uint8_t pin)
 }
 
 /**
- * 
+ * Makes the system settings ready for next state
  */
 void setSettings(uint8_t newState)
 {
@@ -68,7 +68,7 @@ void setSettings(uint8_t newState)
   {
     armMotors();
   }
-  else if ((currentState == S_STAND || currentState == S_TRANSITION) && newState == S_IDLE)
+  else if ((currentState == S_STAND || currentState == S_TRANSITION || currentState == S_RESET) && newState == S_IDLE)
   {
     disarmMotors();
   }

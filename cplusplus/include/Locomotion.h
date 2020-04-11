@@ -31,6 +31,9 @@ double pitchOutput;
 double rollOutput;
 double yawOutput;
 
+/**
+ * Sets the parameters for the PIDs
+ */
 void initializePIDs()
 {
     pitchPID.setUpdateTime(5);
@@ -41,6 +44,9 @@ void initializePIDs()
     //yawPID.setOutputLimits(-160, 160);
 }
 
+/**
+ * Compute the PID outputs for making the robot level
+ */
 void computePIDs()
 {
     pitchOutput = pitchPID.compute(ORIENTAION.pitch, 0);
@@ -48,20 +54,16 @@ void computePIDs()
     //yawOutput = yawOutput.compute(ORIENTAION.yaw,)
 }
 
-void computeAutoParams()
+/**
+ * Sets the height of each foot for making the robot level
+ */
+void computeHeight(p &params)
 {
-    legMovement0.setHeight(autoParams.height + pitchOutput - rollOutput);
-    legMovement1.setHeight(autoParams.height + pitchOutput + rollOutput);
-    legMovement2.setHeight(autoParams.height - pitchOutput - rollOutput);
-    legMovement3.setHeight(autoParams.height - pitchOutput + rollOutput);
-}
-
-void computeManualParams()
-{
-    legMovement0.setHeight(manualParams.height + pitchOutput - rollOutput);
-    legMovement1.setHeight(manualParams.height + pitchOutput + rollOutput);
-    legMovement2.setHeight(manualParams.height - pitchOutput - rollOutput);
-    legMovement3.setHeight(manualParams.height - pitchOutput + rollOutput);
+    computePIDs();
+    legMovement0.setHeight(params, params.height + pitchOutput - rollOutput);
+    legMovement1.setHeight(params, params.height + pitchOutput + rollOutput);
+    legMovement2.setHeight(params, params.height - pitchOutput - rollOutput);
+    legMovement3.setHeight(params, params.height - pitchOutput + rollOutput);
 }
 
 /**
@@ -95,7 +97,7 @@ void set_frequency(float freq, p &par)
 }
 
 /**
- TODO: Add docstring
+ * Set the PID parameters for the motors
  */
 void setLegMotorPID(float P, float I, float D)
 {
@@ -106,7 +108,7 @@ void setLegMotorPID(float P, float I, float D)
 }
 
 /**
- TODO: Add docstring
+ * Set the trapezoidal trajectory limits
  */
 void setLegMotorTrapTraj(float vel_limit, float accel_limit, float decel_limit)
 {
@@ -117,7 +119,9 @@ void setLegMotorTrapTraj(float vel_limit, float accel_limit, float decel_limit)
 }
 
 /**
- TODO: Add docstring
+ * Slowly moves the legs of the robot to a point
+ * @param x, x value of the point
+ * @param y, y value of the point
  */
 void transitionToPoint(float x, float y)
 {
@@ -128,7 +132,9 @@ void transitionToPoint(float x, float y)
 }
 
 /**
- TODO: Add docstring
+ Makes the robot stand in idle position and 
+ holds the robot stable with the help of the
+ IMU
  */
 void stand()
 {
@@ -155,10 +161,10 @@ void locomotion(p &params)
 {
     if (val == 0)
     {
-        Legs[0].moveToGround(params);
-        Legs[1].moveToGround(params);
-        Legs[2].moveToGround(params);
-        Legs[3].moveToGround(params);
+        Legs[0].moveToGround(params.height + pitchOutput - rollOutput);
+        Legs[1].moveToGround(params.height + pitchOutput + rollOutput);
+        Legs[2].moveToGround(params.height - pitchOutput - rollOutput);
+        Legs[3].moveToGround(params.height - pitchOutput + rollOutput);
     }
     else
     {
@@ -219,7 +225,7 @@ void jumpCommand()
 }
 
 /**
- TODO: Add docstring
+ Makes the robot lay down on the ground
  */
 void layDown()
 {
@@ -227,7 +233,7 @@ void layDown()
 }
 
 /**
- TODO: Add docstring
+ Makes the robot stand up from laying on the floor
  */
 void standUp()
 {
@@ -235,7 +241,7 @@ void standUp()
 }
 
 /**
- TODO: Add docstring
+ Makes the robot start turning left
  */
 void turnLeft()
 {
@@ -245,7 +251,7 @@ void turnLeft()
 }
 
 /**
- TODO: Add docstring
+ Makes the robot start turning right
  */
 void turnRight()
 {
