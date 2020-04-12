@@ -18,30 +18,6 @@
   <property name="windowTitle">
    <string>Manual Control</string>
   </property>
-  <widget class="QLabel" name="videoFrame">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>70</y>
-     <width>1920</width>
-     <height>1010</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Verdana Pro Semibold</family>
-     <pointsize>30</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>No video input</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-  </widget>
   <widget class="QToolButton" name="menuBtn">
    <property name="geometry">
     <rect>
@@ -220,9 +196,9 @@ background-color: rgba(255, 255, 255, 0);</string>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>900</x>
+     <x>880</x>
      <y>15</y>
-     <width>181</width>
+     <width>191</width>
      <height>71</height>
     </rect>
    </property>
@@ -234,7 +210,7 @@ background-color: rgba(255, 255, 255, 0);</string>
     </font>
    </property>
    <property name="text">
-    <string>Communication:</string>
+    <string>Communication :</string>
    </property>
   </widget>
   <widget class="QPushButton" name="signalBtn">
@@ -303,9 +279,9 @@ background-color: rgba(255, 255, 255, 0);</string>
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>1260</x>
+     <x>1240</x>
      <y>15</y>
-     <width>121</width>
+     <width>131</width>
      <height>71</height>
     </rect>
    </property>
@@ -317,7 +293,7 @@ background-color: rgba(255, 255, 255, 0);</string>
     </font>
    </property>
    <property name="text">
-    <string>Controller:</string>
+    <string>Controller :</string>
    </property>
   </widget>
   <widget class="QPushButton" name="emergencyBtn">
@@ -356,195 +332,6 @@ border-color: rgb(255, 0, 0);</string>
    </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
-   </property>
-  </widget>
-  <widget class="QSlider" name="speedSlider">
-   <property name="geometry">
-    <rect>
-     <x>141</x>
-     <y>936</y>
-     <width>351</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
-   </property>
-   <property name="value">
-    <number>50</number>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-  </widget>
-  <widget class="QSlider" name="heightSlider">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>649</y>
-     <width>41</width>
-     <height>231</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>8</pointsize>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
-   </property>
-   <property name="value">
-    <number>50</number>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Vertical</enum>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_3">
-   <property name="geometry">
-    <rect>
-     <x>66</x>
-     <y>936</y>
-     <width>71</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Verdana Pro Semibold</family>
-     <pointsize>10</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
-   </property>
-   <property name="text">
-    <string>SPEED</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_4">
-   <property name="geometry">
-    <rect>
-     <x>2</x>
-     <y>887</y>
-     <width>71</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Verdana Pro Semibold</family>
-     <pointsize>10</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
-   </property>
-   <property name="text">
-    <string>HEIGHT</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="standBtn">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>980</y>
-     <width>201</width>
-     <height>51</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>15</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>Stand</string>
-   </property>
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="walkBtn">
-   <property name="geometry">
-    <rect>
-     <x>210</x>
-     <y>980</y>
-     <width>201</width>
-     <height>51</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>15</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>Walk</string>
-   </property>
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QToolButton" name="turnRobotLeft">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>420</y>
-     <width>131</width>
-     <height>161</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="icon">
-    <iconset>
-     <normaloff>../static/icons/left.png</normaloff>../static/icons/left.png</iconset>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>87</width>
-     <height>107</height>
-    </size>
-   </property>
-  </widget>
-  <widget class="QToolButton" name="turnRobotRight">
-   <property name="geometry">
-    <rect>
-     <x>1790</x>
-     <y>420</y>
-     <width>131</width>
-     <height>161</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="icon">
-    <iconset>
-     <normaloff>../static/icons/right.png</normaloff>../static/icons/right.png</iconset>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>87</width>
-     <height>107</height>
-    </size>
    </property>
   </widget>
   <widget class="QPushButton" name="exitBtn">
@@ -610,310 +397,17 @@ border-color: rgba(255, 255, 255, 0);</string>
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="xboxcontrollerFrame">
-   <property name="geometry">
-    <rect>
-     <x>456</x>
-     <y>140</y>
-     <width>1000</width>
-     <height>800</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Verdana Pro Semibold</family>
-     <pointsize>30</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="pixmap">
-    <pixmap>../static/img/xbox_cotroller_grey.png</pixmap>
-   </property>
-   <property name="scaledContents">
-    <bool>true</bool>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="mediumBtn">
-   <property name="geometry">
-    <rect>
-     <x>1511</x>
-     <y>980</y>
-     <width>201</width>
-     <height>51</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>15</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>Medium</string>
-   </property>
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="fastBtn">
-   <property name="geometry">
-    <rect>
-     <x>1711</x>
-     <y>980</y>
-     <width>201</width>
-     <height>51</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>15</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>Fast</string>
-   </property>
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="slowBtn">
-   <property name="geometry">
-    <rect>
-     <x>1311</x>
-     <y>980</y>
-     <width>201</width>
-     <height>51</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>15</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>Slow</string>
-   </property>
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="stairsBtn">
-   <property name="geometry">
-    <rect>
-     <x>410</x>
-     <y>980</y>
-     <width>201</width>
-     <height>51</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>15</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>Stairs</string>
-   </property>
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_7">
-   <property name="geometry">
-    <rect>
-     <x>60</x>
-     <y>122</y>
-     <width>121</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>12</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>Position</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_8">
-   <property name="geometry">
-    <rect>
-     <x>60</x>
-     <y>232</y>
-     <width>121</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>12</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>Orientation</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_10">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>192</y>
-     <width>81</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>z:</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_11">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>172</y>
-     <width>81</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>y:</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_12">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>152</y>
-     <width>81</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>x:</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_13">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>302</y>
-     <width>81</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>Yaw:</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_14">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>282</y>
-     <width>81</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>Roll:</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_15">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>262</y>
-     <width>81</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>Pitch:</string>
-   </property>
-  </widget>
-  <widget class="QWidget" name="horizontalLayoutWidget">
+  <widget class="QWidget" name="gridLayoutWidget">
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>90</y>
+     <y>100</y>
      <width>1921</width>
-     <height>981</height>
+     <height>971</height>
     </rect>
    </property>
-   <layout class="QHBoxLayout" name="rvizLayout"/>
+   <layout class="QGridLayout" name="layout"/>
   </widget>
-  <zorder>xboxcontrollerFrame</zorder>
-  <zorder>videoFrame</zorder>
   <zorder>line</zorder>
   <zorder>menuBtn</zorder>
   <zorder>changeModeBtn</zorder>
@@ -926,30 +420,10 @@ border-color: rgba(255, 255, 255, 0);</string>
   <zorder>controllerBatteryBtn</zorder>
   <zorder>label_2</zorder>
   <zorder>emergencyBtn</zorder>
-  <zorder>speedSlider</zorder>
-  <zorder>heightSlider</zorder>
-  <zorder>label_3</zorder>
-  <zorder>label_4</zorder>
-  <zorder>standBtn</zorder>
-  <zorder>walkBtn</zorder>
-  <zorder>turnRobotLeft</zorder>
-  <zorder>turnRobotRight</zorder>
   <zorder>exitBtn</zorder>
   <zorder>label_5</zorder>
   <zorder>label_6</zorder>
-  <zorder>mediumBtn</zorder>
-  <zorder>fastBtn</zorder>
-  <zorder>slowBtn</zorder>
-  <zorder>stairsBtn</zorder>
-  <zorder>label_7</zorder>
-  <zorder>label_8</zorder>
-  <zorder>label_10</zorder>
-  <zorder>label_11</zorder>
-  <zorder>label_12</zorder>
-  <zorder>label_13</zorder>
-  <zorder>label_14</zorder>
-  <zorder>label_15</zorder>
-  <zorder>horizontalLayoutWidget</zorder>
+  <zorder>gridLayoutWidget</zorder>
  </widget>
  <resources/>
  <connections/>

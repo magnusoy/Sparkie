@@ -44,8 +44,8 @@ class ManualWindow(QtWidgets.QDialog):
         loadUi(self.ui, self)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
 
-        self.rviz_frame = self.findChild(
-            QtWidgets.QHBoxLayout, 'rvizLayout')
+        self.layout = self.findChild(
+            QtWidgets.QGridLayout, 'layout')
 
         self.mode = JOYSTICK_ONLY_MODE
 
@@ -58,11 +58,26 @@ class ManualWindow(QtWidgets.QDialog):
         self.visual_frame.setStatusBar(None)
         self.visual_frame.setHideButtonVisibility(False)
 
-        self.rviz_frame.addWidget(self.visual_frame)
-        #self.visual_frame.setFixedSize(1302, 968)
+        self.layout.addWidget(self.visual_frame)
+        self.visual_frame.hide()
 
         self.manager = self.visual_frame.getManager()
         self.grid_display = self.manager.getRootDisplayGroup().getDisplayAt(0)
+
+        self.video_frame = QtWidgets.QLabel()
+        video_frame_font = QtGui.QFont("Verdana", 62, QtGui.QFont.Bold)
+        self.video_frame.setFont(video_frame_font)
+        self.video_frame.setText("No video frame")
+        self.video_frame.setAlignment(QtCore.Qt.AlignCenter)
+        self.video_frame.hide()
+        self.layout.addWidget(self.video_frame)
+
+        self.joystick_frame = QtWidgets.QLabel()
+        pixmap = QtGui.QPixmap('../static/img/xbox_controller_grey.png')
+        pixmap = pixmap.scaledToWidth(800)
+        self.joystick_frame.setPixmap(pixmap)
+        self.joystick_frame.setAlignment(QtCore.Qt.AlignCenter)
+        self.layout.addWidget(self.joystick_frame)
 
         # Buttons
         self.change_mode_btn = self.findChild(
@@ -77,9 +92,11 @@ class ManualWindow(QtWidgets.QDialog):
         self.powerBtn = self.findChild(QtWidgets.QPushButton, 'powerBtn')
         self.emergency_btn = self.findChild(
             QtWidgets.QPushButton, 'emergencyBtn')
+        """
         self.slow_btn = self.findChild(QtWidgets.QPushButton, 'slowBtn')
         self.medium_btn = self.findChild(QtWidgets.QPushButton, 'mediumBtn')
         self.fast_btn = self.findChild(QtWidgets.QPushButton, 'fastBtn')
+        """
 
         # Status indicators
         self.signal_btn = self.findChild(QtWidgets.QPushButton, 'signalBtn')
@@ -93,6 +110,8 @@ class ManualWindow(QtWidgets.QDialog):
         self.powerBtn.clicked.connect(self.power_on)
         self.exit_btn.clicked.connect(self.close_window)
         self.change_mode_btn.clicked.connect(self.change_mode)
+
+        """
         self.stand_btn.clicked.connect(self.set_stand_btn)
         self.walk_btn.clicked.connect(self.set_walk_btn)
         self.stairs_btn.clicked.connect(self.set_stairs_btn)
@@ -100,15 +119,16 @@ class ManualWindow(QtWidgets.QDialog):
         self.medium_btn.clicked.connect(self.set_medium_btn)
         self.fast_btn.clicked.connect(self.set_fast_btn)
         # self.turn_right.clicked.connect(self.change_camera_output)
+        """
 
         # Button shortcuts
         self.exit_btn.setShortcut("Ctrl+Q")
 
         # Mode Layouts
-        self.video_frame = self.findChild(QtWidgets.QLabel, 'videoFrame')
-        self.xbox_controller_frame = self.findChild(
-            QtWidgets.QLabel, 'xboxcontrollerFrame')
-        self.video_frame.hide()
+        #self.video_frame = self.findChild(QtWidgets.QLabel, 'videoFrame')
+        # self.xbox_controller_frame = self.findChild(
+        #    QtWidgets.QLabel, 'xboxcontrollerFrame')
+        # self.video_frame.hide()
 
         # Stylesheets
         self.powerBtn.setStyleSheet(
@@ -116,7 +136,7 @@ class ManualWindow(QtWidgets.QDialog):
         self.signal_btn.setStyleSheet(
             "QPushButton#signalBtn:checked {color:black; background-color: green;}")
 
-        self.initUI()
+        self.show()
 
     def add_rviz_config(self):
         reader = rviz.YamlConfigReader()
@@ -133,47 +153,17 @@ class ManualWindow(QtWidgets.QDialog):
 
     def update_mode_label(self):
         if self.mode == 0:
-            self.change_mode_btn.setText("JOYSTICK ONLY")
+            self.change_mode_btn.setText("JOYSTICK")
             self.visual_frame.hide()
-            self.xbox_controller_frame.show()
+            self.joystick_frame.show()
         elif self.mode == 1:
-            self.change_mode_btn.setText("ROBOT CAMERAS")
-            self.xbox_controller_frame.hide()
+            self.change_mode_btn.setText("CAMERAS")
+            self.joystick_frame.hide()
             self.video_frame.show()
         elif self.mode == 2:
             self.change_mode_btn.setText("VISUAL")
             self.video_frame.hide()
             self.visual_frame.show()
-
-    def set_walk_btn(self):
-        if self.walk_btn.isChecked():
-            self.stand_btn.setChecked(False)
-            self.stairs_btn.setChecked(False)
-
-    def set_stand_btn(self):
-        if self.stand_btn.isChecked():
-            self.walk_btn.setChecked(False)
-            self.stairs_btn.setChecked(False)
-
-    def set_stairs_btn(self):
-        if self.stairs_btn.isChecked():
-            self.walk_btn.setChecked(False)
-            self.stand_btn.setChecked(False)
-
-    def set_slow_btn(self):
-        if self.slow_btn.isChecked():
-            self.fast_btn.setChecked(False)
-            self.medium_btn.setChecked(False)
-
-    def set_medium_btn(self):
-        if self.medium_btn.isChecked():
-            self.slow_btn.setChecked(False)
-            self.fast_btn.setChecked(False)
-
-    def set_fast_btn(self):
-        if self.fast_btn.isChecked():
-            self.slow_btn.setChecked(False)
-            self.medium_btn.setChecked(False)
 
     def power_on(self):
         active = self.powerBtn.isChecked()
@@ -187,10 +177,6 @@ class ManualWindow(QtWidgets.QDialog):
             self.signal_btn.setChecked(True)
         else:
             self.signal_btn.setChecked(False)
-
-    def initUI(self):
-
-        self.show()
 
     def close_window(self):
         self.close()

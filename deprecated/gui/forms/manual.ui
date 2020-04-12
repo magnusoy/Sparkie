@@ -80,7 +80,7 @@
     </font>
    </property>
    <property name="text">
-    <string>JOYSTICK ONLY</string>
+    <string>JOYSTICK</string>
    </property>
    <property name="icon">
     <iconset>
