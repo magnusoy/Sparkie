@@ -1,4 +1,4 @@
-# #!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -23,7 +23,7 @@ __status__ = "Development"
 # Importing packages
 import sys
 import qdarkstyle
-from PyQt5 import QtWidgets 
+from python_qt_binding import QtWidgets
 
 # Importing local source
 from controller import Controller

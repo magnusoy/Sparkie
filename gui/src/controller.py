@@ -1,4 +1,4 @@
-# #!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -17,11 +17,10 @@ __status__ = "Development"
 
 
 # Importing packages
-from PyQt5 import QtGui
+from python_qt_binding import QtGui
 
 # Importing local source
 from widgets.manual import ManualWindow
-from widgets.path_generator import PathGeneratorWindow
 
 
 class Controller:
@@ -35,7 +34,7 @@ class Controller:
 
         self.icon = '../static/img/favicon/favicon.png'
         self.showManualWindow()
-    
+
     def showManualWindow(self):
         """Creates a new manual window in a 
             maximized window."""
@@ -44,12 +43,3 @@ class Controller:
         self.manual.setWindowIcon(QtGui.QIcon(self.icon))
         self.manual.setFixedSize(1920, 1080)
         self.manual.showMaximized()
-
-    def showPathGenerator(self):
-        """Creates a new path generator window."""
-
-        self.path = PathGeneratorWindow()
-        self.path.setWindowIcon(QtGui.QIcon(self.icon))
-        self.path.setFixedSize(440, 362)
-        self.path.show()
-    

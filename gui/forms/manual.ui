@@ -220,7 +220,7 @@ background-color: rgba(255, 255, 255, 0);</string>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>910</x>
+     <x>900</x>
      <y>15</y>
      <width>181</width>
      <height>71</height>
@@ -303,7 +303,7 @@ background-color: rgba(255, 255, 255, 0);</string>
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>1267</x>
+     <x>1260</x>
      <y>15</y>
      <width>121</width>
      <height>71</height>
@@ -576,7 +576,7 @@ border-color: rgba(255, 255, 255, 0);</string>
    </property>
    <property name="font">
     <font>
-     <pointsize>7</pointsize>
+     <pointsize>5</pointsize>
     </font>
    </property>
    <property name="layoutDirection">
@@ -600,7 +600,7 @@ border-color: rgba(255, 255, 255, 0);</string>
    </property>
    <property name="font">
     <font>
-     <pointsize>7</pointsize>
+     <pointsize>5</pointsize>
     </font>
    </property>
    <property name="text">
@@ -901,6 +901,17 @@ border-color: rgba(255, 255, 255, 0);</string>
     <string>Pitch:</string>
    </property>
   </widget>
+  <widget class="QWidget" name="horizontalLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>90</y>
+     <width>1921</width>
+     <height>981</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="rvizLayout"/>
+  </widget>
   <zorder>xboxcontrollerFrame</zorder>
   <zorder>videoFrame</zorder>
   <zorder>line</zorder>
@@ -938,6 +949,7 @@ border-color: rgba(255, 255, 255, 0);</string>
   <zorder>label_13</zorder>
   <zorder>label_14</zorder>
   <zorder>label_15</zorder>
+  <zorder>horizontalLayoutWidget</zorder>
  </widget>
  <resources/>
  <connections/>

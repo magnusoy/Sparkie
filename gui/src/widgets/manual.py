@@ -1,4 +1,4 @@
-# #!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -15,21 +15,15 @@ __status__ = "Development"
 """
 
 # Importing packages
-import cv2
+from config import *
+import rviz
+from python_qt_binding import QtWidgets, QtCore, QtGui
+from python_qt_binding.binding_helper import *
 import sys
 import time
-import numpy as np
-import zmq
-import base64
-from PyQt5 import QtWidgets, uic, QtCore, QtGui
-
 import rospy
-from std_msgs.msg import String
-
-# Importing from local source
-from config import *
-#from .util.xbox_controller import XboxController
-from .util.navigation import Path
+import roslib
+roslib.load_manifest('rviz_python_tutorial')
 
 
 class ManualWindow(QtWidgets.QDialog):
@@ -47,14 +41,28 @@ class ManualWindow(QtWidgets.QDialog):
         super(ManualWindow, self).__init__()
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.ui = '../forms/manual.ui'
-        uic.loadUi(self.ui, self)
-        # self.setWindowFlags(QtCore.Qt.FramelessWindowHint)  # Does not work good with Ubuntu
+        loadUi(self.ui, self)
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+
+        self.rviz_frame = self.findChild(
+            QtWidgets.QHBoxLayout, 'rvizLayout')
 
         self.mode = JOYSTICK_ONLY_MODE
 
-        # Camera filters
-        self.current_camera_topic = 0
-        self.camera_topics = ('color', 'fisheye', 'depth')
+        self.visual_frame = rviz.VisualizationFrame()
+        self.visual_frame.setSplashPath("")
+        self.visual_frame.initialize()
+        self.add_rviz_config()
+
+        self.visual_frame.setMenuBar(None)
+        self.visual_frame.setStatusBar(None)
+        self.visual_frame.setHideButtonVisibility(False)
+
+        self.rviz_frame.addWidget(self.visual_frame)
+        #self.visual_frame.setFixedSize(1302, 968)
+
+        self.manager = self.visual_frame.getManager()
+        self.grid_display = self.manager.getRootDisplayGroup().getDisplayAt(0)
 
         # Buttons
         self.change_mode_btn = self.findChild(
@@ -91,7 +99,7 @@ class ManualWindow(QtWidgets.QDialog):
         self.slow_btn.clicked.connect(self.set_slow_btn)
         self.medium_btn.clicked.connect(self.set_medium_btn)
         self.fast_btn.clicked.connect(self.set_fast_btn)
-        self.turn_right.clicked.connect(self.change_camera_output)
+        # self.turn_right.clicked.connect(self.change_camera_output)
 
         # Button shortcuts
         self.exit_btn.setShortcut("Ctrl+Q")
@@ -110,6 +118,12 @@ class ManualWindow(QtWidgets.QDialog):
 
         self.initUI()
 
+    def add_rviz_config(self):
+        reader = rviz.YamlConfigReader()
+        config = rviz.Config()
+        reader.readFile(config, "../instance/config.viz")
+        self.visual_frame.load(config)
+
     def change_mode(self):
         if self.mode < MAX_MODES:
             self.mode += 1
@@ -120,12 +134,16 @@ class ManualWindow(QtWidgets.QDialog):
     def update_mode_label(self):
         if self.mode == 0:
             self.change_mode_btn.setText("JOYSTICK ONLY")
-            self.video_frame.hide()
+            self.visual_frame.hide()
             self.xbox_controller_frame.show()
         elif self.mode == 1:
             self.change_mode_btn.setText("ROBOT CAMERAS")
             self.xbox_controller_frame.hide()
             self.video_frame.show()
+        elif self.mode == 2:
+            self.change_mode_btn.setText("VISUAL")
+            self.video_frame.hide()
+            self.visual_frame.show()
 
     def set_walk_btn(self):
         if self.walk_btn.isChecked():
@@ -174,7 +192,6 @@ class ManualWindow(QtWidgets.QDialog):
 
         self.show()
 
-
     def close_window(self):
         self.close()
 
@@ -182,217 +199,15 @@ class ManualWindow(QtWidgets.QDialog):
         pass
 
 
-class CameraThread(QtCore.QThread):
-
-    blink_signal = QtCore.pyqtSignal()
-    power_on = QtCore.pyqtSignal()
-    change_pixmap = QtCore.pyqtSignal(QtGui.QImage)
-
-    IP = '10.10.10.243'
-    PORT = 5555
-    FILTER = 'color'
-
-    context = zmq.Context()
-    footage_socket = context.socket(zmq.SUB)
-    footage_socket.connect(f'tcp://{IP}:{PORT}')
-    footage_socket.setsockopt_string(zmq.SUBSCRIBE, FILTER)
-    footage_socket.setsockopt(zmq.CONFLATE, 1)  # last msg only.
-
-    running = False
-
-    active = False
-    threadactive = True
-
-    @QtCore.pyqtSlot()
-    def close_socket(self):
-        self.threadactive = False
-        self.footage_socket.disconnect(f'tcp://{self.IP}:{self.PORT}')
-        self.running = False
-        print("Closing --> Camera")
-
-    @QtCore.pyqtSlot(str)
-    def change_topic(self, topic):
-        self.footage_socket.setsockopt_string(zmq.UNSUBSCRIBE, self.FILTER)
-        self.footage_socket.setsockopt_string(zmq.SUBSCRIBE, topic)
-        print("Changeing topic")
-        self.FILTER = topic
-
-    @QtCore.pyqtSlot(bool)
-    def activate(self, power_on):
-        self.active = power_on
-        self.footage_socket.connect(f'tcp://{self.IP}:{self.PORT}')
-        self.running = True
-
-    def run(self):
-        while self.threadactive:
-            topic, frame = self.footage_socket.recv_multipart()
-            img = base64.b64decode(frame)
-            npimg = np.fromstring(img, dtype=np.uint8)
-            source = cv2.imdecode(npimg, 1)
-            if self.active:
-                h, w, ch = source.shape
-                bytes_per_line = ch * w
-                convert_to_Qt_format = QtGui.QImage(
-                    source.data, w, h, bytes_per_line, QtGui.QImage.Format_RGB888)
-                p = convert_to_Qt_format.scaled(1920, 1010)
-                self.change_pixmap.emit(p)
-                self.blink_signal.emit()
-
-
-class PoseThread(QtCore.QThread):
-
-    power_on = QtCore.pyqtSignal()
-
-    IP = '10.10.10.243'
-    PORT = 5555
-
-    context = zmq.Context()
-    pose_socket = context.socket(zmq.SUB)
-    # pose_socket.connect('tcp://10.0.0.121:5555')
-    pose_socket.setsockopt_string(zmq.SUBSCRIBE, 'pose')
-    pose_socket.setsockopt(zmq.CONFLATE, 1)  # last msg only.
-
-    active = False
-    threadactive = True
-
-    @QtCore.pyqtSlot()
-    def close_socket(self):
-        self.threadactive = False
-        self.pose_socket.disconnect(f'tcp://{self.IP}:{self.PORT}')
-        print("Closing --> Pose")
-
-    @QtCore.pyqtSlot(bool)
-    def activate(self, power_on):
-        self.active = power_on
-        self.pose_socket.connect(f'tcp://{self.IP}:{self.PORT}')
-
-    def run(self):
-        while self.threadactive:
-            if self.active:
-                pose = self.pose_socket.recv_string()
-                print(pose)
-
-
-class SerialThread(QtCore.QThread):
-
-    power_on = QtCore.pyqtSignal()
-
-    IP = '10.10.10.243'
-    PORT = 6000
-
-    context = zmq.Context()
-    serial_socket = context.socket(zmq.SUB)
-    # serial_socket.connect(f'tcp://{IP}:{PORT}')
-    serial_socket.setsockopt_string(zmq.SUBSCRIBE, str(''))
-    serial_socket.setsockopt(zmq.CONFLATE, 1)  # last msg only.
-
-    active = False
-    threadactive = True
-
-    @QtCore.pyqtSlot()
-    def close_socket(self):
-        self.threadactive = False
-        self.serial_socket.disconnect(f'tcp://{self.IP}:{self.PORT}')
-        print("Closing --> Serial")
-
-    @QtCore.pyqtSlot(bool)
-    def activate(self, power_on):
-        self.active = power_on
-        self.serial_socket.connect(f'tcp://{self.IP}:{self.PORT}')
-
-    def run(self):
-        while self.threadactive:
-            if self.active:
-                data = self.serial_socket.recv_string()
-                print(data)
-
-
-class CommandThread(QtCore.QThread):
-
-    power_on = QtCore.pyqtSignal()
-
-    context = zmq.Context()
-    command_socket = context.socket(zmq.PUB)
-    command_socket.bind('tcp://*:5580')
-
-    command = None
-    old_command = None
-
-    active = False
-    threadactive = True
-
-    @QtCore.pyqtSlot()
-    def close_socket(self):
-        self.threadactive = False
-        print("Closing --> Command")
-
-    @QtCore.pyqtSlot(bool)
-    def activate(self, power_on):
-        self.active = power_on
-
-    @QtCore.pyqtSlot(str)
-    def set_command(self, command):
-        self.command = command
-
-    def run(self):
-        while self.threadactive:
-            if self.active:
-                if self.command is not None and self.command != self.old_command:
-                    self.command_socket.send_multipart(
-                        [b'command', self.command.encode()])
-                    print(self.command)
-                    self.old_command = self.command
-
-"""
-class XboxControllerThread(QtCore.QThread):
-
-    power_on = QtCore.pyqtSignal()
-
-    PORT = 5590
-
-    context = zmq.Context()
-    xbox_socket = context.socket(zmq.PUB)
-    xbox_socket.bind(f'tcp://*:{PORT}')
-
-    xbox_controller = XboxController(
-        None, deadzone=10, scale=100, invertYAxis=True)
-    xbox_controller.setupControlCallback(
-        xbox_controller.XboxControls.LTHUMBX, None)
-    xbox_controller.setupControlCallback(
-        xbox_controller.XboxControls.LTHUMBY, None)
-
-    threadactive = True
-    active = False
-
-    @QtCore.pyqtSlot()
-    def close_socket(self):
-        self.threadactive = False
-        print("Closing --> Xbox controller")
-
-    @QtCore.pyqtSlot(bool)
-    def activate(self, power_on):
-        self.active = power_on
-        print("Active being called")
-
-    def run(self):
-        while self.threadactive:
-            if self.active:
-                if self.xbox_controller.check_events():
-                    self.xbox_socket.send_multipart([b'xbox_controller', base64.b64encode(
-                        str(self.xbox_controller.controlValues).encode())])
-                    print(self.xbox_controller.controlValues)
-                time.sleep(0.1)
-"""
-
 class ROS_Subscriber(QtCore.QThread):
 
     def __init__(self, topic, msg_type):
         self.topic = topic
         self.msg_type = msg_type
-          
+
     def callback(self, data):
         rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
-    
+
     def run(self):
         rospy.init_node('listener', anonymous=True)
         rospy.Subscriber(self.topic, self.msg_type, self.callback)
