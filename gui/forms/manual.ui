@@ -355,15 +355,15 @@ border-color: rgba(255, 255, 255, 0);</string>
   <widget class="QLabel" name="label_5">
    <property name="geometry">
     <rect>
-     <x>560</x>
+     <x>563</x>
      <y>37</y>
-     <width>21</width>
-     <height>31</height>
+     <width>20</width>
+     <height>30</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <pointsize>5</pointsize>
+     <pointsize>6</pointsize>
     </font>
    </property>
    <property name="layoutDirection">
@@ -379,15 +379,15 @@ border-color: rgba(255, 255, 255, 0);</string>
   <widget class="QLabel" name="label_6">
    <property name="geometry">
     <rect>
-     <x>1420</x>
+     <x>1423</x>
      <y>37</y>
-     <width>21</width>
+     <width>20</width>
      <height>31</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <pointsize>5</pointsize>
+     <pointsize>6</pointsize>
     </font>
    </property>
    <property name="text">
@@ -401,12 +401,25 @@ border-color: rgba(255, 255, 255, 0);</string>
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>100</y>
+     <y>120</y>
      <width>1921</width>
-     <height>971</height>
+     <height>951</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="layout"/>
+  </widget>
+  <widget class="Line" name="line_2">
+   <property name="geometry">
+    <rect>
+     <x>-3</x>
+     <y>99</y>
+     <width>1931</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
   </widget>
   <zorder>line</zorder>
   <zorder>menuBtn</zorder>
@@ -424,6 +437,7 @@ border-color: rgba(255, 255, 255, 0);</string>
   <zorder>label_5</zorder>
   <zorder>label_6</zorder>
   <zorder>gridLayoutWidget</zorder>
+  <zorder>line_2</zorder>
  </widget>
  <resources/>
  <connections/>

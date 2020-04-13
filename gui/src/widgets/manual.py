@@ -23,7 +23,7 @@ import sys
 import time
 import rospy
 import roslib
-roslib.load_manifest('rviz_python_tutorial')
+roslib.load_manifest('rviz')
 
 
 class ManualWindow(QtWidgets.QDialog):
@@ -141,7 +141,8 @@ class ManualWindow(QtWidgets.QDialog):
     def add_rviz_config(self):
         reader = rviz.YamlConfigReader()
         config = rviz.Config()
-        reader.readFile(config, "../instance/config.viz")
+        #reader.readFile(config, "../instance/config.viz")
+        reader.readFile(config, "../instance/d400_and_t265.rviz")
         self.visual_frame.load(config)
 
     def change_mode(self):
