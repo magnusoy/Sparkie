@@ -49,7 +49,7 @@ void initializePIDs()
  */
 void computePIDs()
 {
-    pitchOutput = pitchPID.compute(ORIENTAION.pitch, 0);
+    pitchOutput = pitchPID.compute(ORIENTAION.pitch, pitchSetPoint);
     rollOutput = rollPID.compute(ORIENTAION.roll, 0);
     //yawOutput = yawOutput.compute(ORIENTAION.yaw,)
 }

@@ -90,7 +90,7 @@ p manualParams;
 void initializeLegTracjetory()
 {
   autoParams.amplitude_over = 30.0; //30 fin sving
-  autoParams.amplitude_under = 2.0; //10 fin sving
+  autoParams.amplitude_under = 2.0; //10 fin sving 2 enda bedre
   autoParams.step_left = 80.0;
   autoParams.step_right = 80.0,
   autoParams.height = 170.0;
@@ -112,6 +112,7 @@ void initializeLegTracjetory()
 
 /* How fast the motors moves */
 float val = PI / 140; //PI/55
+float pitchSetPoint = 0;
 
 /*Makes it possible to trot*/
 float PHASESHIFT0X = 3.14; //All legs togheter 3.14;    //Trot 3.14;

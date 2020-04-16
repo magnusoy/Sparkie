@@ -248,6 +248,7 @@ void loop()
 
   case S_MANUAL:
     mapXboxInputs();
+    computePIDs();
     //computeHeight(manualParams);
     //float hei = Legs[0].getHeight();
     char result[8];

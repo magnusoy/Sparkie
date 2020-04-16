@@ -43,6 +43,7 @@ void readXboxButtons()
     if (!oldStateY && XBOX_CONTROLLER_INPUT.Y)
     {
         manualParams.height = 170.0;
+        pitchSetPoint = 0;
     }
     oldStateY = XBOX_CONTROLLER_INPUT.Y;
 }
@@ -75,6 +76,12 @@ void mapXboxInputs()
         manualParams.height += map(XBOX_CONTROLLER_INPUT.RT, 1, -1, 0, 0.0005);
         manualParams.height += map(XBOX_CONTROLLER_INPUT.LT, 1, -1, 0, -0.0005);
         manualParams.height = constrain(manualParams.height, (80 + manualParams.amplitude_over), (249 - manualParams.amplitude_under));
+    }
+
+    if (XBOX_CONTROLLER_INPUT.MLB != 0 || XBOX_CONTROLLER_INPUT.MRB != 0)
+    {
+        pitchSetPoint += map(XBOX_CONTROLLER_INPUT.MRB, 0, 1, 0, 0.0005);
+        pitchSetPoint += map(XBOX_CONTROLLER_INPUT.MLB, 0, 1, 0, -0.0005);
     }
 }
 
