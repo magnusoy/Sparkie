@@ -123,7 +123,7 @@ void disarmMotors()
   Storing them in the global motorPosition
   variable.
 */
-void readOdriveMotorPositions(HardwareSerial hwSerials[], ODriveArduino odrives[])
+void readOdriveMotorPositions()
 {
   for (uint8_t i = 0; i < 4; ++i)
   {

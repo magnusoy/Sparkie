@@ -148,7 +148,7 @@ void LegMovement::linearMove(float x, float y)
  */
 void LegMovement::holdPosition(float x, float y)
 {
-  y = constrain(y, -80, -249);
+  y = constrain(y, -249, -80);
   for (int motor = 0; motor < 2; motor++)
   {
     double angle = this->compute(x, y, motor);
@@ -186,6 +186,11 @@ void LegMovement::moveToGround(float y)
 void LegMovement::setHeight(p &params, float height)
 {
   this->height = constrain(height, (80 + params.amplitude_over), (249 - params.amplitude_under));
+}
+
+float LegMovement::getHeight()
+{
+  return this->height;
 }
 
 /**

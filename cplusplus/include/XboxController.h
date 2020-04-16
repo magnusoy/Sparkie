@@ -58,11 +58,11 @@ void mapXboxInputs()
     {
         if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT < 0)
         {
-            manualParams.step_left = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, -1, 0, 10, 80);
+            manualParams.step_left = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, -1, 0, 0, 80);
         }
         else if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT > 0)
         {
-            manualParams.step_right = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, 0, 1, 80, 10);
+            manualParams.step_right = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, 0, 1, 80, 0);
         }
     }
     else

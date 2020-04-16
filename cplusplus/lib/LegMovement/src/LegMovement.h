@@ -29,6 +29,7 @@ public:
 	float getX();
 	float getY();
 	void setHeight(p &params, float height);
+	float getHeight();
 	void setPID(float P, float I, float D);
 	void setTrapTraj(float vel_limit, float accel_limit, float decel_limit);
 

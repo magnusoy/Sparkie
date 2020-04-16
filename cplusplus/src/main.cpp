@@ -117,7 +117,7 @@ int transitionTime = 5000;
 /*------Variables for reading PID parameters from serial------*/
 // Defining global variables for recieving data
 //TODO: Remove
-float kp = 30.0f;  //STAND = 40.0f    moveToPoint =
+float kp = 40.0f;  //STAND = 40.0f    moveToPoint =
 float ki = 0.01f;  //STAND = 0.01f    moveToPoint =
 float kd = 0.002f; //STAND = 0.002f   moveToPoint =
 void changeConfigurations();
@@ -143,6 +143,7 @@ void loop()
 {
   //loopTime = micros();
   nh.spinOnce();
+
   switch (currentState)
   {
   case S_IDLE:
@@ -171,6 +172,7 @@ void loop()
 
   case S_STAND:
     blinkLight(ORANGE_LED);
+    computePIDs();
     if (moveTimer.hasTimerExpired())
     {
       moveTimer.startTimer(moveInterval);
@@ -210,12 +212,11 @@ void loop()
 
   case S_WALK:
     // walkTime = micros();
-    computeHeight(autoParams);
+    //computeHeight(autoParams);
     if (moveTimer.hasTimerExpired())
     {
       moveTimer.startTimer(moveInterval);
       locomotion(autoParams);
-
       /*--------------------------------------*/
       //Testing fuctions
       //layDown();
@@ -236,7 +237,7 @@ void loop()
   break;
 
   case S_AUTONOMOUS:
-    computeHeight(autoParams);
+    //computeHeight(autoParams);
     //TODO add function for adjust speed and turning value from trajectory planner
     if (moveTimer.hasTimerExpired())
     {
@@ -248,6 +249,10 @@ void loop()
   case S_MANUAL:
     mapXboxInputs();
     //computeHeight(manualParams);
+    //float hei = Legs[0].getHeight();
+    char result[8];
+    dtostrf(val, 6, 2, result);
+    nh.loginfo(result);
     if (moveTimer.hasTimerExpired())
     {
       moveTimer.startTimer(moveInterval);

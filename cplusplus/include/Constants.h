@@ -2,10 +2,10 @@
 #define _CONSTANTS_H_
 
 /** BUTTONS */
-const uint8_t RED_BTN = 21;
-const uint8_t BLUE_BTN = 20;
-const uint8_t GREEN_BTN = 19;
-const uint8_t ORANGE_BTN = 18;
+const uint8_t RED_BTN = 20;
+const uint8_t BLUE_BTN = 19;
+const uint8_t GREEN_BTN = 18;
+const uint8_t ORANGE_BTN = 21;
 
 /** LED indicators */
 const uint8_t GREEN_LED = 12;
