@@ -82,6 +82,7 @@ void mapXboxInputs()
     {
         pitchSetPoint += map(XBOX_CONTROLLER_INPUT.MRB, 0, 1, 0, 0.0005);
         pitchSetPoint += map(XBOX_CONTROLLER_INPUT.MLB, 0, 1, 0, -0.0005);
+        pitchSetPoint = constrain(pitchSetPoint, -45, 45);
     }
 }
 
