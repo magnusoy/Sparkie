@@ -161,10 +161,14 @@ void locomotion(p &params)
 {
     if (val == 0)
     {
-        Legs[0].moveToGround(params.height - pitchOutput + rollOutput);
-        Legs[1].moveToGround(params.height - pitchOutput - rollOutput);
-        Legs[2].moveToGround(params.height + pitchOutput + rollOutput);
-        Legs[3].moveToGround(params.height + pitchOutput - rollOutput);
+        //Legs[0].moveToGround(params.height - pitchOutput + rollOutput);
+        //Legs[1].moveToGround(params.height - pitchOutput - rollOutput);
+        //Legs[2].moveToGround(params.height + pitchOutput + rollOutput);
+        //Legs[3].moveToGround(params.height + pitchOutput - rollOutput);
+        Legs[0].moveToGround(params.height);
+        Legs[1].moveToGround(params.height);
+        Legs[2].moveToGround(params.height);
+        Legs[3].moveToGround(params.height);
     }
     else
     {

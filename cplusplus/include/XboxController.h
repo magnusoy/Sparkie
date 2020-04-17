@@ -53,8 +53,8 @@ void readXboxButtons()
  */
 void mapXboxInputs()
 {
-    val = map(XBOX_CONTROLLER_INPUT.LJ_DOWN_UP, -1, 1, -PI / 55, PI / 55);
-    val = constrain(val, -PI / 55, PI / 55);
+    val = map(XBOX_CONTROLLER_INPUT.LJ_DOWN_UP, -1, 1, -PI / 70, PI / 70);
+    val = constrain(val, -PI / 70, PI / 70);
     if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT > 0.1 || XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT < -0.1)
     {
         if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT < 0)
@@ -80,8 +80,8 @@ void mapXboxInputs()
 
     if (XBOX_CONTROLLER_INPUT.MLB != 0 || XBOX_CONTROLLER_INPUT.MRB != 0)
     {
-        pitchSetPoint += map(XBOX_CONTROLLER_INPUT.MRB, 0, 1, 0, 0.0005);
-        pitchSetPoint += map(XBOX_CONTROLLER_INPUT.MLB, 0, 1, 0, -0.0005);
+        pitchSetPoint += map(XBOX_CONTROLLER_INPUT.MRB, 0, 1, 0, 0.05);
+        pitchSetPoint += map(XBOX_CONTROLLER_INPUT.MLB, 0, 1, 0, -0.05);
         pitchSetPoint = constrain(pitchSetPoint, -45, 45);
     }
 }

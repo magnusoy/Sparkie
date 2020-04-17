@@ -248,12 +248,13 @@ void loop()
 
   case S_MANUAL:
     mapXboxInputs();
-    computePIDs();
+    //computePIDs();
     //computeHeight(manualParams);
+
     //float hei = Legs[0].getHeight();
-    char result[8];
-    dtostrf(val, 6, 2, result);
-    nh.loginfo(result);
+    //char result[8];
+    //dtostrf(val, 6, 2, result);
+    //nh.loginfo(result);
     if (moveTimer.hasTimerExpired())
     {
       moveTimer.startTimer(moveInterval);
@@ -271,7 +272,7 @@ void loop()
 
   case S_RESET:
     checkForErrors();
-    delay(100);
+    delay(10);
     resetMotorsErrors();
     //delay(100);
     //writeConfig();
@@ -307,7 +308,7 @@ void changeConfigurations()
 {
   //setLegMotorPID(kp, ki, kd);
   //delay(500);
-  setLegMotorTrapTraj(3000, 3000, 3000);
+  ///setLegMotorTrapTraj(3000, 3000, 3000);
   //newData = false;
   //}
 }
