@@ -73,7 +73,7 @@ def remove_image(directory):
 
 client = Client(host="127.0.0.1", port=8089)
 
-IMG_DIRECTORY = './img'
+IMG_DIRECTORY = './img/tmp/'
 
 if __name__ == "__main__":
     client.connect()
@@ -81,5 +81,4 @@ if __name__ == "__main__":
     if img is not None:
         client.send(img)
         # remove_image(IMG_DIRECTORY)
-    time.sleep(1)
     client.disconnect()

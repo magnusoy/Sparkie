@@ -810,9 +810,7 @@ def visualize_boxes_and_labels_on_image_array(
         else:
           box_to_color_map[box] = STANDARD_COLORS[
               classes[i] % len(STANDARD_COLORS)]
-  write_to_file_thread = threading.Thread(target = write_objects_to_file, args = (box_to_display_str_map, ))
-  write_to_file_thread.start()
-  #write_objects_to_file(box_to_display_str_map)
+  the_class = get_class(box_to_display_str_map)
   # Draw all boxes onto image.
   for box, color in box_to_color_map.items():
     ymin, xmin, ymax, xmax = box
@@ -847,28 +845,15 @@ def visualize_boxes_and_labels_on_image_array(
           radius=line_thickness / 2,
           use_normalized_coordinates=use_normalized_coordinates)
 
-  return image
+  return image, the_class
 
-def write_objects_to_file(data):
-  """Write objectdata to file."""
-  index = -1
-  path = "C:\\Users\\Petter\\Documents\\Pick-And-Sort-Robot\\resources\\remote\\objects.json"
-  f = open(path, "w")
-  f.close()
+def get_class(data):
   if len(data.items()) > 0:
-    f = open(path, "a")
     for box, figure in data.items():
-      ymin, xmin, ymax, xmax = box
-      x = int((xmax+xmin)/2*464) # Change to fit resolution
-      y = int((ymax+ymin)/2*330) # Change to fit resolution
       text = str(figure[0])
       out = text.replace(": ", ",").replace("%", "").split(",")
-      figure = out[0]
-      probability = out[1]
-      index += 1
-      write_to_file = {"object": index, "type": figure, "x": x-4, "y": y+150, "probability": probability}
-      f.write(str(json.dumps(write_to_file)) + "-")
-    f.close()
+      return out[0]
+
 
 def add_cdf_image_summary(values, name):
   """Adds a tf.summary.image for a CDF plot of the values.

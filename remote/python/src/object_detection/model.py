@@ -19,6 +19,10 @@ __status__ = "Development"
 import cv2
 import numpy as np
 import tensorflow as tf
+import os
+import requests
+import json
+import pytesseract
 
 # Import utilites
 from object_detection.utils import label_map_util
@@ -86,7 +90,7 @@ class ObjectDetector(object):
             feed_dict={self.image_tensor: frame_expanded})
 
         # Draw the results of the detection
-        vis_util.visualize_boxes_and_labels_on_image_array(
+        _, _class = vis_util.visualize_boxes_and_labels_on_image_array(
             frame,
             np.squeeze(boxes),
             np.squeeze(classes).astype(np.int32),
@@ -96,6 +100,63 @@ class ObjectDetector(object):
             line_thickness=3,
             min_score_thresh=0.60)
 
+        self.publish_result(frame, _class)
         if debug:
             cv2.imshow('Frame', frame)
-
+    
+    def publish_result(self, frame, _class):
+        """docstring"""
+        r = requests.get('http://0.0.0.0:5000/login', auth=("sparkie", "sparkie"))
+        data = json.loads(r.text)
+        token = data['token']
+        _, img_encoded = cv2.imencode('.jpg', frame)
+        if _class == 'open_valve':
+            payload = {
+            'img': img_encoded.tostring(),
+            'tag': 'PSV100-09',
+            'is_open': True,
+            'normal_condition': True,
+            'warning': False
+            }
+            r = requests.post(
+                'http://0.0.0.0:5000/valves/1?token={}'.format(token), json=payload)
+        elif _class == 'closed_valve':
+            payload = {
+            'img': img_encoded.tostring(),
+            'tag': 'PSV100-09',
+            'is_open': False,
+            'normal_condition': False,
+            'warning': False
+            }
+            r = requests.put(
+                'http://0.0.0.0:5000/valves/1?token={}'.format(token), json=payload)
+        
+        elif _class == 'manometer':
+            payload = {
+            'img': img_encoded.tostring(),
+            'tag': 'DPG1000-12',
+            'value': 2.0,
+            'low_warning_limit': 1.0,
+            'low_alarm_limit': 0.0,
+            'high_warning_limit': 3.0,
+            'high_alarm_limit': 4.0
+            }
+            r = requests.put(
+                'http://0.0.0.0:5000/manometers/1?token={}'.format(token), json=payload)
+        
+        elif _class == 'fire_extinguisher':
+            payload = {
+            'img': img_encoded.tostring(),
+            'on_place': True,
+            }
+            r = requests.put(
+                'http://0.0.0.0:5000/fire_extinguishers/1?token={}'.format(token), json=payload)
+        
+        elif _class == 'exit_sign':
+            payload = {
+            'img': img_encoded.tostring(),
+            'on_place': True,
+            }
+            r = requests.put(
+                'http://0.0.0.0:5000/exit_signs/1?token={}'.format(token), json=payload)
+        

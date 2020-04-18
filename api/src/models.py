@@ -7,7 +7,7 @@ from . import db
 
 class Valve(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    img = db.Column(db.String(1000000), nullable=True)
+    img = db.Column(db.Text(), nullable=False)
     tag = db.Column(db.String(80), nullable=False)
     is_open = db.Column(db.Boolean, nullable=False)
     normal_condition = db.Column(db.Boolean, nullable=False)
@@ -23,7 +23,7 @@ class Valve(db.Model):
 
 class Manometer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    img = db.Column(db.String(1000000), nullable=True)
+    img = db.Column(db.Text(), nullable=False)
     tag = db.Column(db.String(80), nullable=False)
     value = db.Column(db.Float, nullable=False)
     low_warning_limit = db.Column(db.Float, nullable=False)
@@ -43,7 +43,7 @@ class Manometer(db.Model):
 
 class FireExtinguisher(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    img = db.Column(db.String(1000000), nullable=True)
+    img = db.Column(db.Text(), nullable=False)
     on_place = db.Column(db.Boolean, nullable=False)
 
     def __init__(self, img, on_place):
@@ -53,7 +53,7 @@ class FireExtinguisher(db.Model):
 
 class ExitSign(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    img = db.Column(db.String(1000000), nullable=True)
+    img = db.Column(db.Text(), nullable=False)
     on_place = db.Column(db.Boolean, nullable=False)
 
     def __init__(self, img, on_place):
