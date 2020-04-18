@@ -69,4 +69,5 @@ if __name__ == "__main__":
         frame = rsds.get_frame()
 
         cv2.imshow('frame', frame)
+
         cv2.waitKey(1)

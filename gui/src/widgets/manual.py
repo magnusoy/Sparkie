@@ -15,14 +15,18 @@ __status__ = "Development"
 """
 
 # Importing packages
+from __future__ import print_function
 from config import *
 import rviz
 from python_qt_binding import QtWidgets, QtCore, QtGui
 from python_qt_binding.binding_helper import *
+import cv2
+from cv_bridge import CvBridge
 import sys
 import time
 import rospy
 import roslib
+from sensor_msgs.msg import Image
 roslib.load_manifest('rviz')
 
 
@@ -135,6 +139,8 @@ class ManualWindow(QtWidgets.QDialog):
             "QPushButton#powerBtn:checked {color:black; background-color: red;}")
         self.signal_btn.setStyleSheet(
             "QPushButton#signalBtn:checked {color:black; background-color: green;}")
+        
+        self.video_stream_subscriber = VideoStreamSubscriber('camera/image_raw', Image)
 
         self.show()
 
@@ -184,16 +190,19 @@ class ManualWindow(QtWidgets.QDialog):
 
     def turn_robot_off(self):
         pass
+        
 
 
-class ROS_Subscriber(QtCore.QThread):
+class VideoStreamSubscriber(QtCore.QThread):
 
     def __init__(self, topic, msg_type):
+        QtCore.QThread.__init__(self)
         self.topic = topic
         self.msg_type = msg_type
 
     def callback(self, data):
-        rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
+        #rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data) 
+        rgb_image = CvBridge().imgmsg_to_cv2(data, desired_encoding="rgb8")
 
     def run(self):
         rospy.init_node('listener', anonymous=True)
