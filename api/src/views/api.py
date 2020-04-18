@@ -16,22 +16,22 @@ import jwt
 class ValvesSchema(ma.Schema):
     class Meta:
         # Fields to expose
-        fields = ('id', 'tag', 'is_open', 'normal_condition', 'warning')
+        fields = ('id', 'img', 'tag', 'is_open', 'normal_condition', 'warning')
 
 class ManometersSchema(ma.Schema):
     class Meta:
         # Fields to expose
-        fields = ('id', 'tag', 'value', 'low_warning_limit', 'low_alarm_limit', 'high_warning_limit', 'high_alarm_limit')
+        fields = ('id', 'img', 'tag', 'value', 'low_warning_limit', 'low_alarm_limit', 'high_warning_limit', 'high_alarm_limit')
 
 class FireExtinguishersSchema(ma.Schema):
     class Meta:
         # Fields to expose
-        fields = ('id', 'on_place')
+        fields = ('id', 'img', 'on_place')
 
 class ExitSignsSchema(ma.Schema):
     class Meta:
         # Fields to expose
-        fields = ('id', 'on_place')
+        fields = ('id', 'img', 'on_place')
 
 
 valve_schema = ValvesSchema()
@@ -92,12 +92,13 @@ def login():
 @app.route("/valves", methods=["POST"])
 @token_required
 def add_valve():
+    img = request.json['img']
     tag = request.json['tag']
     is_open = request.json['is_open']
     normal_condition = request.json['normal_condition']
     warning = request.json['warning']
 
-    new_valve = Valve(tag, is_open, normal_condition, warning)
+    new_valve = Valve(img, tag, is_open, normal_condition, warning)
     db.session.add(new_valve)
     db.session.commit()
     return valve_schema.jsonify(new_valve)
@@ -123,11 +124,13 @@ def detail_valve(id):
 @token_required
 def update_valve(id):
     valve = Valve.query.get(id)
+    img = request.json['img']
     tag = request.json['tag']
     is_open = request.json['is_open']
     normal_condition = request.json['normal_condition']
     warning = request.json['warning']
 
+    valve.img = img
     valve.tag = tag
     valve.is_open = is_open
     valve.normal_condition = normal_condition
@@ -154,6 +157,7 @@ def delete_valve(id):
 @app.route("/manometers", methods=["POST"])
 @token_required
 def add_manometer():
+    img = request.json['img']
     tag = request.json['tag']
     value = request.json['value']
     low_warning_limit = request.json['low_warning_limit']
@@ -161,7 +165,7 @@ def add_manometer():
     high_warning_limit = request.json['high_warning_limit']
     high_alarm_limit = request.json['high_alarm_limit']
 
-    new_manometer = Manometer(tag, value, low_warning_limit, low_alarm_limit, high_warning_limit, high_alarm_limit)
+    new_manometer = Manometer(img, tag, value, low_warning_limit, low_alarm_limit, high_warning_limit, high_alarm_limit)
     db.session.add(new_manometer)
     db.session.commit()
     return valve_schema.jsonify(new_manometer)
@@ -187,6 +191,7 @@ def detail_manometer(id):
 @token_required
 def update_manometer(id):
     manometer = Manometer.query.get(id)
+    img = request.json['img']
     tag = request.json['tag']
     value = request.json['value']
     low_warning_limit = request.json['low_warning_limit']
@@ -194,6 +199,7 @@ def update_manometer(id):
     high_warning_limit = request.json['high_warning_limit']
     high_alarm_limit = request.json['high_alarm_limit']
 
+    manometer.img  = img
     manometer.tag = tag
     manometer.value = value
     manometer.low_warning_limit = low_warning_limit
@@ -222,9 +228,10 @@ def delete_manometer(id):
 @app.route("/fire_extinguishers", methods=["POST"])
 @token_required
 def add_fire_extinguisher():
+    img = request.json['img']
     on_place = request.json['on_place']
 
-    new_fire_extinguisher = FireExtinguisher(on_place)
+    new_fire_extinguisher = FireExtinguisher(img, on_place)
     db.session.add(new_fire_extinguisher)
     db.session.commit()
     return fire_extinguisher_schema.jsonify(new_fire_extinguisher)
@@ -250,8 +257,10 @@ def detail_fire_extinguisher(id):
 @token_required
 def update_fire_extinguisher(id):
     fire_extinguisher = FireExtinguisher.query.get(id)
+    img = request.json['img']
     on_place = request.json['on_place']
 
+    fire_extinguisher.img  = img
     fire_extinguisher.tag = on_place
     db.session.commit()
     return fire_extinguisher_schema.jsonify(fire_extinguisher)
@@ -274,9 +283,10 @@ def delete_fire_extinguisher(id):
 @app.route("/exit_signs", methods=["POST"])
 @token_required
 def add_exit_sign():
+    img = request.json['img']
     on_place = request.json['on_place']
 
-    new_exit_sign = ExitSign(on_place)
+    new_exit_sign = ExitSign(img, on_place)
     db.session.add(new_exit_sign)
     db.session.commit()
     return exit_sign_schema.jsonify(new_exit_sign)
@@ -302,8 +312,10 @@ def detail_exit_sign(id):
 @token_required
 def update_exit_sign(id):
     exit_sign = ExitSign.query.get(id)
+    img = request.json['img']
     on_place = request.json['on_place']
 
+    exit_sign.img  = img
     exit_sign.tag = on_place
     db.session.commit()
     return exit_sign_schema.jsonify(exit_sign)

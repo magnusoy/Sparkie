@@ -1,0 +1,16 @@
+To get valid token
+
+curl --user sparkie:sparkie http://0.0.0.0:5000/login
+----------------------------------------------------------------
+
+Add data to database
+
+curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"img": "", "tag":"PSV1000-09", "is_open":false, "normal_condition": false, "warning": false}' http://0.0.0.0:5000/valves?token={"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoic3BhcmtpZSIsImV4cCI6MTU4OTgxODkyMn0.YefO-CVbx3XklHgH9NhX2DG19nZCoQZZ4mx7mPvKalo"}
+
+curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"img": "", "on_place":true}' http://0.0.0.0:5000/fire_extinguishers?token={"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoic3BhcmtpZSIsImV4cCI6MTU4OTgxODkyMn0.YefO-CVbx3XklHgH9NhX2DG19nZCoQZZ4mx7mPvKalo"}
+
+curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"img": "", "tag":"DPG1000-12", "value":2.0, "low_warning_limit":1.0, "low_alarm_limit":0.0, "high_warning_limit":3.0, "high_alarm_limit":4.0}' http://0.0.0.0:5000/manometers?token={"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoic3BhcmtpZSIsImV4cCI6MTU4OTgxODkyMn0.YefO-CVbx3XklHgH9NhX2DG19nZCoQZZ4mx7mPvKalo"}
+
+curl -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"img": "", "on_place":true}' http://0.0.0.0:5000/exit_signs?token={"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoic3BhcmtpZSIsImV4cCI6MTU4OTgxODkyMn0.YefO-CVbx3XklHgH9NhX2DG19nZCoQZZ4mx7mPvKalo"}
+
+----------------------------------------------------------------

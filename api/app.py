@@ -5,9 +5,10 @@ from src import app
 
 DEBUG = True
 
-app.run(
-        debug=DEBUG,
-        host='localhost',
-        port=5000,
-        threaded=True
-    )
+if __name__ == '__main__':
+    app.run(
+            debug=DEBUG,
+            host='localhost',
+            port=5000,
+            threaded=True
+        )

@@ -26,7 +26,8 @@ pip3 install -r requirements.txt
 To run development server :
 ```bash
 cd ~/sparkie/api
-export FLASK_APP=app.py
+export FLASK_APP=app.py # On Linux
+set FLASK_APP=app.py # On Windows
 flask run
 ```
 
@@ -37,8 +38,17 @@ The development server will now run on: http://0.0.0.0:5000/
 
 You will now also be able to use the REST-API
 ```bash
-curl -GET http://0.0.0.0:5000/mission
-curl -GET http://0.0.0.0:5000/mission/{id}
+curl -GET http://0.0.0.0:5000/valves
+curl -GET http://0.0.0.0:5000/valves/{id}
+
+curl -GET http://0.0.0.0:5000/manometers
+curl -GET http://0.0.0.0:5000/manometers/{id}
+
+curl -GET http://0.0.0.0:5000/fire_extinguishers
+curl -GET http://0.0.0.0:5000/fire_extinguishers/{id}
+
+curl -GET http://0.0.0.0:5000/exit_signs
+curl -GET http://0.0.0.0:5000/exit_signs/{id}
 ```
 
 You will be able to POST, PUT and DELETE only by a valid token.

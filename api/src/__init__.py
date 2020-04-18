@@ -15,3 +15,4 @@ db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
 from src.views import api
+from src.views import webpage
