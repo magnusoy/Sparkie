@@ -45,7 +45,7 @@ You will be able to POST, PUT and DELETE only by a valid token.
 You can recieve a valid token by login
 
 ```bash
-curl --user arvid:gjerde http://localhost:5000/login
+curl --user sparkie:sparkie http://localhost:5000/login
 ```
 
 
