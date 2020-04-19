@@ -109,11 +109,14 @@ class ObjectDetector(object):
         r = requests.get('http://0.0.0.0:5000/login', auth=("sparkie", "sparkie"))
         data = json.loads(r.text)
         token = data['token']
-        _, img_encoded = cv2.imencode('.jpg', frame)
+        img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        tag = get_tag(img_rgb)
+        print(tag)
+        _, img_encoded = cv2.imencode('.jpg', img_rgb)
         if _class == 'open_valve':
             payload = {
             'img': img_encoded.tostring(),
-            'tag': 'PSV100-09',
+            'tag': tag,
             'is_open': True,
             'normal_condition': True,
             'warning': False
@@ -134,7 +137,7 @@ class ObjectDetector(object):
         elif _class == 'manometer':
             payload = {
             'img': img_encoded.tostring(),
-            'tag': 'DPG1000-12',
+            'tag': tag,
             'value': 2.0,
             'low_warning_limit': 1.0,
             'low_alarm_limit': 0.0,
@@ -159,4 +162,7 @@ class ObjectDetector(object):
             }
             r = requests.put(
                 'http://0.0.0.0:5000/exit_signs/1?token={}'.format(token), json=payload)
+    
+    def get_tag(self, frame):
+        return pytesseract.image_to_string(frame)
         
