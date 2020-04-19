@@ -100,7 +100,7 @@ void odomCallback(const nav_msgs::Odometry &odom)
 
 /* ROS Subcribers */
 ros::Subscriber<sensor_msgs::Joy> joySub("joy", joyCallback);
-ros::Subscriber<nav_msgs::Odometry> odomSub("camera/odom/sample", odomCallback); // TODO: Change to t265/odom/sample under deployment
+ros::Subscriber<nav_msgs::Odometry> odomSub("t265/odom/sample", odomCallback);
 ros::Subscriber<geometry_msgs::Twist> navSub("cmd_vel", navCallback);
 
 /* Variable for the interval time for walking case*/
@@ -238,7 +238,8 @@ void loop()
 
   case S_AUTONOMOUS:
     //computeHeight(autoParams);
-    //TODO add function for adjust speed and turning value from trajectory planner
+
+    mapNavigation();
     if (moveTimer.hasTimerExpired())
     {
       moveTimer.startTimer(moveInterval);
