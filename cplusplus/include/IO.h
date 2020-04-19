@@ -104,7 +104,7 @@ void setSettings(uint8_t newState)
   if (currentState == S_WALK || currentState == S_MANUAL || currentState == S_AUTONOMOUS)
   {
     setLegMotorTrapTraj(500, 500, 500);
-    val = PI / 140;
+    robotVelocity = normalSpeed;
     autoParams.x = 0;
     manualParams.x = 0;
     setLegMotorTrapTraj(500, 500, 500);

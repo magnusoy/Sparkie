@@ -32,7 +32,7 @@ ODriveArduino odriveBackRight(BACK_RIGHT_SERIAL);
 ODriveArduino odrives[4] = {odriveFrontLeft, odriveFrontRight, odriveBackLeft, odriveBackRight};
 
 /** Odrive limitations */
-#define MOTOR_SPEED_LIMIT 40000.0f
+#define MOTOR_SPEED_LIMIT 50000.0f
 #define MOTOR_CURRENT_LIMIT 40.0f
 
 /** Speed increase multiplier */

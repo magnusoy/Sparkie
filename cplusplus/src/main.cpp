@@ -146,13 +146,13 @@ void loop()
 
   switch (currentState)
   {
+
   case S_IDLE:
     blinkLight(GREEN_LED);
     break;
 
   case S_TRANSITION:
     blinkLight(RED_LED);
-
     if (moveTimer.hasTimerExpired())
     {
       moveTimer.startTimer(moveInterval);
@@ -167,7 +167,6 @@ void loop()
     {
       changeStateTo(S_STAND);
     }
-
     break;
 
   case S_STAND:
@@ -238,7 +237,6 @@ void loop()
 
   case S_AUTONOMOUS:
     //computeHeight(autoParams);
-
     mapNavigation();
     if (moveTimer.hasTimerExpired())
     {

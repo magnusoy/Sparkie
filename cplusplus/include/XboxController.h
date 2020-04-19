@@ -42,7 +42,7 @@ void readXboxButtons()
 
     if (!oldStateY && XBOX_CONTROLLER_INPUT.Y)
     {
-        manualParams.height = 170.0;
+        manualParams.height = normalHeight;
         pitchSetPoint = 0;
     }
     oldStateY = XBOX_CONTROLLER_INPUT.Y;
@@ -53,23 +53,23 @@ void readXboxButtons()
  */
 void mapXboxInputs()
 {
-    val = map(XBOX_CONTROLLER_INPUT.LJ_DOWN_UP, -1, 1, -PI / 70, PI / 70);
-    val = constrain(val, -PI / 70, PI / 70);
+    robotVelocity = map(XBOX_CONTROLLER_INPUT.LJ_DOWN_UP, -1, 1, -maxSpeed, maxSpeed);
+    robotVelocity = constrain(robotVelocity, -maxSpeed, maxSpeed);
     if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT > 0.1 || XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT < -0.1)
     {
         if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT < 0)
         {
-            manualParams.step_left = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, -1, 0, 0, 80);
+            manualParams.step_left = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, -1, 0, 0, normalStepLength);
         }
         else if (XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT > 0)
         {
-            manualParams.step_right = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, 0, 1, 80, 0);
+            manualParams.step_right = map(XBOX_CONTROLLER_INPUT.RJ_LEFT_RIGHT, 0, 1, normalStepLength, 0);
         }
     }
     else
     {
-        manualParams.step_left = 80.0;
-        manualParams.step_right = 80.0;
+        manualParams.step_left = normalStepLength;
+        manualParams.step_right = normalStepLength;
     }
     if (XBOX_CONTROLLER_INPUT.RJ_DOWN_UP != 1)
     {

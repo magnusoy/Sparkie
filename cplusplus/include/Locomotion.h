@@ -157,29 +157,29 @@ void setIdlePosition()
 
 void mapNavigation()
 {
-    val = map(NAVIGATION.VEL_LINEAR_X, -1, 1, -PI / 140, PI / 140);
+    robotVelocity = map(NAVIGATION.VEL_LINEAR_X, -1, 1, -normalSpeed, normalSpeed);
     if (NAVIGATION.VEL_ANGULAR_Z > 0)
     {
-        if (val == 0)
+        if (robotVelocity == 0)
         {
-            val = PI / 140;
+            robotVelocity = normalSpeed;
         }
-        autoParams.step_left = 80;
-        autoParams.step_right = map(NAVIGATION.VEL_ANGULAR_Z, 0, 1, 80, 0);
+        autoParams.step_left = normalStepLength;
+        autoParams.step_right = map(NAVIGATION.VEL_ANGULAR_Z, 0, 1, normalStepLength, 0);
     }
     else if (NAVIGATION.VEL_ANGULAR_Z < 0)
     {
-        if (val == 0)
+        if (robotVelocity == 0)
         {
-            val = PI / 140;
+            robotVelocity = normalSpeed;
         }
-        autoParams.step_left = map(NAVIGATION.VEL_ANGULAR_Z, -1, 0, 0, 80);
-        autoParams.step_right = 80;
+        autoParams.step_left = map(NAVIGATION.VEL_ANGULAR_Z, -1, 0, 0, normalStepLength);
+        autoParams.step_right = normalStepLength;
     }
     else
     {
-        autoParams.step_left = 80;
-        autoParams.step_right = 80;
+        autoParams.step_left = normalStepLength;
+        autoParams.step_right = normalStepLength;
     }
 }
 
@@ -188,7 +188,7 @@ void mapNavigation()
 */
 void locomotion(p &params)
 {
-    if (val == 0)
+    if (robotVelocity == 0)
     {
         //Legs[0].moveToGround(params.height - pitchOutput + rollOutput);
         //Legs[1].moveToGround(params.height - pitchOutput - rollOutput);
@@ -205,7 +205,7 @@ void locomotion(p &params)
         Legs[1].move(params);
         Legs[2].move(params);
         Legs[3].move(params);
-        shift(val, params);
+        shift(robotVelocity, params);
     }
 }
 
@@ -274,22 +274,22 @@ void standUp()
 }
 
 /**
- Makes the robot start turning left
+ Makes the robot start turning right
  */
 void turnRight()
 {
-    autoParams.step_left = 0;
-    autoParams.step_right = 80;
+    autoParams.step_left = normalStepLength;
+    autoParams.step_right = 0;
     locomotion(autoParams);
 }
 
 /**
- Makes the robot start turning right
+ Makes the robot start turning left
  */
 void turnLeft()
 {
-    autoParams.step_left = 80; //80 e bra
-    autoParams.step_right = 0;
+    autoParams.step_left = 0;
+    autoParams.step_right = normalStepLength;
     locomotion(autoParams);
 }
 

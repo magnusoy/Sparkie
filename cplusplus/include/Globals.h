@@ -85,15 +85,22 @@ p autoParams;
 p manualParams;
 
 /**
+ * Define the normal parameters
+ */
+#define normalSpeed PI / 140 //PI / 140
+#define maxSpeed PI / 70     //PI / 70
+#define normalStepLength 80  //80
+#define normalHeight 170     //170
+/**
  * Sets the standard values for the leg tracjetory
  */
 void initializeLegTracjetory()
 {
   autoParams.amplitude_over = 30.0; //30 fin sving
   autoParams.amplitude_under = 2.0; //10 fin sving 2 enda bedre
-  autoParams.step_left = 80.0;
-  autoParams.step_right = 80.0,
-  autoParams.height = 170.0;
+  autoParams.step_left = normalStepLength;
+  autoParams.step_right = normalStepLength,
+  autoParams.height = normalHeight;
   autoParams.frequency = 0;
   autoParams.period = 0;
   autoParams.x = 0;
@@ -101,9 +108,9 @@ void initializeLegTracjetory()
 
   manualParams.amplitude_over = 30.0;
   manualParams.amplitude_under = 2.0;
-  manualParams.step_left = 80.0;
-  manualParams.step_right = 80.0,
-  manualParams.height = 170.0;
+  manualParams.step_left = normalStepLength;
+  manualParams.step_right = normalStepLength,
+  manualParams.height = normalHeight;
   manualParams.frequency = 0;
   manualParams.period = 0;
   manualParams.x = 0;
@@ -111,7 +118,7 @@ void initializeLegTracjetory()
 }
 
 /* How fast the motors moves */
-float val = PI / 140; //PI/55
+float robotVelocity = normalSpeed;
 float pitchSetPoint = 0;
 
 /*Makes it possible to trot*/
