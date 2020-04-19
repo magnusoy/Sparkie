@@ -7,6 +7,7 @@
 #include "Globals.h"
 #include "OdriveParameters.h"
 #include "types.h"
+#include "Navigation.h"
 
 LegMovement legMovement0(odrives[0], 0, PHASESHIFT0X, PHASESHIFT0Y);
 LegMovement legMovement1(odrives[1], 1, PHASESHIFT1X, PHASESHIFT1Y);
@@ -152,6 +153,34 @@ void stand()
 void setIdlePosition()
 {
     transitionToPoint(70, -120);
+}
+
+void mapNavigation()
+{
+    val = map(NAVIGATION.VEL_LINEAR_X, -1, 1, -PI / 140, PI / 140);
+    if (NAVIGATION.VEL_ANGULAR_Z > 0)
+    {
+        if (val == 0)
+        {
+            val = PI / 140;
+        }
+        autoParams.step_left = 80;
+        autoParams.step_right = map(NAVIGATION.VEL_ANGULAR_Z, 0, 1, 80, 0);
+    }
+    else if (NAVIGATION.VEL_ANGULAR_Z < 0)
+    {
+        if (val == 0)
+        {
+            val = PI / 140;
+        }
+        autoParams.step_left = map(NAVIGATION.VEL_ANGULAR_Z, -1, 0, 0, 80);
+        autoParams.step_right = 80;
+    }
+    else
+    {
+        autoParams.step_left = 80;
+        autoParams.step_right = 80;
+    }
 }
 
 /**
