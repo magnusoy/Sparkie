@@ -73,7 +73,7 @@ void setSettings(uint8_t newState)
     disarmMotors();
   }
 
-  if (currentState == S_TRANSITION)
+  if (currentState == S_TRANSITION || currentState == S_TRANSITIONWALK || currentState == S_INSPECT)
   {
     transition = false;
   }
@@ -128,7 +128,7 @@ void readButtons()
 {
   if (TON1.isSwitchOn(RED_BTN))
   {
-    if (currentState == S_WALK || currentState == S_MANUAL || currentState == S_AUTONOMOUS)
+    if (currentState == S_WALK || currentState == S_MANUAL || currentState == S_AUTONOMOUS || currentState == S_TRANSITIONWALK || currentState == S_INSPECT)
     {
       changeStateTo(S_TRANSITION);
     }

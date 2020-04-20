@@ -114,14 +114,6 @@ unsigned long walkTime;
 Timer transitionTimer;
 int transitionTime = 5000;
 
-/*------Variables for reading PID parameters from serial------*/
-// Defining global variables for recieving data
-//TODO: Remove
-float kp = 40.0f;  //STAND = 40.0f    moveToPoint =
-float ki = 0.01f;  //STAND = 0.01f    moveToPoint =
-float kd = 0.002f; //STAND = 0.002f   moveToPoint =
-void changeConfigurations();
-
 void setup()
 {
   Serial.begin(57600);
@@ -189,13 +181,6 @@ void loop()
     changeStateTo(S_IDLE);
     break;
 
-  case S_READY:
-    break;
-
-  case S_PAUSE:
-    blinkLight(RED_LED);
-    break;
-
   case S_TRANSITIONWALK:
     transitionToPoint(0, -150);
     if (!transition)
@@ -223,9 +208,6 @@ void loop()
       //turnRight();
     }
     // Serial.println(micros() - walkTime);
-    break;
-
-  case S_RUN:
     break;
 
   case S_JUMP:
@@ -261,38 +243,25 @@ void loop()
     }
     break;
 
-  case S_BACKFLIP:
-    break;
-
-  case S_CONFIGURE:
-    //readOdriveMotorCurrent();
-    //Serial.println(motorcurrent[0][0]);
-    break;
-
   case S_RESET:
     checkForErrors();
     delay(10);
     resetMotorsErrors();
-    //delay(100);
-    //writeConfig();
-    //setPreCalibrated(true);
-    //rebootOdrives();
-    //delay(100);
-    //changeConfigurations();
-    //saveConfigOdrives();
-    //rebootOdrives();
-    //readConfig();
-    //changeConfigurations();
-    //delay(1000);
-    //readTrap();
     changeStateTo(S_IDLE);
     break;
 
-  case S_WARNING:
-    blinkLight(ORANGE_LED);
-    break;
-
-  case S_ERROR:
+  case S_INSPECT:
+    inspect();
+    if (!transition)
+    {
+      transitionTimer.startTimer(4000);
+      transition = true;
+    }
+    if (transitionTimer.hasTimerExpired())
+    {
+      changeStateTo(S_TRANSITIONWALK);
+      nextState = S_AUTONOMOUS;
+    }
     break;
 
   default:
@@ -301,13 +270,4 @@ void loop()
   }
   readButtons();
   readXboxButtons();
-}
-
-void changeConfigurations()
-{
-  //setLegMotorPID(kp, ki, kd);
-  //delay(500);
-  ///setLegMotorTrapTraj(3000, 3000, 3000);
-  //newData = false;
-  //}
 }

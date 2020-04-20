@@ -157,7 +157,19 @@ void setIdlePosition()
 
 void mapNavigation()
 {
-    robotVelocity = map(NAVIGATION.VEL_LINEAR_X, -1, 1, -normalSpeed, normalSpeed);
+    if (NAVIGATION.VEL_LINEAR_X < 0.2 && NAVIGATION.VEL_LINEAR_X > -0.2)
+    {
+        robotVelocity = map(NAVIGATION.VEL_LINEAR_X, -1, 1, -normalSpeed, normalSpeed);
+    }
+    else if (NAVIGATION.VEL_LINEAR_X > 0.2)
+    {
+        robotVelocity = normalSpeed;
+    }
+    else if (NAVIGATION.VEL_LINEAR_X < -0.2)
+    {
+        robotVelocity = -normalSpeed;
+    }
+
     if (NAVIGATION.VEL_ANGULAR_Z > 0)
     {
         if (robotVelocity == 0)
@@ -255,6 +267,17 @@ void jumpCommand()
         }
         break;
     }
+}
+
+/**
+ * Makes the robot tilt for inspecting objects that is higher
+ */
+void inspect()
+{
+    Legs[0].linearMove(20, 170);
+    Legs[1].linearMove(20, 170);
+    Legs[2].linearMove(0, 80);
+    Legs[3].linearMove(0, 80);
 }
 
 /**
