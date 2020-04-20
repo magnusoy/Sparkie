@@ -31,6 +31,8 @@ Front right view           |  Rear view                |  Side view
 
 * [Python](https://www.python.org/) - Python
 
+## Pictures and  3D-model
+[Folder](https://drive.google.com/drive/folders/175Xf5eR7ISFx6bbiMSzkLT8xGgaTwL8Q)
 
 ## Authors
 
