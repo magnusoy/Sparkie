@@ -4,6 +4,13 @@ We seek to prove that an autonomous industrial robot can optimize inspections op
 In development ...
 
 
+Front right view           |  Rear view                |  Side view
+:-------------------------:|:-------------------------:|:-------------------------:
+![](docs/img/Sparkie-front-right-without-front-bumper-alpha.png)  |  ![](docs/img/Sparkie-rear-leg-mechanism-alpha.png)   |  ![](docs/img/Sparkie-open-side-view-alpha.png)
+
+
+
+
 ## Demo, coming
 
 [![Demo video](https://img.youtube.com/vi/HOWtKFNFNDA/0.jpg)](https://www.youtube.com)
