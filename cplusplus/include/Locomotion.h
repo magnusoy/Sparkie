@@ -172,7 +172,7 @@ void mapNavigation()
 
     if (NAVIGATION.VEL_ANGULAR_Z > 0)
     {
-        if (robotVelocity == 0)
+        if (robotVelocity > 0 && robotVelocity < 0.2)
         {
             robotVelocity = normalSpeed;
         }
@@ -181,7 +181,7 @@ void mapNavigation()
     }
     else if (NAVIGATION.VEL_ANGULAR_Z < 0)
     {
-        if (robotVelocity == 0)
+        if (robotVelocity > 0 && robotVelocity < 0.2)
         {
             robotVelocity = normalSpeed;
         }
