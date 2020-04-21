@@ -9,11 +9,19 @@ Front right view           |  Rear view                |  Side view
 ![](docs/img/Sparkie-front-right-without-front-bumper-alpha.png)  |  ![](docs/img/Sparkie-rear-leg-mechanism-alpha.png)   |  ![](docs/img/Sparkie-open-side-view-alpha.png)
 
 
+Progress video 1           |  Progress video 2         |  Progress video 3
+:-------------------------:|:-------------------------:|:-------------------------:
+[![Progress video 1](https://img.youtube.com/vi/HOWtKFNFNDA/0.jpg)](https://www.youtube.com/watch?v=TQ3uUlvOUME&feature=youtu.be)  |  [![Progress video 1](https://img.youtube.com/vi/HOWtKFNFNDA/0.jpg)](https://www.youtube.com/watch?v=gNAVOJ_CyQM&feature=youtu.be)   |  [![Progress video 1](https://img.youtube.com/vi/HOWtKFNFNDA/0.jpg)](https://www.youtube.com/watch?v=oO2DqNTosMY&feature=youtu.be)
+
 
 
 ## Demo, coming
 
-[![Demo video](https://img.youtube.com/vi/HOWtKFNFNDA/0.jpg)](https://www.youtube.com)
+...
+
+
+## Pictures and  3D-model
+[Content](https://drive.google.com/drive/folders/175Xf5eR7ISFx6bbiMSzkLT8xGgaTwL8Q)
 
 
 ## Report
@@ -31,8 +39,6 @@ Front right view           |  Rear view                |  Side view
 
 * [Python](https://www.python.org/) - Python
 
-## Pictures and  3D-model
-[Folder](https://drive.google.com/drive/folders/175Xf5eR7ISFx6bbiMSzkLT8xGgaTwL8Q)
 
 ## Authors
 
