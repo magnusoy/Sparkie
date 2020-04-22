@@ -155,36 +155,47 @@ void setIdlePosition()
     transitionToPoint(70, -120);
 }
 
-void mapNavigation()
+void turningVelocity()
+{
+
+    if (robotVelocity >= 0 && robotVelocity < 0.2)
+    {
+        robotVelocity = normalSpeed;
+    }
+    else if (robotVelocity < 0 && robotVelocity > -0.2)
+    {
+        robotVelocity = -normalSpeed;
+    }
+}
+
+void movementVelocity()
 {
     if (NAVIGATION.VEL_LINEAR_X < 0.2 && NAVIGATION.VEL_LINEAR_X > -0.2)
     {
         robotVelocity = map(NAVIGATION.VEL_LINEAR_X, -1, 1, -normalSpeed, normalSpeed);
     }
-    else if (NAVIGATION.VEL_LINEAR_X > 0.2)
+    else if (NAVIGATION.VEL_LINEAR_X >= 0.2)
     {
         robotVelocity = normalSpeed;
     }
-    else if (NAVIGATION.VEL_LINEAR_X < -0.2)
+    else if (NAVIGATION.VEL_LINEAR_X <= -0.2)
     {
         robotVelocity = -normalSpeed;
     }
+}
 
+void mapNavigation()
+{
+    movementVelocity();
     if (NAVIGATION.VEL_ANGULAR_Z > 0)
     {
-        if (robotVelocity > 0 && robotVelocity < 0.2)
-        {
-            robotVelocity = normalSpeed;
-        }
+        turningVelocity();
         autoParams.step_left = normalStepLength;
         autoParams.step_right = map(NAVIGATION.VEL_ANGULAR_Z, 0, 1, normalStepLength, 0);
     }
     else if (NAVIGATION.VEL_ANGULAR_Z < 0)
     {
-        if (robotVelocity > 0 && robotVelocity < 0.2)
-        {
-            robotVelocity = normalSpeed;
-        }
+        turningVelocity();
         autoParams.step_left = map(NAVIGATION.VEL_ANGULAR_Z, -1, 0, 0, normalStepLength);
         autoParams.step_right = normalStepLength;
     }
