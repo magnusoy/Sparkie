@@ -148,7 +148,7 @@ class ManualWindow(QtWidgets.QDialog):
         reader = rviz.YamlConfigReader()
         config = rviz.Config()
         #reader.readFile(config, "../instance/config.viz")
-        reader.readFile(config, "../instance/d400_and_t265.rviz")
+        reader.readFile(config, "../instance/Sparkie.rviz")
         self.visual_frame.load(config)
 
     def change_mode(self):

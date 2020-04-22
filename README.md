@@ -9,9 +9,9 @@ Front right view           |  Rear view                |  Side view
 ![](docs/img/Sparkie-front-right-without-front-bumper-alpha.png)  |  ![](docs/img/Sparkie-rear-leg-mechanism-alpha.png)   |  ![](docs/img/Sparkie-open-side-view-alpha.png)
 
 
-Progress video 1           |  Progress video 2         |  Progress video 3
-:-------------------------:|:-------------------------:|:-------------------------:
-[![Progress video 1](https://img.youtube.com/vi/HOWtKFNFNDA/0.jpg)](https://www.youtube.com/watch?v=TQ3uUlvOUME&feature=youtu.be)  |  [![Progress video 1](https://img.youtube.com/vi/HOWtKFNFNDA/0.jpg)](https://www.youtube.com/watch?v=gNAVOJ_CyQM&feature=youtu.be)   |  [![Progress video 1](https://img.youtube.com/vi/HOWtKFNFNDA/0.jpg)](https://www.youtube.com/watch?v=oO2DqNTosMY&feature=youtu.be)
+Progress video 1           |  Progress video 2         |  Progress video 3         |  Progress video 4
+:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
+[![Progress video 1](https://img.youtube.com/vi/HOWtKFNFNDA/0.jpg)](https://www.youtube.com/watch?v=TQ3uUlvOUME&feature=youtu.be)  |  [![Progress video 1](https://img.youtube.com/vi/HOWtKFNFNDA/0.jpg)](https://www.youtube.com/watch?v=gNAVOJ_CyQM&feature=youtu.be)   |  [![Progress video 1](https://img.youtube.com/vi/HOWtKFNFNDA/0.jpg)](https://www.youtube.com/watch?v=oO2DqNTosMY&feature=youtu.be)   |  [![Progress video 4](https://img.youtube.com/vi/HOWtKFNFNDA/0.jpg)](https://youtu.be/tCF4K-aPs7A)
 
 
 
