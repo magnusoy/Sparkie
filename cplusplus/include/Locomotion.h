@@ -285,10 +285,10 @@ void jumpCommand()
  */
 void inspect()
 {
-    Legs[0].linearMove(20, 170);
-    Legs[1].linearMove(20, 170);
-    Legs[2].linearMove(0, 80);
-    Legs[3].linearMove(0, 80);
+    Legs[0].linearMove(20, -200);
+    Legs[1].linearMove(20, -200);
+    Legs[2].linearMove(0, -80);
+    Legs[3].linearMove(0, -80);
 }
 
 /**

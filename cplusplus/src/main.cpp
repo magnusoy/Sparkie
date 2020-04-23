@@ -254,7 +254,7 @@ void loop()
     inspect();
     if (!transition)
     {
-      transitionTimer.startTimer(4000);
+      transitionTimer.startTimer(5000);
       transition = true;
     }
     if (transitionTimer.hasTimerExpired())
