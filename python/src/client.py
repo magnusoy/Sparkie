@@ -1,4 +1,4 @@
-# #!/usr/bin/env python3
+# !/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 # Importing packages
@@ -26,8 +26,7 @@ class Client():
         # Change to "L" if windows <-> Windows
         message_size = struct.pack("=L", len(data))
         self.write(message_size + data)
-        _, jpeg = cv2.imencode('.jpg', frame)
-        return jpeg.tobytes()
+        # _, jpeg = cv2.imencode('.jpg', frame)
 
     def convert_to_jpeg(self, frame):
         _, jpeg = cv2.imencode('.jpg', frame)
@@ -64,7 +63,8 @@ def get_image(directory):
         return imgs[-1]
     else:
         return None
-    
+
+
 def remove_image(directory):
     imgs = [file for file in os.listdir(directory)]
     if len(imgs) > 0:
@@ -75,10 +75,12 @@ client = Client(host="127.0.0.1", port=8089)
 
 IMG_DIRECTORY = './img/tmp/'
 
+
 if __name__ == "__main__":
     client.connect()
-    img = get_image(IMG_DIRECTORY)
-    if img is not None:
-        client.send(img)
-        # remove_image(IMG_DIRECTORY)
-    client.disconnect()
+    if client.is_connected:
+        img = get_image(IMG_DIRECTORY)
+        if img is not None:
+            client.send(os.path.join(IMG_DIRECTORY, img))
+            # remove_image(IMG_DIRECTORY)
+        client.disconnect()

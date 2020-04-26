@@ -28,6 +28,7 @@ import pytesseract
 from object_detection.utils import label_map_util
 from object_detection.utils import visualization_utils as vis_util
 
+
 class ObjectDetector(object):
     """Performs object detection through webcamera."""
 
@@ -99,70 +100,73 @@ class ObjectDetector(object):
             use_normalized_coordinates=True,
             line_thickness=3,
             min_score_thresh=0.60)
-
+        print(_class)
         self.publish_result(frame, _class)
         if debug:
             cv2.imshow('Frame', frame)
-    
+
     def publish_result(self, frame, _class):
         """docstring"""
-        r = requests.get('http://0.0.0.0:5000/login', auth=("sparkie", "sparkie"))
+        r = requests.get('http://localhost:5000/login',
+                         auth=("sparkie", "sparkie"))
         data = json.loads(r.text)
         token = data['token']
-        img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        tag = get_tag(img_rgb)
+        #img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        tag = '000-23-TEST'
+        #tag = get_tag(img_rgb)
+        print(frame.shape)
         print(tag)
-        _, img_encoded = cv2.imencode('.jpg', img_rgb)
+        #img_encoded = cv2.imencode('.jpg', img_rgb)[1].tostring()
+        img_encoded = frame.tostring().decode('latin1')
         if _class == 'open_valve':
             payload = {
-            'img': img_encoded.tostring(),
-            'tag': tag,
-            'is_open': True,
-            'normal_condition': True,
-            'warning': False
+                'img': img_encoded,
+                'tag': tag,
+                'is_open': True,
+                'normal_condition': True,
+                'warning': False
             }
             r = requests.post(
-                'http://0.0.0.0:5000/valves/1?token={}'.format(token), json=payload)
+                'http://localhost:5000/valves/1?token={}'.format(token), json=payload)
         elif _class == 'closed_valve':
             payload = {
-            'img': img_encoded.tostring(),
-            'tag': 'PSV100-09',
-            'is_open': False,
-            'normal_condition': False,
-            'warning': False
+                'img': img_encoded,
+                'tag': 'PSV100-09',
+                'is_open': False,
+                'normal_condition': False,
+                'warning': False
             }
             r = requests.put(
-                'http://0.0.0.0:5000/valves/1?token={}'.format(token), json=payload)
-        
-        elif _class == 'manometer':
+                'http://localhost:5000/valves/1?token={}'.format(token), json=payload)
+
+        elif _class == 'Manometer':
             payload = {
-            'img': img_encoded.tostring(),
-            'tag': tag,
-            'value': 2.0,
-            'low_warning_limit': 1.0,
-            'low_alarm_limit': 0.0,
-            'high_warning_limit': 3.0,
-            'high_alarm_limit': 4.0
+                'img': img_encoded,
+                'tag': tag,
+                'value': 2.0,
+                'low_warning_limit': 1.0,
+                'low_alarm_limit': 0.0,
+                'high_warning_limit': 3.0,
+                'high_alarm_limit': 4.0
             }
             r = requests.put(
-                'http://0.0.0.0:5000/manometers/1?token={}'.format(token), json=payload)
-        
+                'http://localhost:5000/manometers/1?token={}'.format(token), json=payload)
+
         elif _class == 'fire_extinguisher':
             payload = {
-            'img': img_encoded.tostring(),
-            'on_place': True,
+                'img': img_encoded,
+                'on_place': True,
             }
             r = requests.put(
-                'http://0.0.0.0:5000/fire_extinguishers/1?token={}'.format(token), json=payload)
-        
+                'http://localhost:5000/fire_extinguishers/1?token={}'.format(token), json=payload)
+
         elif _class == 'exit_sign':
             payload = {
-            'img': img_encoded.tostring(),
-            'on_place': True,
+                'img': img_encoded,
+                'on_place': True,
             }
             r = requests.put(
-                'http://0.0.0.0:5000/exit_signs/1?token={}'.format(token), json=payload)
-    
+                'http://localhost:5000/exit_signs/1?token={}'.format(token), json=payload)
+
     def get_tag(self, frame):
         return pytesseract.image_to_string(frame)
-        

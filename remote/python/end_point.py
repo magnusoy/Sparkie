@@ -1,4 +1,4 @@
-# #!/usr/bin/env python3
+# !/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -13,7 +13,6 @@ __maintainer__ = "Magnus Kvendseth Øye"
 __email__ = "magnus.oye@gmail.com"
 __status__ = "Development"
 """
-
 
 
 # Importing Flask components
