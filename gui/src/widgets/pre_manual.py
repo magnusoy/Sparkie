@@ -27,7 +27,6 @@ import time
 import rospy
 import roslib
 from sensor_msgs.msg import Image
-from std_msgs.msg import String
 roslib.load_manifest('rviz')
 
 
@@ -54,37 +53,6 @@ class ManualWindow(QtWidgets.QDialog):
 
         self.mode = JOYSTICK_ONLY_MODE
 
-        # Image frames
-        self.videoframe = self.findChild(QtWidgets.QLabel, 'videoframe')
-        self.topImageLabel = self.findChild(QtWidgets.QLabel, 'topImageLabel')
-        self.middelImageLabel = self.findChild(QtWidgets.QLabel, 'middelImageLabel')
-        self.bottomImageLabel = self.findChild(QtWidgets.QLabel, 'bottomImageLabel')
-
-        # Buttons
-        self.startVideoStreamBtn = self.findChild(QtWidgets.QPushButton, 'startVideoStreamBtn')
-        self.stopVideoStreamBtn = self.findChild(QtWidgets.QPushButton, 'stopVideoStreamBtn')
-        self.abortMissionBtn = self.findChild(QtWidgets.QPushButton, 'abortMissionBtn')
-        self.inspectStatusBtn = self.findChild(QtWidgets.QPushButton, 'inspectStatusBtn')
-        self.pauseMissionBtn = self.findChild(QtWidgets.QToolButton, 'pauseMissionBtn')
-        self.stopMissionBtn = self.findChild(QtWidgets.QToolButton, 'stopMissionBtn')
-        self.startMissionBtn = self.findChild(QtWidgets.QToolButton, 'startMissionBtn')
-        self.refreshSelectMissionAreaBtn = self.findChild(QtWidgets.QToolButton, 'refreshSelectMissionAreaBtn')
-        self.refreshSelectMissionBtn = self.findChild(QtWidgets.QToolButton, 'refreshSelectMissionBtn')
-
-        # Labels
-        self.runninMissionLabel = self.findChild(QtWidgets.QLabel, 'runninMissionLabel')
-        self.runningTaskLabel = self.findChild(QtWidgets.QLabel, 'runningTaskLabel')
-        self.currentRunningMissionLabel = self.findChild(QtWidgets.QLabel, 'currentRunningMissionLabel')
-
-        # Progressbars
-        self.runningTaskProgressBar = self.findChild(QtWidgets.QProgressBar, 'runningTaskProgressBar')
-
-        # Comboboxes
-        self.videoSourceComboBox = self.findChild(QtWidgets.QComboBox, 'videoSourceCombox')
-        self.selectMissionAreaComboBox = self.findChild(QtWidgets.QComboBox, 'selectMissionAreaCombox')
-        self.selectMissionComboBox = self.findChild(QtWidgets.QComboBox, 'selectMissionComboBox')
-
-        # RVIZ
         self.visual_frame = rviz.VisualizationFrame()
         self.visual_frame.setSplashPath("")
         self.visual_frame.initialize()
@@ -92,28 +60,38 @@ class ManualWindow(QtWidgets.QDialog):
 
         self.visual_frame.setMenuBar(None)
         self.visual_frame.setStatusBar(None)
-        self.visual_frame.setHideButtonVisibility(True)
+        self.visual_frame.setHideButtonVisibility(False)
 
         self.layout.addWidget(self.visual_frame)
+        self.visual_frame.hide()
 
         self.manager = self.visual_frame.getManager()
         self.grid_display = self.manager.getRootDisplayGroup().getDisplayAt(0)
 
-        # Tables
-        self.tableWidget = self.findChild(QtWidgets.QTableWidget, 'tableWidget')
-        self.tableWidget.setHorizontalHeaderLabels(['Time', 'Tag', 'Operation','Status', 'Value', 'Warning', 'Error'])
-        header = self.tableWidget.horizontalHeader()
-        header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(3, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(4, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(5, QtWidgets.QHeaderView.Stretch)
-        header.setSectionResizeMode(6, QtWidgets.QHeaderView.Stretch)
-    
-        # Top Buttons
+        self.video_frame = QtWidgets.QLabel()
+        video_frame_font = QtGui.QFont("Verdana", 62, QtGui.QFont.Bold)
+        self.video_frame.setFont(video_frame_font)
+        self.video_frame.setText("No video frame")
+        self.video_frame.setAlignment(QtCore.Qt.AlignCenter)
+        self.video_frame.hide()
+        self.layout.addWidget(self.video_frame)
+
+        self.joystick_frame = QtWidgets.QLabel()
+        pixmap = QtGui.QPixmap('../static/img/xbox_controller_grey.png')
+        pixmap = pixmap.scaledToWidth(800)
+        self.joystick_frame.setPixmap(pixmap)
+        self.joystick_frame.setAlignment(QtCore.Qt.AlignCenter)
+        self.layout.addWidget(self.joystick_frame)
+
+        # Buttons
         self.change_mode_btn = self.findChild(
             QtWidgets.QPushButton, 'changeModeBtn')
+        self.turn_left = self.findChild(QtWidgets.QToolButton, 'turnRobotLeft')
+        self.turn_right = self.findChild(
+            QtWidgets.QToolButton, 'turnRobotRight')
+        self.stand_btn = self.findChild(QtWidgets.QPushButton, 'standBtn')
+        self.walk_btn = self.findChild(QtWidgets.QPushButton, 'walkBtn')
+        self.stairs_btn = self.findChild(QtWidgets.QPushButton, 'stairsBtn')
         self.exit_btn = self.findChild(QtWidgets.QPushButton, 'exitBtn')
         self.powerBtn = self.findChild(QtWidgets.QPushButton, 'powerBtn')
         self.emergency_btn = self.findChild(
@@ -130,9 +108,16 @@ class ManualWindow(QtWidgets.QDialog):
         self.emergency_btn.clicked.connect(self.turn_robot_off)
         self.powerBtn.clicked.connect(self.power_on)
         self.exit_btn.clicked.connect(self.close_window)
+        self.change_mode_btn.clicked.connect(self.change_mode)
 
         # Button shortcuts
         self.exit_btn.setShortcut("Ctrl+Q")
+
+        # Mode Layouts
+        #self.video_frame = self.findChild(QtWidgets.QLabel, 'videoFrame')
+        # self.xbox_controller_frame = self.findChild(
+        #    QtWidgets.QLabel, 'xboxcontrollerFrame')
+        # self.video_frame.hide()
 
         # Stylesheets
         self.powerBtn.setStyleSheet(
@@ -140,8 +125,7 @@ class ManualWindow(QtWidgets.QDialog):
         self.signal_btn.setStyleSheet(
             "QPushButton#signalBtn:checked {color:black; background-color: green;}")
         
-        rospy.init_node('listener', anonymous=True)
-        rospy.Subscriber('chatter', String, self.callback)
+        self.video_stream_subscriber = VideoStreamSubscriber('camera/image_raw', Image)
 
         self.show()
 
@@ -150,10 +134,27 @@ class ManualWindow(QtWidgets.QDialog):
         config = rviz.Config()
         reader.readFile(config, "../instance/Sparkie.rviz")
         self.visual_frame.load(config)
-    
-    def callback(self, data):
-        #rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data) 
-        rgb_image = CvBridge().imgmsg_to_cv2(data, desired_encoding="rgb8")
+
+    def change_mode(self):
+        if self.mode < MAX_MODES:
+            self.mode += 1
+        else:
+            self.mode = JOYSTICK_ONLY_MODE
+        self.update_mode_label()
+
+    def update_mode_label(self):
+        if self.mode == 0:
+            self.change_mode_btn.setText("JOYSTICK")
+            self.visual_frame.hide()
+            self.joystick_frame.show()
+        elif self.mode == 1:
+            self.change_mode_btn.setText("CAMERAS")
+            self.joystick_frame.hide()
+            self.video_frame.show()
+        elif self.mode == 2:
+            self.change_mode_btn.setText("VISUAL")
+            self.video_frame.hide()
+            self.visual_frame.show()
 
     def power_on(self):
         active = self.powerBtn.isChecked()
@@ -173,8 +174,8 @@ class ManualWindow(QtWidgets.QDialog):
 
     def turn_robot_off(self):
         pass
-
-
+        
+        
 class VideoStreamSubscriber(QtCore.QThread):
 
     def __init__(self, topic, msg_type):
@@ -189,3 +190,4 @@ class VideoStreamSubscriber(QtCore.QThread):
     def run(self):
         rospy.init_node('listener', anonymous=True)
         rospy.Subscriber(self.topic, self.msg_type, self.callback)
+        rospy.spin()

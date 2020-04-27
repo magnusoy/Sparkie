@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1920</width>
+    <height>1080</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <family>Verdana Pro Semibold</family>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>Manual Control</string>
+  </property>
+  <widget class="QToolButton" name="menuBtn">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>15</y>
+     <width>81</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../static/icons/menu.png</normaloff>../static/icons/menu.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>53</width>
+     <height>47</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="changeModeBtn">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>15</y>
+     <width>311</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>16</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>JOYSTICK ONLY</string>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../static/icons/replay.png</normaloff>../static/icons/replay.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>53</width>
+     <height>47</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="powerBtn">
+   <property name="geometry">
+    <rect>
+     <x>430</x>
+     <y>15</y>
+     <width>81</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-color: rgb(68, 68, 68);
+selection-color: rgb(100, 100, 100);
+background-color: rgb(0, 170, 0);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../static/icons/power.png</normaloff>../static/icons/power.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>53</width>
+     <height>47</height>
+    </size>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="batteryBtn">
+   <property name="geometry">
+    <rect>
+     <x>530</x>
+     <y>15</y>
+     <width>81</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-color: rgb(68, 68, 68);
+background-color: rgba(255, 255, 255, 0);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../static/icons/battery.png</normaloff>../static/icons/battery.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>53</width>
+     <height>47</height>
+    </size>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="healthBtn">
+   <property name="geometry">
+    <rect>
+     <x>730</x>
+     <y>15</y>
+     <width>81</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-color: rgb(68, 68, 68);
+background-color: rgba(255, 255, 255, 0);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../static/icons/health.png</normaloff>../static/icons/health.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>53</width>
+     <height>47</height>
+    </size>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="eyeBtn">
+   <property name="geometry">
+    <rect>
+     <x>630</x>
+     <y>15</y>
+     <width>81</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-color: rgb(68, 68, 68);
+background-color: rgba(255, 255, 255, 0);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../static/icons/eye.png</normaloff>../static/icons/eye.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>53</width>
+     <height>47</height>
+    </size>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>880</x>
+     <y>15</y>
+     <width>191</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Communication :</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="signalBtn">
+   <property name="geometry">
+    <rect>
+     <x>1090</x>
+     <y>15</y>
+     <width>81</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-color: rgb(68, 68, 68);
+background-color: rgba(255, 255, 255, 0);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../static/icons/signal.png</normaloff>../static/icons/signal.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>53</width>
+     <height>47</height>
+    </size>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="controllerBatteryBtn">
+   <property name="geometry">
+    <rect>
+     <x>1390</x>
+     <y>15</y>
+     <width>81</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-color: rgb(68, 68, 68);
+background-color: rgba(255, 255, 255, 0);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../static/icons/battery.png</normaloff>../static/icons/battery.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>53</width>
+     <height>47</height>
+    </size>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>1240</x>
+     <y>15</y>
+     <width>131</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>14</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Controller :</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="emergencyBtn">
+   <property name="geometry">
+    <rect>
+     <x>1570</x>
+     <y>17</y>
+     <width>341</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>26</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(255, 0, 0);
+color: rgb(255, 255, 255);
+border-color: rgb(255, 0, 0);</string>
+   </property>
+   <property name="text">
+    <string>E-STOP</string>
+   </property>
+  </widget>
+  <widget class="Line" name="line">
+   <property name="geometry">
+    <rect>
+     <x>-20</x>
+     <y>-10</y>
+     <width>1971</width>
+     <height>111</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="exitBtn">
+   <property name="geometry">
+    <rect>
+     <x>840</x>
+     <y>0</y>
+     <width>20</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgba(255, 255, 255, 0);
+background-color: rgba(255, 255, 255, 0);
+border-color: rgba(255, 255, 255, 0);</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>563</x>
+     <y>37</y>
+     <width>20</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>6</pointsize>
+    </font>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
+   <property name="text">
+    <string>100</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>1423</x>
+     <y>37</y>
+     <width>20</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>6</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>100</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QWidget" name="gridLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>120</y>
+     <width>1921</width>
+     <height>951</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="layout"/>
+  </widget>
+  <widget class="Line" name="line_2">
+   <property name="geometry">
+    <rect>
+     <x>-3</x>
+     <y>99</y>
+     <width>1931</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <zorder>line</zorder>
+  <zorder>menuBtn</zorder>
+  <zorder>changeModeBtn</zorder>
+  <zorder>powerBtn</zorder>
+  <zorder>batteryBtn</zorder>
+  <zorder>healthBtn</zorder>
+  <zorder>eyeBtn</zorder>
+  <zorder>label</zorder>
+  <zorder>signalBtn</zorder>
+  <zorder>controllerBatteryBtn</zorder>
+  <zorder>label_2</zorder>
+  <zorder>emergencyBtn</zorder>
+  <zorder>exitBtn</zorder>
+  <zorder>label_5</zorder>
+  <zorder>label_6</zorder>
+  <zorder>gridLayoutWidget</zorder>
+  <zorder>line_2</zorder>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
