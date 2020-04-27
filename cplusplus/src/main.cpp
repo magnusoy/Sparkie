@@ -247,11 +247,13 @@ void loop()
     checkForErrors();
     delay(10);
     resetMotorsErrors();
+    numberOfInspections = 0;
     changeStateTo(S_IDLE);
     break;
 
   case S_INSPECT:
     inspect();
+    blinkLight(BLUE_LED);
     if (!transition)
     {
       transitionTimer.startTimer(5000);
@@ -259,6 +261,7 @@ void loop()
     }
     if (transitionTimer.hasTimerExpired())
     {
+      numberOfInspections++;
       changeStateTo(S_TRANSITIONWALK);
       nextState = S_AUTONOMOUS;
     }

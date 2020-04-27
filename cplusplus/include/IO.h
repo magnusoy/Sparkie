@@ -156,8 +156,8 @@ void readButtons()
     }
     else if (currentState == S_STAND)
     {
-      changeStateTo(S_TRANSITIONWALK); //Change to S_TRANSITIONWALK
-      nextState = S_AUTONOMOUS;        //S_WALK //S_AUTONOMOUS
+      changeStateTo(S_INSPECT); //Change to S_TRANSITIONWALK
+      nextState = S_AUTONOMOUS; //S_WALK //S_AUTONOMOUS
     }
     else if (currentState == S_LAYDOWN)
     {
