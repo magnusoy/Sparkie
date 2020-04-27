@@ -710,7 +710,7 @@ border-color: rgba(255, 255, 255, 0);</string>
     </font>
    </property>
    <property name="text">
-    <string>TempMission</string>
+    <string>None</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_9">
@@ -746,7 +746,7 @@ border-color: rgba(255, 255, 255, 0);</string>
     </font>
    </property>
    <property name="text">
-    <string>TempTask</string>
+    <string>None</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_11">
@@ -890,7 +890,7 @@ border-color: rgba(255, 255, 255, 0);</string>
     <rect>
      <x>435</x>
      <y>750</y>
-     <width>101</width>
+     <width>661</width>
      <height>31</height>
     </rect>
    </property>
@@ -900,7 +900,7 @@ border-color: rgba(255, 255, 255, 0);</string>
     </font>
    </property>
    <property name="text">
-    <string>TempMission</string>
+    <string>None</string>
    </property>
   </widget>
   <widget class="Line" name="line_8">
@@ -1051,7 +1051,7 @@ border-color: rgba(255, 255, 255, 0);</string>
    <property name="geometry">
     <rect>
      <x>1606</x>
-     <y>110</y>
+     <y>119</y>
      <width>311</width>
      <height>41</height>
     </rect>

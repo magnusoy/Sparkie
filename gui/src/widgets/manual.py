@@ -16,7 +16,6 @@ __status__ = "Development"
 
 # Importing packages
 from __future__ import print_function
-from config import *
 import rviz
 from python_qt_binding import QtWidgets, QtCore, QtGui
 from python_qt_binding.binding_helper import *
@@ -28,6 +27,12 @@ import rospy
 import roslib
 from sensor_msgs.msg import Image
 from std_msgs.msg import String
+from move_base_msgs.msg import MoveBaseActionGoal, MoveBaseActionFeedback, MoveBaseGoal
+from actionlib_msgs.msg import GoalID, GoalStatusArray
+from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
+import actionlib
+from actionlib_msgs.msg import *
+
 roslib.load_manifest('rviz')
 
 
@@ -35,12 +40,6 @@ class ManualWindow(QtWidgets.QDialog):
     """doc"""
 
     activate = QtCore.pyqtSignal(bool)
-    stop_camera = QtCore.pyqtSignal()
-    stop_pose = QtCore.pyqtSignal()
-    stop_serial = QtCore.pyqtSignal()
-    stop_command = QtCore.pyqtSignal()
-    stop_xbox_controller = QtCore.pyqtSignal()
-    change_camera = QtCore.pyqtSignal(bool)
 
     def __init__(self):
         super(ManualWindow, self).__init__()
@@ -49,13 +48,12 @@ class ManualWindow(QtWidgets.QDialog):
         loadUi(self.ui, self)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
 
-        self.layout = self.findChild(
-            QtWidgets.QGridLayout, 'layout')
+        self.layout = self.findChild(QtWidgets.QGridLayout, 'layout')
 
-        self.mode = JOYSTICK_ONLY_MODE
+        self.last_goal_ID = None
 
         # Image frames
-        self.videoframe = self.findChild(QtWidgets.QLabel, 'videoframe')
+        self.videoframe = self.findChild(QtWidgets.QLabel, 'videoFrame')
         self.topImageLabel = self.findChild(QtWidgets.QLabel, 'topImageLabel')
         self.middelImageLabel = self.findChild(QtWidgets.QLabel, 'middelImageLabel')
         self.bottomImageLabel = self.findChild(QtWidgets.QLabel, 'bottomImageLabel')
@@ -63,13 +61,19 @@ class ManualWindow(QtWidgets.QDialog):
         # Buttons
         self.startVideoStreamBtn = self.findChild(QtWidgets.QPushButton, 'startVideoStreamBtn')
         self.stopVideoStreamBtn = self.findChild(QtWidgets.QPushButton, 'stopVideoStreamBtn')
-        self.abortMissionBtn = self.findChild(QtWidgets.QPushButton, 'abortMissionBtn')
+        self.abortMissionBtn = self.findChild(QtWidgets.QToolButton, 'abortMissionBtn')
         self.inspectStatusBtn = self.findChild(QtWidgets.QPushButton, 'inspectStatusBtn')
         self.pauseMissionBtn = self.findChild(QtWidgets.QToolButton, 'pauseMissionBtn')
         self.stopMissionBtn = self.findChild(QtWidgets.QToolButton, 'stopMissionBtn')
         self.startMissionBtn = self.findChild(QtWidgets.QToolButton, 'startMissionBtn')
         self.refreshSelectMissionAreaBtn = self.findChild(QtWidgets.QToolButton, 'refreshSelectMissionAreaBtn')
         self.refreshSelectMissionBtn = self.findChild(QtWidgets.QToolButton, 'refreshSelectMissionBtn')
+        self.inspectStatusBtn.hide()
+
+        # Button connections
+        self.startMissionBtn.clicked.connect(self.start_mission)
+        self.abortMissionBtn.clicked.connect(self.abort_mission)
+        self.pauseMissionBtn.clicked.connect(self.pause_mission)
 
         # Labels
         self.runninMissionLabel = self.findChild(QtWidgets.QLabel, 'runninMissionLabel')
@@ -80,9 +84,13 @@ class ManualWindow(QtWidgets.QDialog):
         self.runningTaskProgressBar = self.findChild(QtWidgets.QProgressBar, 'runningTaskProgressBar')
 
         # Comboboxes
-        self.videoSourceComboBox = self.findChild(QtWidgets.QComboBox, 'videoSourceCombox')
-        self.selectMissionAreaComboBox = self.findChild(QtWidgets.QComboBox, 'selectMissionAreaCombox')
+        self.videoSourceComboBox = self.findChild(QtWidgets.QComboBox, 'videoSourceComboBox')
+        self.selectMissionAreaComboBox = self.findChild(QtWidgets.QComboBox, 'selectMissionAreaComboBox')
         self.selectMissionComboBox = self.findChild(QtWidgets.QComboBox, 'selectMissionComboBox')
+
+        self.videoSourceComboBox.addItems(["Color", "Fisheye 1", "Fisheye 2","Infared 1", "Infared 2", ])
+        self.selectMissionAreaComboBox.addItems(['', "Workshop", "University", "Demo 1","Demo 2", "Demo 3"])
+        self.selectMissionComboBox.addItems(['', "Apartment-Mission"])
 
         # RVIZ
         self.visual_frame = rviz.VisualizationFrame()
@@ -140,8 +148,17 @@ class ManualWindow(QtWidgets.QDialog):
         self.signal_btn.setStyleSheet(
             "QPushButton#signalBtn:checked {color:black; background-color: green;}")
         
+        # ROS SUBSCRIBERS
         rospy.init_node('listener', anonymous=True)
-        rospy.Subscriber('chatter', String, self.callback)
+        rospy.Subscriber('/d435/infra1/image_rect_raw', Image, self.image_callback)
+        #status_sub = rospy.Subscriber("/move_base/status", GoalStatusArray, self.#statuscallback, queue_size = 1)
+
+        # Move base ActionListener
+        #tell the action client that we want to spin a thread by default
+        self.move_base = actionlib.SimpleActionClient("move_base", MoveBaseAction)
+        rospy.loginfo("wait for the action server to come up")
+        #allow up to 5 seconds for the action server to come up
+        self.move_base.wait_for_server()
 
         self.show()
 
@@ -150,10 +167,52 @@ class ManualWindow(QtWidgets.QDialog):
         config = rviz.Config()
         reader.readFile(config, "../instance/Sparkie.rviz")
         self.visual_frame.load(config)
+
+    def start_mission(self):
+        choice = QtWidgets.QMessageBox.question(self, 'Warning', 'Start new mission?', QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No) 
+        if choice == QtWidgets.QMessageBox.Yes:
+            self.startMissionBtn.setDisabled(True)
+            self.refreshSelectMissionAreaBtn.setDisabled(True)
+            self.refreshSelectMissionBtn.setDisabled(True)
+            self.selectMissionAreaComboBox.setDisabled(True)
+            self.selectMissionComboBox.setDisabled(True)
+            self.runninMissionLabel.setText(self.selectMissionComboBox.currentText())
+            self.currentRunningMissionLabel.setText(self.selectMissionComboBox.currentText())
+            self.send_goal()
+        else:
+            pass
     
-    def callback(self, data):
+    def image_callback(self, data):
         #rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data) 
         rgb_image = CvBridge().imgmsg_to_cv2(data, desired_encoding="rgb8")
+        height, width, channel = rgb_image.shape
+        bytesPerLine = 3 * width
+        qImg = QtGui.QImage(rgb_image.data, width, height, bytesPerLine, QtGui.QImage.Format_RGB888)
+        self.videoframe.setPixmap(QtGui.QPixmap(qImg))
+    
+    def statuscallback(self, data) :
+		#received status callback
+		l = len(data.status_list)
+		#last is data.status_list[l-1].goal_id
+		for i in xrange(0, l) :
+			#print data.status_list[i].status
+			if data.status_list[i].status == 1 :#this is the active one
+				#print "Active GOAL:"
+				#print data.status_list[i].goal_id
+				self.last_goal_ID = data.status_list[i].goal_id
+				return
+		self.LastGoalID = None
+    
+    def send_goal(self):
+        goal = MoveBaseGoal()
+        goal.target_pose.header.frame_id = "map"
+        goal.target_pose.header.stamp = rospy.Time.now()
+        goal.target_pose.pose.position.x = 1.0
+        goal.target_pose.pose.orientation.w = 1.0
+
+        self.move_base.send_goal(goal)
+        print(self.move_base.get_result())
+
 
     def power_on(self):
         active = self.powerBtn.isChecked()
@@ -174,18 +233,8 @@ class ManualWindow(QtWidgets.QDialog):
     def turn_robot_off(self):
         pass
 
-
-class VideoStreamSubscriber(QtCore.QThread):
-
-    def __init__(self, topic, msg_type):
-        QtCore.QThread.__init__(self)
-        self.topic = topic
-        self.msg_type = msg_type
-
-    def callback(self, data):
-        #rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data) 
-        rgb_image = CvBridge().imgmsg_to_cv2(data, desired_encoding="rgb8")
-
-    def run(self):
-        rospy.init_node('listener', anonymous=True)
-        rospy.Subscriber(self.topic, self.msg_type, self.callback)
+    def abort_mission(self):
+        cancel_move_pub = rospy.Publisher("/move_base/cancel", GoalID)
+    
+    def pause_mission(self):
+        print(self.move_base.get_result())
