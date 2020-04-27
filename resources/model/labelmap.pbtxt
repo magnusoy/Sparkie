@@ -1,9 +1,25 @@
 item {
   id: 1
-  name: 'Valve'
+  name: 'closed_valve'
 }
 
 item {
   id: 2
-  name: 'Manometer'
+  name: 'open_valve'
 }
+
+item {
+  id: 3
+  name: 'gauge'
+}
+
+item {
+  id: 4
+  name: 'exit_sign'
+}
+
+item {
+  id: 5
+  name: 'fire_extinguisher'
+}
+
