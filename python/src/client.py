@@ -71,7 +71,7 @@ def remove_image(directory):
         os.remove(imgs[-1])
 
 
-client = Client(host="127.0.0.1", port=8089)
+client = Client(host="dr0nn1.ddns.net", port=8089)
 
 IMG_DIRECTORY = './img/tmp/'
 
@@ -81,6 +81,9 @@ if __name__ == "__main__":
     if client.is_connected:
         img = get_image(IMG_DIRECTORY)
         if img is not None:
+            print("Sending")
+            print(img)
             client.send(os.path.join(IMG_DIRECTORY, img))
             # remove_image(IMG_DIRECTORY)
         client.disconnect()
+        print("Completed")

@@ -35,7 +35,7 @@ class ObjectDetector(object):
     def __init__(self, path_to_ckpt, path_to_labels):
         self.PATH_TO_CKPT = path_to_ckpt
         self.PATH_TO_LABELS = path_to_labels
-        self.NUM_CLASSES = 2  # Check labelmap
+        self.NUM_CLASSES = 5  # Check labelmap
 
         self.label_map = label_map_util.load_labelmap(self.PATH_TO_LABELS)
 

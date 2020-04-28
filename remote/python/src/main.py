@@ -42,7 +42,7 @@ object_detector.initialize()
 # Creates a TCP Server
 server = Server(host="0.0.0.0", port=8089)
 
-client_connected = False
+client_connected = True
 
 # Collects frames recieved from client on server
 # Computes the Object detection
@@ -54,7 +54,4 @@ if __name__ == "__main__":
 
         frame = server.get_frame()
         client_connected = False
-
-        if len(frame) > 280:  # Check if resolution match
-            object_detector.run(frame, debug=False)
-        cv2.waitKey(1)
+        object_detector.run(frame, debug=False)

@@ -110,6 +110,11 @@ ros::Subscriber<nav_msgs::Odometry> odomSub("t265/odom/sample", odomCallback);
 ros::Subscriber<geometry_msgs::Twist> navSub("cmd_vel", navCallback);
 ros::Subscriber<std_msgs::UInt8> goalSub("goal_reached", goalCallback);
 
+
+/* ROS Publisher */
+ros::Publisher inPosition("in_position", &str_msg);
+char take_img[1] = "1";
+
 /* Variable for the interval time for walking case*/
 Timer moveTimer;
 uint8_t moveInterval = 1; //1
@@ -130,6 +135,7 @@ void setup()
   nh.subscribe(odomSub);
   nh.subscribe(navSub);
   nh.subscribe(goalSub);
+  nh.advertise(inPosition);
   initializeButtons();
   initializeLights();
   initializeOdrives();
@@ -270,6 +276,8 @@ void loop()
     }
     if (transitionTimer.hasTimerExpired())
     {
+      str_msg.data = take_img;
+      inPosition.publish(&str_msg); // TODO: Petter check if this is correct place to tell robot to take img of a object
       numberOfInspections++;
       changeStateTo(S_TRANSITIONWALK);
       nextState = S_AUTONOMOUS;
