@@ -991,10 +991,7 @@ border-color: rgba(255, 255, 255, 0);</string>
     </rect>
    </property>
    <property name="text">
-    <string/>
-   </property>
-   <property name="pixmap">
-    <pixmap>../static/img/icon/avatar.png</pixmap>
+    <string>1</string>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
@@ -1013,10 +1010,7 @@ border-color: rgba(255, 255, 255, 0);</string>
     </rect>
    </property>
    <property name="text">
-    <string/>
-   </property>
-   <property name="pixmap">
-    <pixmap>../static/img/icon/avatar.png</pixmap>
+    <string>2</string>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
@@ -1035,10 +1029,7 @@ border-color: rgba(255, 255, 255, 0);</string>
     </rect>
    </property>
    <property name="text">
-    <string/>
-   </property>
-   <property name="pixmap">
-    <pixmap>../static/img/icon/avatar.png</pixmap>
+    <string>3</string>
    </property>
    <property name="scaledContents">
     <bool>true</bool>

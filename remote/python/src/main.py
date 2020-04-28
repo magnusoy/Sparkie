@@ -18,10 +18,11 @@ __status__ = "Development"
 # Import packages
 import cv2
 import os
+import time
 
 # Importing model and utility
 from object_detection.model import ObjectDetector
-from communication.server import RemoteShapeDetectorServer
+from communication.server import Server
 
 # Change working directory to get the inference graph and labelmap
 os.chdir('C:\\Users\\Petter\\Documents\\Sparkie\\resources')
@@ -39,15 +40,20 @@ object_detector = ObjectDetector(PATH_TO_CKPT, PATH_TO_LABELS)
 object_detector.initialize()
 
 # Creates a TCP Server
-rsds = RemoteShapeDetectorServer(host="0.0.0.0", port=8089)
+server = Server(host="0.0.0.0", port=8089)
 
+client_connected = False
 
 # Collects frames recieved from client on server
 # Computes the Object detection
 # and stores them in file.
 if __name__ == "__main__":
     while True:
-        frame = rsds.get_frame()
+        while not client_connected:
+            client_connected = server.wait_for_connection()
+
+        frame = server.get_frame()
+        client_connected = False
 
         if len(frame) > 280:  # Check if resolution match
             object_detector.run(frame, debug=False)

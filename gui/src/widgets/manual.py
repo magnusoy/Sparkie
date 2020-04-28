@@ -20,18 +20,22 @@ import rviz
 from python_qt_binding import QtWidgets, QtCore, QtGui
 from python_qt_binding.binding_helper import *
 import cv2
+import numpy as np
+import requests
+import json
 from cv_bridge import CvBridge
 import sys
 import time
 import rospy
 import roslib
 from sensor_msgs.msg import Image
-from std_msgs.msg import String
+from std_msgs.msg import String, UInt8
 from move_base_msgs.msg import MoveBaseActionGoal, MoveBaseActionFeedback, MoveBaseGoal
 from actionlib_msgs.msg import GoalID, GoalStatusArray
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 import actionlib
 from actionlib_msgs.msg import *
+from threading import Thread
 
 roslib.load_manifest('rviz')
 
@@ -51,6 +55,7 @@ class ManualWindow(QtWidgets.QDialog):
         self.layout = self.findChild(QtWidgets.QGridLayout, 'layout')
 
         self.last_goal_ID = None
+        self.num_goal_reached = 0
 
         # Image frames
         self.videoframe = self.findChild(QtWidgets.QLabel, 'videoFrame')
@@ -107,6 +112,10 @@ class ManualWindow(QtWidgets.QDialog):
         self.manager = self.visual_frame.getManager()
         self.grid_display = self.manager.getRootDisplayGroup().getDisplayAt(0)
 
+        self.plan = ['fire_extinguishers','','manometers', 'valves', 'exit_signs']
+        self.column_images = [self.topImageLabel, self.middelImageLabel, self.bottomImageLabel]
+        self.column_image_counter = 0
+
         # Tables
         self.tableWidget = self.findChild(QtWidgets.QTableWidget, 'tableWidget')
         self.tableWidget.setHorizontalHeaderLabels(['Time', 'Tag', 'Operation','Status', 'Value', 'Warning', 'Error'])
@@ -151,13 +160,13 @@ class ManualWindow(QtWidgets.QDialog):
         # ROS SUBSCRIBERS
         rospy.init_node('listener', anonymous=True)
         rospy.Subscriber('/d435/infra1/image_rect_raw', Image, self.image_callback)
-        #status_sub = rospy.Subscriber("/move_base/status", GoalStatusArray, self.#statuscallback, queue_size = 1)
+        rospy.Subscriber('goal_reached', UInt8, self.result_callback)
+        rospy.Subscriber('get_img', UInt8, self.api_callback)
 
         # Move base ActionListener
         #tell the action client that we want to spin a thread by default
         self.move_base = actionlib.SimpleActionClient("move_base", MoveBaseAction)
         rospy.loginfo("wait for the action server to come up")
-        #allow up to 5 seconds for the action server to come up
         self.move_base.wait_for_server()
 
         self.show()
@@ -178,10 +187,15 @@ class ManualWindow(QtWidgets.QDialog):
             self.selectMissionComboBox.setDisabled(True)
             self.runninMissionLabel.setText(self.selectMissionComboBox.currentText())
             self.currentRunningMissionLabel.setText(self.selectMissionComboBox.currentText())
-            self.send_goal()
+            self.post_goal()
         else:
             pass
     
+    def result_callback(self, data):
+        if data.data:
+            self.num_goal_reached += 1
+            print("Goal Reached, ready for new one")
+
     def image_callback(self, data):
         #rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data) 
         rgb_image = CvBridge().imgmsg_to_cv2(data, desired_encoding="rgb8")
@@ -190,29 +204,74 @@ class ManualWindow(QtWidgets.QDialog):
         qImg = QtGui.QImage(rgb_image.data, width, height, bytesPerLine, QtGui.QImage.Format_RGB888)
         self.videoframe.setPixmap(QtGui.QPixmap(qImg))
     
-    def statuscallback(self, data) :
-		#received status callback
-		l = len(data.status_list)
-		#last is data.status_list[l-1].goal_id
-		for i in xrange(0, l) :
-			#print data.status_list[i].status
-			if data.status_list[i].status == 1 :#this is the active one
-				#print "Active GOAL:"
-				#print data.status_list[i].goal_id
-				self.last_goal_ID = data.status_list[i].goal_id
-				return
-		self.LastGoalID = None
-    
-    def send_goal(self):
-        goal = MoveBaseGoal()
-        goal.target_pose.header.frame_id = "map"
-        goal.target_pose.header.stamp = rospy.Time.now()
-        goal.target_pose.pose.position.x = 1.0
-        goal.target_pose.pose.orientation.w = 1.0
+    def api_callback(self, data):
+        _class = self.plan[self.num_goal_reached]
+        if len(_class) > 3:
+            URL = 'http://localhost:5000/%s/1' % _class
+            response = requests.get(URL)
+            content = response.json()
+            IMG = content['img'].encode('latin1')
+            rgb_image = np.fromstring(IMG, dtype=np.uint8).reshape((480, 640, 3))
+            height, width, channel = rgb_image.shape
+            bytesPerLine = 3 * width
+            qImg = QtGui.QImage(rgb_image.data, width, height, bytesPerLine, QtGui.QImage.Format_RGB888)
+            self.column_images[self.column_image_counter].setPixmap(QtGui.QPixmap(qImg))
+            self.column_image_counter += 1
+            if self.column_image_counter > 2:
+                self.column_image_counter = 0
+        else:
+            pass    
+    def post_goal(self):
 
-        self.move_base.send_goal(goal)
-        print(self.move_base.get_result())
-
+        if self.num_goal_reached == 0:
+            goal = MoveBaseGoal()
+            goal.target_pose.header.frame_id = "map"
+            goal.target_pose.header.stamp = rospy.Time.now()
+            goal.target_pose.pose.position.x = 0.86
+            #goal.target_pose.pose.position.y = 0.5
+            goal.target_pose.pose.orientation.w = 1.0
+            self.move_base.send_goal(goal)
+            print("Sending 0 goal")
+        elif self.num_goal_reached == 1:
+            goal = MoveBaseGoal()
+            goal.target_pose.header.frame_id = "map"
+            goal.target_pose.header.stamp = rospy.Time.now()
+            goal.target_pose.pose.position.x = 1.31
+            goal.target_pose.pose.position.y = -2.25
+            goal.target_pose.pose.orientation.z = -0.364
+            goal.target_pose.pose.orientation.w = 0.935
+            self.move_base.send_goal(goal)
+            print("Sending 1 goal")
+        elif self.num_goal_reached == 2:
+            goal = MoveBaseGoal()
+            goal.target_pose.header.frame_id = "map"
+            goal.target_pose.header.stamp = rospy.Time.now()
+            goal.target_pose.pose.position.x = 2.273
+            goal.target_pose.pose.position.y = -4.722
+            goal.target_pose.pose.orientation.z = 0.000
+            goal.target_pose.pose.orientation.w = -0.538
+            self.move_base.send_goal(goal)
+            print("Sending 2 goal")
+        elif self.num_goal_reached == 3:
+            goal = MoveBaseGoal()
+            goal.target_pose.header.frame_id = "map"
+            goal.target_pose.header.stamp = rospy.Time.now()
+            goal.target_pose.pose.position.x = 3.032
+            goal.target_pose.pose.position.y = -5.517
+            goal.target_pose.pose.orientation.z = -0.316
+            goal.target_pose.pose.orientation.w = 0.949
+            self.move_base.send_goal(goal)
+            print("Sending 3 goal")
+        elif self.num_goal_reached == 4:
+            goal = MoveBaseGoal()
+            goal.target_pose.header.frame_id = "map"
+            goal.target_pose.header.stamp = rospy.Time.now()
+            goal.target_pose.pose.position.x = 1.789
+            goal.target_pose.pose.position.y = -6.490
+            goal.target_pose.pose.orientation.z = 0.999
+            goal.target_pose.pose.orientation.w = -0.037
+            self.move_base.send_goal(goal)
+            print("Sending 4 goal")
 
     def power_on(self):
         active = self.powerBtn.isChecked()
@@ -234,7 +293,22 @@ class ManualWindow(QtWidgets.QDialog):
         pass
 
     def abort_mission(self):
-        cancel_move_pub = rospy.Publisher("/move_base/cancel", GoalID)
+        #cancel_move_pub = rospy.Publisher("/move_base/cancel", GoalID)
+        x = Thread(target=self.request_server_data)
+        x.start()
     
     def pause_mission(self):
-        print(self.move_base.get_result())
+        self.num_goal_reached += 1
+        self.post_goal()
+    
+    def request_server_data(self):
+        URL = 'http://localhost:5000/manometers/1'
+        response = requests.get(URL)
+        content = response.json()
+        IMG = content['img'].encode('latin1')
+        rgb_image = np.fromstring(IMG, dtype=np.uint8).reshape((640, 480, 3))
+        height, width, channel = rgb_image.shape
+        bytesPerLine = 3 * width
+        qImg = QtGui.QImage(rgb_image.data, width, height, bytesPerLine, QtGui.QImage.Format_RGB888)
+        self.topImageLabel.setPixmap(QtGui.QPixmap(qImg))
+

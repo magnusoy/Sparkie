@@ -22,7 +22,7 @@ import struct
 import cv2
 
 
-class RemoteShapeDetectorServer:
+class Server: 
     """This class is a TCP Server used to 
     collect incoming frames from Jetson Nano."""
 
@@ -40,6 +40,11 @@ class RemoteShapeDetectorServer:
         self.socket.bind(addr)
         self.socket.listen(10)
         self.connection, self.addr = self.socket.accept()
+    
+    def wait_for_connection(self):
+        self.connection, self.addr = self.socket.accept()
+        return True
+
 
     def get_frame(self):
         """Recieves frames as incoming bytestreams.
@@ -58,12 +63,13 @@ class RemoteShapeDetectorServer:
         frame_data = self.data[:msg_size]
         self.data = self.data[msg_size:]
         frame = pickle.loads(frame_data, encoding='latin1')
+        self.connection.close()
         return frame
 
 
 # Example of usage
 if __name__ == "__main__":
-    rsds = RemoteShapeDetectorServer(host="0.0.0.0", port=8089)
+    rsds = Server(host="0.0.0.0", port=8089)
 
     while True:
         frame = rsds.get_frame()
