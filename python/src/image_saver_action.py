@@ -23,8 +23,8 @@ def image_callback(msg):
         os.system(command)
 
 def main():
-    rospy.init_node('image_listener')
-    image_topic = "/camera/rgb/image_raw"
+    rospy.init_node('image_listener', anonymous=True)
+    image_topic = "/d435/rgb/image_raw"
     rospy.Subscriber(image_topic, Image, image_callback)
 
     # rospy.spin()
