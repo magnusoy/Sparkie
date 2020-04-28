@@ -306,13 +306,17 @@ void inspect()
     }
     else if (numberOfInspections == 2)
     {
+        return;
+    }
+    else if (numberOfInspections == 3)
+    {
         x1 = 20;
         x2 = 0;
         y1 = -200;
         y2 = -80;
     }
 
-    else if (numberOfInspections == 3)
+    else if (numberOfInspections == 4)
     {
         x1 = 20;
         x2 = 0;
