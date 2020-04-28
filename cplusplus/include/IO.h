@@ -123,6 +123,19 @@ void changeStateTo(uint8_t newState)
   currentState = newState;
 }
 
+/**
+ * Checks to see if the robot has reach its goal
+ * If yes, then change to inspect mode
+ */
+void isGoalReached()
+{
+  if (GOAL_REACHED == 1)
+  {
+    changeStateTo(S_INSPECT);
+    GOAL_REACHED = 0;
+  }
+}
+
 /** Reads all the buttons and change the state if a button is pressed */
 void readButtons()
 {
@@ -156,8 +169,8 @@ void readButtons()
     }
     else if (currentState == S_STAND)
     {
-      changeStateTo(S_INSPECT); //Change to S_TRANSITIONWALK
-      nextState = S_AUTONOMOUS; //S_WALK //S_AUTONOMOUS
+      changeStateTo(S_TRANSITIONWALK); //Change to S_TRANSITIONWALK
+      nextState = S_AUTONOMOUS;        //S_WALK //S_AUTONOMOUS
     }
     else if (currentState == S_LAYDOWN)
     {

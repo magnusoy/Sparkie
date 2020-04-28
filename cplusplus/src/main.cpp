@@ -19,6 +19,7 @@
 #include "../lib/ros_lib/nav_msgs/Odometry.h"
 #include "../lib/ros_lib/sensor_msgs/Joy.h"
 #include "../lib/ros_lib/geometry_msgs/Twist.h"
+#include "../lib/ros_lib/std_msgs/UInt8.h"
 
 #include "Globals.h"
 #include "Constants.h"
@@ -31,6 +32,11 @@
 
 /* ROS Nodehandlers */
 ros::NodeHandle nh;
+
+void goalCallback(const std_msgs::UInt8 &goal)
+{
+  GOAL_REACHED = goal.data;
+}
 
 /**
  Navigation callback function for updating
@@ -102,6 +108,7 @@ void odomCallback(const nav_msgs::Odometry &odom)
 ros::Subscriber<sensor_msgs::Joy> joySub("joy", joyCallback);
 ros::Subscriber<nav_msgs::Odometry> odomSub("t265/odom/sample", odomCallback);
 ros::Subscriber<geometry_msgs::Twist> navSub("cmd_vel", navCallback);
+ros::Subscriber<std_msgs::UInt8> goalSub("goal_reached", goalCallback);
 
 /* Variable for the interval time for walking case*/
 Timer moveTimer;
@@ -122,6 +129,7 @@ void setup()
   nh.subscribe(joySub);
   nh.subscribe(odomSub);
   nh.subscribe(navSub);
+  nh.subscribe(goalSub);
   initializeButtons();
   initializeLights();
   initializeOdrives();
@@ -220,6 +228,7 @@ void loop()
   case S_AUTONOMOUS:
     //computeHeight(autoParams);
     mapNavigation();
+    //isGoalReached();
     if (moveTimer.hasTimerExpired())
     {
       moveTimer.startTimer(moveInterval);

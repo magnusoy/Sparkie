@@ -2,6 +2,8 @@
 #define GLOBALS_H_
 #include "Constants.h"
 
+uint8_t GOAL_REACHED = 0;
+
 struct orientation
 {
   double pitch;
