@@ -20,6 +20,7 @@
 #include "../lib/ros_lib/sensor_msgs/Joy.h"
 #include "../lib/ros_lib/geometry_msgs/Twist.h"
 #include "../lib/ros_lib/std_msgs/UInt8.h"
+#include "../lib/ros_lib/std_msgs/String.h"
 
 #include "Globals.h"
 #include "Constants.h"
@@ -110,10 +111,12 @@ ros::Subscriber<nav_msgs::Odometry> odomSub("t265/odom/sample", odomCallback);
 ros::Subscriber<geometry_msgs::Twist> navSub("cmd_vel", navCallback);
 ros::Subscriber<std_msgs::UInt8> goalSub("goal_reached", goalCallback);
 
+std_msgs::String str_msg;
 
 /* ROS Publisher */
 ros::Publisher inPosition("in_position", &str_msg);
-char take_img[1] = "1";
+char take_img[2] = "1";
+char dontTake_img[2] = "2";
 
 /* Variable for the interval time for walking case*/
 Timer moveTimer;
@@ -125,6 +128,8 @@ unsigned long walkTime;
 
 Timer transitionTimer;
 int transitionTime = 5000;
+Timer pictureTimer;
+int pictureTime = 4000;
 
 void setup()
 {
@@ -196,7 +201,7 @@ void loop()
     break;
 
   case S_TRANSITIONWALK:
-    transitionToPoint(0, -150);
+    transitionToPoint(0, -180);
     if (!transition)
     {
       transitionTimer.startTimer(2000);
@@ -234,7 +239,7 @@ void loop()
   case S_AUTONOMOUS:
     //computeHeight(autoParams);
     mapNavigation();
-    //isGoalReached();
+    isGoalReached();
     if (moveTimer.hasTimerExpired())
     {
       moveTimer.startTimer(moveInterval);
@@ -259,10 +264,10 @@ void loop()
     break;
 
   case S_RESET:
-    checkForErrors();
-    delay(10);
-    resetMotorsErrors();
-    numberOfInspections = 0;
+    //checkForErrors();
+    //delay(10);
+    //resetMotorsErrors();
+    numberOfInspections = 1;
     changeStateTo(S_IDLE);
     break;
 
@@ -274,13 +279,29 @@ void loop()
       transitionTimer.startTimer(5000);
       transition = true;
     }
+    if (numberOfInspections == 2 || numberOfInspections == 4 || numberOfInspections == 5 || numberOfInspections == 6)
+    {
+      str_msg.data = dontTake_img;
+      inPosition.publish(&str_msg);
+      numberOfInspections++;
+      changeStateTo(S_AUTONOMOUS);
+    }
     if (transitionTimer.hasTimerExpired())
     {
-      str_msg.data = take_img;
-      inPosition.publish(&str_msg); // TODO: Petter check if this is correct place to tell robot to take img of a object
-      numberOfInspections++;
-      changeStateTo(S_TRANSITIONWALK);
-      nextState = S_AUTONOMOUS;
+      if (!pictureTaken)
+      {
+        str_msg.data = take_img;
+        inPosition.publish(&str_msg);
+        pictureTimer.startTimer(pictureTime);
+        pictureTaken = true;
+      }
+
+      if (pictureTimer.hasTimerExpired())
+      {
+        numberOfInspections++;
+        changeStateTo(S_TRANSITIONWALK);
+        nextState = S_AUTONOMOUS;
+      }
     }
     break;
 
