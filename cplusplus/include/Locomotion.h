@@ -285,56 +285,31 @@ void jumpCommand()
  */
 void inspect()
 {
-    int x1 = 0;
-    int x2 = 0;
-    int y1 = 0;
-    int y2 = 0;
-    if (numberOfInspections == 0)
+    if (numberOfInspections == 1)
     {
-        x1 = 0;
-        x2 = 0;
-        y1 = -170;
-        y2 = -170;
+        locomotion(autoParams);
     }
 
-    else if (numberOfInspections == 1)
-    {
-        x1 = 0;
-        x2 = 0;
-        y1 = -170;
-        y2 = -170;
-    }
-    else if (numberOfInspections == 2)
-    {
-        return;
-    }
     else if (numberOfInspections == 3)
     {
-        x1 = 20;
-        x2 = 0;
-        y1 = -200;
-        y2 = -80;
+        locomotion(autoParams);
     }
 
-    else if (numberOfInspections == 4)
+    else if (numberOfInspections == 7)
     {
-        x1 = 20;
-        x2 = 0;
-        y1 = -230;
-        y2 = -80;
-    }
-    else
-    {
-        x1 = 20;
-        x2 = 0;
-        y1 = -200;
-        y2 = -80;
+        Legs[0].linearMove(20, -200);
+        Legs[1].linearMove(20, -200);
+        Legs[2].linearMove(0, -80);
+        Legs[3].linearMove(0, -80);
     }
 
-    Legs[0].linearMove(x1, y1);
-    Legs[1].linearMove(x1, y1);
-    Legs[2].linearMove(x2, y2);
-    Legs[3].linearMove(x2, y2);
+    else if (numberOfInspections == 8)
+    {
+        Legs[0].linearMove(0, -120);
+        Legs[1].linearMove(0, -120);
+        Legs[2].linearMove(0, -180);
+        Legs[3].linearMove(0, -180);
+    }
 }
 
 /**

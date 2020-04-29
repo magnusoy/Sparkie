@@ -76,6 +76,7 @@ void setSettings(uint8_t newState)
   if (currentState == S_TRANSITION || currentState == S_TRANSITIONWALK || currentState == S_INSPECT)
   {
     transition = false;
+    pictureTaken = false;
   }
 
   if (newState == S_CALIBRATE)
@@ -170,7 +171,7 @@ void readButtons()
     else if (currentState == S_STAND)
     {
       changeStateTo(S_TRANSITIONWALK); //Change to S_TRANSITIONWALK
-      nextState = S_AUTONOMOUS;        //S_WALK //S_AUTONOMOUS
+      nextState = S_WALK;              //S_WALK //S_AUTONOMOUS
     }
     else if (currentState == S_LAYDOWN)
     {

@@ -3,7 +3,6 @@
 #include "Constants.h"
 
 uint8_t GOAL_REACHED = 0;
-
 struct orientation
 {
   double pitch;
@@ -75,7 +74,8 @@ uint8_t currentState = S_IDLE;
 uint8_t currentErrors[3] = {NONE};
 uint8_t currentWarnings[3] = {NONE};
 boolean transition = false;
-uint8_t numberOfInspections = 0;
+boolean pictureTaken = false;
+uint8_t numberOfInspections = 1;
 
 #include "types.h"
 p autoParams;
@@ -93,8 +93,8 @@ p manualParams;
  */
 void initializeLegTracjetory()
 {
-  autoParams.amplitude_over = 30.0; //30 fin sving
-  autoParams.amplitude_under = 2.0; //10 fin sving 2 enda bedre
+  autoParams.amplitude_over = 40.0; //30.0
+  autoParams.amplitude_under = 1.0; //2.0
   autoParams.step_left = normalStepLength;
   autoParams.step_right = normalStepLength,
   autoParams.height = normalHeight;
