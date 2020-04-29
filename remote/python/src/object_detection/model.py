@@ -111,13 +111,13 @@ class ObjectDetector(object):
                          auth=("sparkie", "sparkie"))
         data = json.loads(r.text)
         token = data['token']
-        #img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         tag = '000-23-TEST'
         #tag = get_tag(img_rgb)
         print(frame.shape)
         print(tag)
         #img_encoded = cv2.imencode('.jpg', img_rgb)[1].tostring()
-        img_encoded = frame.tostring().decode('latin1')
+        img_encoded = img_rgb.tostring().decode('latin1')
         if _class == 'open_valve':
             payload = {
                 'img': img_encoded,

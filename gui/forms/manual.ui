@@ -984,9 +984,9 @@ border-color: rgba(255, 255, 255, 0);</string>
   <widget class="QLabel" name="topImageLabel">
    <property name="geometry">
     <rect>
-     <x>1610</x>
+     <x>1580</x>
      <y>242</y>
-     <width>311</width>
+     <width>341</width>
      <height>263</height>
     </rect>
    </property>
@@ -1003,9 +1003,9 @@ border-color: rgba(255, 255, 255, 0);</string>
   <widget class="QLabel" name="middelImageLabel">
    <property name="geometry">
     <rect>
-     <x>1610</x>
+     <x>1580</x>
      <y>512</y>
-     <width>311</width>
+     <width>341</width>
      <height>263</height>
     </rect>
    </property>
@@ -1022,9 +1022,9 @@ border-color: rgba(255, 255, 255, 0);</string>
   <widget class="QLabel" name="bottomImageLabel">
    <property name="geometry">
     <rect>
-     <x>1610</x>
+     <x>1580</x>
      <y>782</y>
-     <width>311</width>
+     <width>341</width>
      <height>263</height>
     </rect>
    </property>
@@ -1127,7 +1127,6 @@ border-color: rgba(255, 255, 255, 0);</string>
     <bool>true</bool>
    </property>
   </widget>
-  <zorder>line_8</zorder>
   <zorder>label_15</zorder>
   <zorder>menuBtn</zorder>
   <zorder>changeModeBtn</zorder>
@@ -1183,6 +1182,7 @@ border-color: rgba(255, 255, 255, 0);</string>
   <zorder>line_6</zorder>
   <zorder>line_4</zorder>
   <zorder>line</zorder>
+  <zorder>line_8</zorder>
  </widget>
  <resources/>
  <connections/>

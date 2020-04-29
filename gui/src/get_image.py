@@ -4,14 +4,14 @@ import requests
 import json
 
 
-URL = 'http://localhost:5000/manometers/1'
+URL = 'http://dr0nn1.ddns.net:5000/manometers/1'
 
 response = requests.get(URL)
 
 content = response.json()
 
 IMG = content['img'].encode('latin1')
-arr = np.fromstring(IMG, dtype=np.uint8).reshape((720, 1280, 3))
+arr = np.fromstring(IMG, dtype=np.uint8).reshape((480, 640, 3))
 #arr = np.fromstring(IMG, np.uint8)
 # print(arr.shape)
 #frame = cv2.imdecode(arr, cv2.IMREAD_COLOR)
