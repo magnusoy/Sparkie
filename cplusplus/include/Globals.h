@@ -86,15 +86,15 @@ p manualParams;
  */
 #define normalSpeed PI / 140 //PI / 140
 #define maxSpeed PI / 70     //PI / 70
-#define normalStepLength 80  //80
+#define normalStepLength 50  //80
 #define normalHeight 170     //170
 /**
  * Sets the standard values for the leg tracjetory
  */
 void initializeLegTracjetory()
 {
-  autoParams.amplitude_over = 40.0; //30.0
-  autoParams.amplitude_under = 1.0; //2.0
+  autoParams.amplitude_over = 30.0; //30.0
+  autoParams.amplitude_under = 2.0; //2.0
   autoParams.step_left = normalStepLength;
   autoParams.step_right = normalStepLength,
   autoParams.height = normalHeight;

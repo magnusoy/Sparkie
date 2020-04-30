@@ -264,9 +264,9 @@ void loop()
     break;
 
   case S_RESET:
-    //checkForErrors();
-    //delay(10);
-    //resetMotorsErrors();
+    checkForErrors();
+    delay(10);
+    resetMotorsErrors();
     numberOfInspections = 1;
     changeStateTo(S_IDLE);
     break;

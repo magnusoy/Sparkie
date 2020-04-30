@@ -187,16 +187,16 @@ void movementVelocity()
 void mapNavigation()
 {
     movementVelocity();
-    if (NAVIGATION.VEL_ANGULAR_Z > 0)
+    if (NAVIGATION.VEL_ANGULAR_Z < 0)
     {
         turningVelocity();
         autoParams.step_left = normalStepLength;
-        autoParams.step_right = map(NAVIGATION.VEL_ANGULAR_Z, 0, 1, normalStepLength, 0);
+        autoParams.step_right = map(NAVIGATION.VEL_ANGULAR_Z, -1, 0, 0, normalStepLength);
     }
-    else if (NAVIGATION.VEL_ANGULAR_Z < 0)
+    else if (NAVIGATION.VEL_ANGULAR_Z > 0)
     {
         turningVelocity();
-        autoParams.step_left = map(NAVIGATION.VEL_ANGULAR_Z, -1, 0, 0, normalStepLength);
+        autoParams.step_left = map(NAVIGATION.VEL_ANGULAR_Z, 0, 1, normalStepLength, 0);
         autoParams.step_right = normalStepLength;
     }
     else
