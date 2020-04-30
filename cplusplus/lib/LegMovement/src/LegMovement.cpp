@@ -102,11 +102,11 @@ float LegMovement::stepX(p &params, float phase_shift)
 {
   if (leg_number == 0 || leg_number == 2)
   {
-    this->x = params.step_right / 2 * sin(params.frequency * params.x + phase_shift);
+    this->x = params.step_left / 2 * sin(params.frequency * params.x + phase_shift);
   }
   else
   {
-    this->x = params.step_left / 2 * sin(params.frequency * params.x + phase_shift);
+    this->x = params.step_right / 2 * sin(params.frequency * params.x + phase_shift);
   }
 
   return this->x;
