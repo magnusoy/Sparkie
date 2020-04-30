@@ -29,6 +29,8 @@ import time
 import rospy
 import roslib
 import os
+import threading
+import subprocess
 from sensor_msgs.msg import Image
 from std_msgs.msg import String, UInt8
 from move_base_msgs.msg import MoveBaseActionGoal, MoveBaseActionFeedback, MoveBaseGoal
@@ -55,7 +57,7 @@ class ManualWindow(QtWidgets.QDialog):
 
         self.layout = self.findChild(QtWidgets.QGridLayout, 'layout')
 
-        self.last_goal_ID = None
+        self.table_row_tracker = 2
         self.num_goal_reached = 0
 
         # Image frames
@@ -112,7 +114,7 @@ class ManualWindow(QtWidgets.QDialog):
         self.manager = self.visual_frame.getManager()
         self.grid_display = self.manager.getRootDisplayGroup().getDisplayAt(0)
 
-        self.plan = ['fire_extinguishers','','manometers', '', '', '', 'exit_signs', 'valves']
+        self.plan = ['fire_extinguishers', '', 'manometers', '', '', '', 'exit_signs', 'valves']
         self.column_images = [self.topImageLabel, self.middelImageLabel, self.bottomImageLabel]
         self.column_image_counter = 0
 
@@ -161,13 +163,7 @@ class ManualWindow(QtWidgets.QDialog):
         rospy.init_node('listener', anonymous=True)
         rospy.Subscriber('/d435/infra1/image_rect_raw', Image, self.image_callback)
         rospy.Subscriber('goal_reached', UInt8, self.result_callback)
-        rospy.Subscriber('get_img', UInt8, self.api_callback)
-
-        # Move base ActionListener
-        #tell the action client that we want to spin a thread by default
-        #self.move_base = actionlib.SimpleActionClient("move_base", MoveBaseAction)
-        rospy.loginfo("wait for the action server to come up")
-        #self.move_base.wait_for_server()
+        rospy.Subscriber('in_position', String, self.api_callback)
 
         self.show()
 
@@ -212,7 +208,14 @@ class ManualWindow(QtWidgets.QDialog):
         if data.data:
             self.num_goal_reached += 1
             print("Goal Reached, ready for new one")
-            print(self.num_goal_reached)
+            self.tableWidget.setItem(self.table_row_tracker, 0, QtWidgets.QTableWidgetItem(str(datetime.datetime.fromtimestamp(rospy.get_time()))))
+            self.tableWidget.setItem(self.table_row_tracker, 1, QtWidgets.QTableWidgetItem('N/A'))
+            self.tableWidget.setItem(self.table_row_tracker, 2, QtWidgets.QTableWidgetItem('Reached waypoint'))
+            self.tableWidget.setItem(self.table_row_tracker, 3, QtWidgets.QTableWidgetItem('Success'))
+            self.tableWidget.setItem(self.table_row_tracker, 4, QtWidgets.QTableWidgetItem('N/A'))
+            self.tableWidget.setItem(self.table_row_tracker, 5, QtWidgets.QTableWidgetItem('N/A'))
+            self.tableWidget.setItem(self.table_row_tracker, 6, QtWidgets.QTableWidgetItem('N/A'))
+            self.table_row_tracker += 1
 
     def image_callback(self, data):
         #rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data) 
@@ -223,28 +226,94 @@ class ManualWindow(QtWidgets.QDialog):
         self.videoframe.setPixmap(QtGui.QPixmap(qImg))
     
     def api_callback(self, data):
+        print("Robot in position")
+        self.tableWidget.setItem(self.table_row_tracker, 0, QtWidgets.QTableWidgetItem(str(datetime.datetime.fromtimestamp(rospy.get_time()))))
+        self.tableWidget.setItem(self.table_row_tracker, 1, QtWidgets.QTableWidgetItem('N/A'))
+        self.tableWidget.setItem(self.table_row_tracker, 2, QtWidgets.QTableWidgetItem('Move to new waypoint'))
+        self.tableWidget.setItem(self.table_row_tracker, 3, QtWidgets.QTableWidgetItem('Sent'))
+        self.tableWidget.setItem(self.table_row_tracker, 4, QtWidgets.QTableWidgetItem('N/A'))
+        self.tableWidget.setItem(self.table_row_tracker, 5, QtWidgets.QTableWidgetItem('N/A'))
+        self.tableWidget.setItem(self.table_row_tracker, 6, QtWidgets.QTableWidgetItem('N/A'))
+        self.table_row_tracker += 1
+        command = 'python post_goal.py %s' % self.num_goal_reached
         _id = rospy.get_caller_id()
-        _class = self.plan[self.num_goal_reached]
+        _class = self.plan[self.num_goal_reached-1]
+        print(_class)
         if len(_class) > 3:
+            self.tableWidget.setItem(self.table_row_tracker, 0, QtWidgets.QTableWidgetItem(str(datetime.datetime.fromtimestamp(rospy.get_time()))))
+            self.tableWidget.setItem(self.table_row_tracker, 1, QtWidgets.QTableWidgetItem('N/A'))
+            self.tableWidget.setItem(self.table_row_tracker, 2, QtWidgets.QTableWidgetItem('Move head to position'))
+            self.tableWidget.setItem(self.table_row_tracker, 3, QtWidgets.QTableWidgetItem('Ongoing'))
+            self.tableWidget.setItem(self.table_row_tracker, 4, QtWidgets.QTableWidgetItem('N/A'))
+            self.tableWidget.setItem(self.table_row_tracker, 5, QtWidgets.QTableWidgetItem('N/A'))
+            self.tableWidget.setItem(self.table_row_tracker, 6, QtWidgets.QTableWidgetItem('N/A'))
+            self.table_row_tracker += 1
+            time.sleep(10)
+            self.tableWidget.setItem(self.table_row_tracker-1, 3, QtWidgets.QTableWidgetItem('Complete'))
+            self.post_goal()
+            print("New goal sent, waiting for database to update")
+            time.sleep(8)
             URL = 'http://dr0nn1.ddns.net:5000/%s/1' % _class
             response = requests.get(URL)
             content = response.json()
+
+            if hasattr(content , 'tag'):
+                tag = content['tag']
+            else:
+                tag = 'N/A'
+            
+            if hasattr(content , 'value'):
+                value = content['value']
+            else:
+                value = 'N/A'
+            
+            if hasattr(content , 'low_alarm_limit'):
+                alarm = 'Alarm Low'
+            else:
+                alarm = 'N/A'
+            
+            if hasattr(content , 'is_closed'):
+                value = 'Closed'
+            else:
+                value = 'N/A'
             IMG = content['img'].encode('latin1')
             rgb_image = np.fromstring(IMG, dtype=np.uint8).reshape((480, 640, 3))
             height, width, channel = rgb_image.shape
             bytesPerLine = 3 * width
             qImg = QtGui.QImage(rgb_image.data, width, height, bytesPerLine, QtGui.QImage.Format_RGB888)
             self.column_images[self.column_image_counter].setPixmap(QtGui.QPixmap(qImg))
+            self.tableWidget.setItem(self.table_row_tracker, 0, QtWidgets.QTableWidgetItem(str(datetime.datetime.fromtimestamp(rospy.get_time()))))
+            self.tableWidget.setItem(self.table_row_tracker, 1, QtWidgets.QTableWidgetItem(tag))
+            self.tableWidget.setItem(self.table_row_tracker, 2, QtWidgets.QTableWidgetItem('Inspecting equipment'))
+            self.tableWidget.setItem(self.table_row_tracker, 3, QtWidgets.QTableWidgetItem('Complete'))
+            self.tableWidget.setItem(self.table_row_tracker, 4, QtWidgets.QTableWidgetItem(str(value)))
+            self.tableWidget.setItem(self.table_row_tracker, 5, QtWidgets.QTableWidgetItem('N/A'))
+            self.tableWidget.setItem(self.table_row_tracker, 6, QtWidgets.QTableWidgetItem(str(alarm)))
+            self.table_row_tracker += 1
             self.column_image_counter += 1
             if self.column_image_counter > 2:
                 self.column_image_counter = 0
         else:
-            pass    
+            time.sleep(2)
+            self.post_goal()
+            print("nope")
 
     def post_goal(self):
+        th = threading.Thread(target=self._post_goal)
+        th.start()
+
+    def _post_goal(self):
         print('Posting new goal to client')
-        command = 'python post_goal2.py %s' % self.num_goal_reached
-        os.system(command)
+        self.tableWidget.setItem(self.table_row_tracker, 0, QtWidgets.QTableWidgetItem(str(datetime.datetime.fromtimestamp(rospy.get_time()))))
+        self.tableWidget.setItem(self.table_row_tracker, 1, QtWidgets.QTableWidgetItem('N/A'))
+        self.tableWidget.setItem(self.table_row_tracker, 2, QtWidgets.QTableWidgetItem('Move to new waypoint'))
+        self.tableWidget.setItem(self.table_row_tracker, 3, QtWidgets.QTableWidgetItem('Sent'))
+        self.tableWidget.setItem(self.table_row_tracker, 4, QtWidgets.QTableWidgetItem('N/A'))
+        self.tableWidget.setItem(self.table_row_tracker, 5, QtWidgets.QTableWidgetItem('N/A'))
+        self.tableWidget.setItem(self.table_row_tracker, 6, QtWidgets.QTableWidgetItem('N/A'))
+        self.table_row_tracker += 1
+        command = 'python post_goal.py %s' % self.num_goal_reached
+        subprocess.call(command, shell=True)
 
     def power_on(self):
         active = self.powerBtn.isChecked()

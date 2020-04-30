@@ -27,7 +27,7 @@ if num_goal_reached == '0':
     goal.target_pose.header.stamp = rospy.Time.now()
     goal.target_pose.pose.position.x = 0.415
     goal.target_pose.pose.position.y = -0.031
-    goal.target_pose.pose.orientation.z = -0.38
+    goal.target_pose.pose.orientation.z = 0.000
     goal.target_pose.pose.orientation.w = 0.999
     move_base.send_goal(goal)
     print("Sending 0 goal")
@@ -78,8 +78,8 @@ elif num_goal_reached == '3':
     goal.target_pose.header.stamp = rospy.Time.now()
     goal.target_pose.pose.position.x = 3.526
     goal.target_pose.pose.position.y = -0.865
-    goal.target_pose.pose.orientation.z = 0.54
-    goal.target_pose.pose.orientation.w = 0.999
+    goal.target_pose.pose.orientation.z = -0.050
+    goal.target_pose.pose.orientation.w = 1.000
     move_base.send_goal(goal)
     print("Sending 3 goal")
     wait = move_base.wait_for_result()
@@ -111,9 +111,9 @@ elif num_goal_reached == '5':
     goal.target_pose.header.frame_id = "map"
     goal.target_pose.header.stamp = rospy.Time.now()
     goal.target_pose.pose.position.x = 7.100
-    goal.target_pose.pose.position.y = -0.227
-    goal.target_pose.pose.orientation.z = -0.378
-    goal.target_pose.pose.orientation.w = 0.926
+    goal.target_pose.pose.position.y = -0.327
+    goal.target_pose.pose.orientation.z = -0.348
+    goal.target_pose.pose.orientation.w = 0.936
     move_base.send_goal(goal)
     print("Sending 5 goal")
     wait = move_base.wait_for_result()
