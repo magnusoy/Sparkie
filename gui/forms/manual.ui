@@ -81,7 +81,7 @@
    <property name="styleSheet">
     <string notr="true">border-color: rgb(68, 68, 68);
 selection-color: rgb(100, 100, 100);
-background-color: rgb(0, 170, 0);</string>
+background-color: rgb(95, 200, 25);</string>
    </property>
    <property name="text">
     <string/>
@@ -224,7 +224,7 @@ background-color: rgba(255, 255, 255, 0);</string>
    </property>
    <property name="styleSheet">
     <string notr="true">border-color: rgb(68, 68, 68);
-background-color: rgba(255, 255, 255, 0);</string>
+background-color: rgb(95, 200, 25);</string>
    </property>
    <property name="text">
     <string/>
@@ -776,6 +776,9 @@ border-color: rgba(255, 255, 255, 0);</string>
      <height>23</height>
     </rect>
    </property>
+   <property name="maximum">
+    <number>8</number>
+   </property>
    <property name="value">
     <number>0</number>
    </property>
@@ -938,11 +941,43 @@ border-color: rgba(255, 255, 255, 0);</string>
     <enum>Qt::SolidLine</enum>
    </property>
    <property name="rowCount">
-    <number>8</number>
+    <number>40</number>
    </property>
    <property name="columnCount">
     <number>7</number>
    </property>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
+   <row/>
    <row/>
    <row/>
    <row/>
@@ -985,9 +1020,9 @@ border-color: rgba(255, 255, 255, 0);</string>
    <property name="geometry">
     <rect>
      <x>1580</x>
-     <y>242</y>
+     <y>250</y>
      <width>341</width>
-     <height>263</height>
+     <height>261</height>
     </rect>
    </property>
    <property name="text">
@@ -1004,9 +1039,9 @@ border-color: rgba(255, 255, 255, 0);</string>
    <property name="geometry">
     <rect>
      <x>1580</x>
-     <y>512</y>
+     <y>520</y>
      <width>341</width>
-     <height>263</height>
+     <height>261</height>
     </rect>
    </property>
    <property name="text">
@@ -1023,9 +1058,9 @@ border-color: rgba(255, 255, 255, 0);</string>
    <property name="geometry">
     <rect>
      <x>1580</x>
-     <y>782</y>
+     <y>790</y>
      <width>341</width>
-     <height>263</height>
+     <height>261</height>
     </rect>
    </property>
    <property name="text">
@@ -1127,6 +1162,7 @@ border-color: rgba(255, 255, 255, 0);</string>
     <bool>true</bool>
    </property>
   </widget>
+  <zorder>line</zorder>
   <zorder>label_15</zorder>
   <zorder>menuBtn</zorder>
   <zorder>changeModeBtn</zorder>
@@ -1181,7 +1217,6 @@ border-color: rgba(255, 255, 255, 0);</string>
   <zorder>inspectStatusBtn</zorder>
   <zorder>line_6</zorder>
   <zorder>line_4</zorder>
-  <zorder>line</zorder>
   <zorder>line_8</zorder>
  </widget>
  <resources/>

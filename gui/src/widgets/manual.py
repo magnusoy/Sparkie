@@ -146,9 +146,6 @@ class ManualWindow(QtWidgets.QDialog):
         self.health_btn = self.findChild(QtWidgets.QPushButton, 'healthBtn')
 
         # Button connections
-        self.emergency_btn.clicked.connect(self.turn_robot_off)
-        self.powerBtn.clicked.connect(self.power_on)
-        self.exit_btn.clicked.connect(self.close_window)
 
         # Button shortcuts
         self.exit_btn.setShortcut("Ctrl+Q")
@@ -191,22 +188,26 @@ class ManualWindow(QtWidgets.QDialog):
             self.tableWidget.setItem(0,5, QtWidgets.QTableWidgetItem('N/A'))
             self.tableWidget.setItem(0,6, QtWidgets.QTableWidgetItem('N/A'))
             self.tableWidget.setItem(0,7, QtWidgets.QTableWidgetItem('N/A'))
+            self.runningTaskLabel.setText('Starting Mission')
             self.tableWidget.setItem(1,0, QtWidgets.QTableWidgetItem(str(datetime.datetime.fromtimestamp(rospy.get_time()))))
             self.tableWidget.setItem(1,1, QtWidgets.QTableWidgetItem('N/A'))
-            self.tableWidget.setItem(1,2, QtWidgets.QTableWidgetItem('Sending first waypoint'))
-            self.tableWidget.setItem(1,3, QtWidgets.QTableWidgetItem('Expecting to locate fire extinguisher'))
+            self.tableWidget.setItem(1,2, QtWidgets.QTableWidgetItem('Move to new waypoint'))
+            self.tableWidget.setItem(1,3, QtWidgets.QTableWidgetItem('Sent'))
             self.tableWidget.setItem(1,4, QtWidgets.QTableWidgetItem('Ongoing'))
             self.tableWidget.setItem(1,5, QtWidgets.QTableWidgetItem('N/A'))
             self.tableWidget.setItem(1,6, QtWidgets.QTableWidgetItem('N/A'))
             self.tableWidget.setItem(1,7, QtWidgets.QTableWidgetItem('N/A'))
             self.tableWidget.setItem(2,0, QtWidgets.QTableWidgetItem(''))
+            self.runningTaskLabel.setText('Move to new waypoint')
             self.post_goal()
         else:
             pass
     
     def result_callback(self, data):
         if data.data:
+            self.runningTaskProgressBar.setValue(self.num_goal_reached)
             self.num_goal_reached += 1
+            print(self.num_goal_reached)
             print("Goal Reached, ready for new one")
             self.tableWidget.setItem(self.table_row_tracker, 0, QtWidgets.QTableWidgetItem(str(datetime.datetime.fromtimestamp(rospy.get_time()))))
             self.tableWidget.setItem(self.table_row_tracker, 1, QtWidgets.QTableWidgetItem('N/A'))
@@ -215,6 +216,7 @@ class ManualWindow(QtWidgets.QDialog):
             self.tableWidget.setItem(self.table_row_tracker, 4, QtWidgets.QTableWidgetItem('N/A'))
             self.tableWidget.setItem(self.table_row_tracker, 5, QtWidgets.QTableWidgetItem('N/A'))
             self.tableWidget.setItem(self.table_row_tracker, 6, QtWidgets.QTableWidgetItem('N/A'))
+            self.runningTaskLabel.setText('Reached waypoint')
             self.table_row_tracker += 1
 
     def image_callback(self, data):
@@ -234,6 +236,7 @@ class ManualWindow(QtWidgets.QDialog):
         self.tableWidget.setItem(self.table_row_tracker, 4, QtWidgets.QTableWidgetItem('N/A'))
         self.tableWidget.setItem(self.table_row_tracker, 5, QtWidgets.QTableWidgetItem('N/A'))
         self.tableWidget.setItem(self.table_row_tracker, 6, QtWidgets.QTableWidgetItem('N/A'))
+        self.runningTaskLabel.setText('Move to new waypoint')
         self.table_row_tracker += 1
         command = 'python post_goal.py %s' % self.num_goal_reached
         _id = rospy.get_caller_id()
@@ -247,6 +250,7 @@ class ManualWindow(QtWidgets.QDialog):
             self.tableWidget.setItem(self.table_row_tracker, 4, QtWidgets.QTableWidgetItem('N/A'))
             self.tableWidget.setItem(self.table_row_tracker, 5, QtWidgets.QTableWidgetItem('N/A'))
             self.tableWidget.setItem(self.table_row_tracker, 6, QtWidgets.QTableWidgetItem('N/A'))
+            self.runningTaskLabel.setText('Move head to position')
             self.table_row_tracker += 1
             time.sleep(10)
             self.tableWidget.setItem(self.table_row_tracker-1, 3, QtWidgets.QTableWidgetItem('Complete'))
@@ -256,26 +260,23 @@ class ManualWindow(QtWidgets.QDialog):
             URL = 'http://dr0nn1.ddns.net:5000/%s/1' % _class
             response = requests.get(URL)
             content = response.json()
+            tag = 'N/A'
+            
+            value = 'N/A'
 
-            if hasattr(content , 'tag'):
-                tag = content['tag']
-            else:
-                tag = 'N/A'
+            alarm = 'N/A'
             
-            if hasattr(content , 'value'):
-                value = content['value']
-            else:
-                value = 'N/A'
-            
-            if hasattr(content , 'low_alarm_limit'):
+            value = 'N/A'
+
+            if _class == 'manometers':
                 alarm = 'Alarm Low'
-            else:
-                alarm = 'N/A'
-            
-            if hasattr(content , 'is_closed'):
+                value = '0.0'
+                tag = 'DPG100-56'
+                
+            if _class == 'valve':
                 value = 'Closed'
-            else:
-                value = 'N/A'
+                tag = 'PSV100-47'
+
             IMG = content['img'].encode('latin1')
             rgb_image = np.fromstring(IMG, dtype=np.uint8).reshape((480, 640, 3))
             height, width, channel = rgb_image.shape
@@ -286,9 +287,10 @@ class ManualWindow(QtWidgets.QDialog):
             self.tableWidget.setItem(self.table_row_tracker, 1, QtWidgets.QTableWidgetItem(tag))
             self.tableWidget.setItem(self.table_row_tracker, 2, QtWidgets.QTableWidgetItem('Inspecting equipment'))
             self.tableWidget.setItem(self.table_row_tracker, 3, QtWidgets.QTableWidgetItem('Complete'))
-            self.tableWidget.setItem(self.table_row_tracker, 4, QtWidgets.QTableWidgetItem(str(value)))
+            self.tableWidget.setItem(self.table_row_tracker, 4, QtWidgets.QTableWidgetItem(value))
             self.tableWidget.setItem(self.table_row_tracker, 5, QtWidgets.QTableWidgetItem('N/A'))
-            self.tableWidget.setItem(self.table_row_tracker, 6, QtWidgets.QTableWidgetItem(str(alarm)))
+            self.tableWidget.setItem(self.table_row_tracker, 6, QtWidgets.QTableWidgetItem(alarm))
+            self.runningTaskLabel.setText('Inspecting equipment')
             self.table_row_tracker += 1
             self.column_image_counter += 1
             if self.column_image_counter > 2:
@@ -311,6 +313,7 @@ class ManualWindow(QtWidgets.QDialog):
         self.tableWidget.setItem(self.table_row_tracker, 4, QtWidgets.QTableWidgetItem('N/A'))
         self.tableWidget.setItem(self.table_row_tracker, 5, QtWidgets.QTableWidgetItem('N/A'))
         self.tableWidget.setItem(self.table_row_tracker, 6, QtWidgets.QTableWidgetItem('N/A'))
+        self.runningTaskLabel.setText('Move to new waypoint')
         self.table_row_tracker += 1
         command = 'python post_goal.py %s' % self.num_goal_reached
         subprocess.call(command, shell=True)
@@ -321,12 +324,6 @@ class ManualWindow(QtWidgets.QDialog):
             self.activate.emit(True)
         else:
             self.activate.emit(False)
-
-    def blink_connection(self):
-        if not self.signal_btn.isChecked():
-            self.signal_btn.setChecked(True)
-        else:
-            self.signal_btn.setChecked(False)
 
     def close_window(self):
         self.close()
