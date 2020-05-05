@@ -25,12 +25,10 @@ uint8_t jump = 0;
 /* Variable for lay down*/
 float x = 0;
 
-PID pitchPID(4, 0.001, 0, DIRECT); //I = 0.001
+PID pitchPID(4, 0.001, 0, DIRECT);
 PID rollPID(2, 0.001, 0, REVERSE);
-PID yawPID(1, 0, 0, REVERSE);
 double pitchOutput = 0;
 double rollOutput = 0;
-double yawOutput;
 
 /**
  * Sets the parameters for the PIDs
@@ -41,8 +39,6 @@ void initializePIDs()
     pitchPID.setOutputLimits(-50, 50);
     rollPID.setUpdateTime(5);
     rollPID.setOutputLimits(-50, 50);
-    //yawPID.setUpdateTime(5);
-    //yawPID.setOutputLimits(-160, 160);
 }
 
 /**
@@ -52,7 +48,6 @@ void computePIDs()
 {
     pitchOutput = pitchPID.compute(ORIENTAION.pitch, pitchSetPoint);
     rollOutput = rollPID.compute(ORIENTAION.roll, 0);
-    //yawOutput = yawOutput.compute(ORIENTAION.yaw,)
 }
 
 /**
@@ -68,7 +63,7 @@ void computeHeight(p &params)
 }
 
 /**
- * 
+ * Constrains the val to operate in one sinus period
 */
 void mod_constrain(float &val, float period)
 {
@@ -155,9 +150,11 @@ void setIdlePosition()
     transitionToPoint(70, -120);
 }
 
+/**
+ * Sets the correct turning velocity with input from the trajectory planner
+ */
 void turningVelocity()
 {
-
     if (robotVelocity >= 0 && robotVelocity < 0.2)
     {
         robotVelocity = normalSpeed;
@@ -168,6 +165,9 @@ void turningVelocity()
     }
 }
 
+/**
+ * Sets the correct forward/backwards velocity with input from the trajectory planner
+ */
 void movementVelocity()
 {
     if (NAVIGATION.VEL_LINEAR_X < 0.2 && NAVIGATION.VEL_LINEAR_X > -0.2)
@@ -184,6 +184,9 @@ void movementVelocity()
     }
 }
 
+/**
+ * Maps the input from the trajectory planner to the correct values
+ */
 void mapNavigation()
 {
     movementVelocity();
@@ -213,14 +216,10 @@ void locomotion(p &params)
 {
     if (robotVelocity == 0)
     {
-        //Legs[0].moveToGround(params.height - pitchOutput + rollOutput);
-        //Legs[1].moveToGround(params.height - pitchOutput - rollOutput);
-        //Legs[2].moveToGround(params.height + pitchOutput + rollOutput);
-        //Legs[3].moveToGround(params.height + pitchOutput - rollOutput);
-        Legs[0].moveToGround(params.height);
-        Legs[1].moveToGround(params.height);
-        Legs[2].moveToGround(params.height);
-        Legs[3].moveToGround(params.height);
+        Legs[0].moveToGround(params.height - pitchOutput + rollOutput);
+        Legs[1].moveToGround(params.height - pitchOutput - rollOutput);
+        Legs[2].moveToGround(params.height + pitchOutput + rollOutput);
+        Legs[3].moveToGround(params.height + pitchOutput - rollOutput);
     }
     else
     {
@@ -281,16 +280,11 @@ void jumpCommand()
 }
 
 /**
- * Makes the robot tilt for inspecting objects that is higher
+ * Makes the robot tilt for inspecting objects that is higher or lower
  */
 void inspect()
 {
-    if (numberOfInspections == 1)
-    {
-        locomotion(autoParams);
-    }
-
-    else if (numberOfInspections == 3)
+    if (numberOfInspections == 1 || numberOfInspections == 3)
     {
         locomotion(autoParams);
     }

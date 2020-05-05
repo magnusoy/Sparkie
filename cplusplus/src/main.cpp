@@ -1,13 +1,16 @@
 /**
-  The purpose of this project ...
+  The aim for this project is to build a prototype of an autonomous industrial robot
+  as proof of concept for future automated solutions in process industry. The robot
+  will operate either autonomous or manual. The main task will be to move around 
+  detect, classify and inspect objects as fast and accurate as possible.
   
   Libraries used:
   ArduinoOdrive - https://github.com/madcowswe/ODrive/tree/master/Arduino/ODriveArduino
   ROS - https://github.com/ros-drivers/rosserial
   -----------------------------------------------------------
   Code by: Magnus Kvendseth Øye, Vegard Solheim, Petter Drønnen
-  Date: 08.04-2020
-  Version: 0.9
+  Date: 04.05-2020
+  Version: 1.0
   Website: https://github.com/magnusoy/Sparkie
 */
 
@@ -120,12 +123,8 @@ char dontTake_img[2] = "2";
 
 /* Variable for the interval time for walking case*/
 Timer moveTimer;
-uint8_t moveInterval = 1; //1
-
-/* Variable for storing loop time */
-unsigned long loopTime;
-unsigned long walkTime;
-
+uint8_t moveInterval = 1;
+/* Variable for storing timers*/
 Timer transitionTimer;
 int transitionTime = 5000;
 Timer pictureTimer;
@@ -152,12 +151,9 @@ void setup()
 
 void loop()
 {
-  //loopTime = micros();
   nh.spinOnce();
-
   switch (currentState)
   {
-
   case S_IDLE:
     blinkLight(GREEN_LED);
     break;
@@ -214,19 +210,12 @@ void loop()
     break;
 
   case S_WALK:
-    // walkTime = micros();
-    //computeHeight(autoParams);
+    computeHeight(autoParams);
     if (moveTimer.hasTimerExpired())
     {
       moveTimer.startTimer(moveInterval);
       locomotion(autoParams);
-      /*--------------------------------------*/
-      //Testing fuctions
-      //layDown();
-      //turnLeft();
-      //turnRight();
     }
-    // Serial.println(micros() - walkTime);
     break;
 
   case S_JUMP:
@@ -237,7 +226,7 @@ void loop()
   break;
 
   case S_AUTONOMOUS:
-    //computeHeight(autoParams);
+    computeHeight(autoParams);
     mapNavigation();
     isGoalReached();
     if (moveTimer.hasTimerExpired())
@@ -249,13 +238,8 @@ void loop()
 
   case S_MANUAL:
     mapXboxInputs();
-    //computePIDs();
-    //computeHeight(manualParams);
-
-    //float hei = Legs[0].getHeight();
-    //char result[8];
-    //dtostrf(val, 6, 2, result);
-    //nh.loginfo(result);
+    computePIDs();
+    computeHeight(manualParams);
     if (moveTimer.hasTimerExpired())
     {
       moveTimer.startTimer(moveInterval);

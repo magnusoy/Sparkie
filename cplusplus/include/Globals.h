@@ -1,8 +1,9 @@
 #ifndef GLOBALS_H_
 #define GLOBALS_H_
 #include "Constants.h"
-
+/*Gets value 1 if robot has reached its goal  */
 uint8_t GOAL_REACHED = 0;
+
 struct orientation
 {
   double pitch;
@@ -84,17 +85,17 @@ p manualParams;
 /**
  * Define the normal parameters
  */
-#define normalSpeed PI / 140 //PI / 140
-#define maxSpeed PI / 70     //PI / 70
-#define normalStepLength 50  //80
-#define normalHeight 170     //170
+#define normalSpeed PI / 140
+#define maxSpeed PI / 70
+#define normalStepLength 50
+#define normalHeight 170
 /**
  * Sets the standard values for the leg tracjetory
  */
 void initializeLegTracjetory()
 {
-  autoParams.amplitude_over = 30.0; //30.0
-  autoParams.amplitude_under = 2.0; //2.0
+  autoParams.amplitude_over = 30.0;
+  autoParams.amplitude_under = 2.0;
   autoParams.step_left = normalStepLength;
   autoParams.step_right = normalStepLength,
   autoParams.height = normalHeight;
@@ -118,7 +119,7 @@ void initializeLegTracjetory()
 float robotVelocity = normalSpeed;
 float pitchSetPoint = 0;
 
-/*Makes it possible to trot*/
+/*Makes it possible to do different gaits*/
 float PHASESHIFT0X = 3.14; //All legs togheter 3.14;    //Trot 3.14;
 float PHASESHIFT0Y = 0;    //All legs togheter 0;       //Trot 0;
 
@@ -128,8 +129,8 @@ float PHASESHIFT1Y = 3.14; //All legs togheter 0;       //Trot 3.14;
 float PHASESHIFT2X = 0;    //All legs togheter 3.14;    //Trot 0;
 float PHASESHIFT2Y = 3.14; //All legs togheter 0;       //Trot 3.14;
 
-float PHASESHIFT3X = 0; //All legs togheter 0;        //Trot 0;
-float PHASESHIFT3Y = 0; //All legs togheter 0;        //Trot 0;
+float PHASESHIFT3X = 0; //All legs togheter 0;          //Trot 0;
+float PHASESHIFT3Y = 0; //All legs togheter 0;          //Trot 0;
 
 struct xboxControllerInputs
 {
