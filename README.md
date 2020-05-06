@@ -17,11 +17,11 @@ Progress video 1           |  Progress video 2         |  Progress video 3      
 
 ## Demo, coming
 
-[Demo](https://img.youtube.com/vi/HOWtKFNFNDA/0.jpg)](https://youtu.be/27Fi4bB8Vfk)
+![Demo](https://img.youtube.com/vi/HOWtKFNFNDA/0.jpg)](https://youtu.be/27Fi4bB8Vfk)
 
 
 ## Pictures and  3D-model
-[Content](https://drive.google.com/drive/folders/175Xf5eR7ISFx6bbiMSzkLT8xGgaTwL8Q)
+[Content](https://drive.google.com/drive/folders/175Xf5eR7ISFx6bbiMSzkLT8xGgaTwL8Q) \
 [3D-model](https://drive.google.com/drive/folders/1SjDRSZ7dCbtEyQgJi2F-tcV4agTJ8wo_)
 
 ## Report
