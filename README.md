@@ -17,8 +17,7 @@ Progress video 1           |  Progress video 2         |  Progress video 3      
 
 ## Demo
 
-[![Demo](https://img.youtube.com/vi/HOWtKFNFNDA/0.jpg)](https://youtu.be/27Fi4bB8Vfk)
-
+[![Demo](https://img.youtube.com/vi/HOWtKFNFNDA/0.jpg)](https://youtu.be/uuC73EIw8Ns)
 
 ## Pictures and  3D-model
 [Pictures](https://drive.google.com/drive/folders/175Xf5eR7ISFx6bbiMSzkLT8xGgaTwL8Q) \
