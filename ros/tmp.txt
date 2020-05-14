@@ -1,0 +1,5 @@
+# Robot model
+roslaunch urdf_tutorial display.launch model:=sparkie.urdf
+
+# Navigation
+roslaunch my_robot_name_2dnav move_base.launch

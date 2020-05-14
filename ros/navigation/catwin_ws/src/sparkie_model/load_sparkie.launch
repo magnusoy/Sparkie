@@ -1,0 +1,3 @@
+<launch>
+        <param name="robot_description" textfile="C:/opt/catkin_ws/src/sparkie_model/sparkie.urdf" />
+</launch>

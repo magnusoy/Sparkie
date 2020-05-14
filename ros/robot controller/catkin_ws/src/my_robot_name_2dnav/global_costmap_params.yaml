@@ -1,0 +1,11 @@
+global_costmap:
+  global_frame: map
+  robot_base_frame: t265_link
+  use_dijkstra: false
+  update_frequency: 1.0
+  publish_frequency: 1.0
+  static_map: false
+  rolling_window: true
+  width: 5.0
+  height: 5.0
+  resolution: 0.08

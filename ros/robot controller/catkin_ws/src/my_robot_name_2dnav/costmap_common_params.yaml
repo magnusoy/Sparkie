@@ -1,0 +1,11 @@
+obstacle_range: 2.0
+raytrace_range: 3.0
+footprint: [[0, -0.14], [0, 0.14], [-0.46, 0.14], [-0.46, -0.14]]
+# robot_radius: 0.4
+inflation_radius: 1.5
+transform_tolerance: 3.0
+controller_frequency: 10.0
+
+observation_sources: point_cloud_sensor
+
+point_cloud_sensor: {sensor_frame: d435_link, data_type: PointCloud2, topic: d435/depth/color/points, marking: true, clearing: true}

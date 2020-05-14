@@ -25,7 +25,7 @@ from PyQt5 import QtWidgets, uic, QtCore, QtGui
 
 # Importing from local source
 from config import *
-from .util.xbox_controller import XboxController
+# from .util.xbox_controller import XboxController
 from .util.navigation import Path
 
 
@@ -45,7 +45,7 @@ class ManualWindow(QtWidgets.QDialog):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.ui = '../forms/manual.ui'
         uic.loadUi(self.ui, self)
-        # self.setWindowFlags(QtCore.Qt.FramelessWindowHint)  # Does not work good with Ubuntu
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
 
         self.mode = JOYSTICK_ONLY_MODE
 

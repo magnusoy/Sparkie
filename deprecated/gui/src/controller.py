@@ -24,7 +24,7 @@ from widgets.login import LoginWindow
 from widgets.welcome import WelcomeWindow
 from widgets.configure import ConfigureWindow
 from widgets.autonomous import AutonomousWindow
-#from widgets.manual import ManualWindow
+from widgets.manual import ManualWindow
 from widgets.interact import InteractWindow
 from widgets.testing import TestingWindow
 from widgets.path_generator import PathGeneratorWindow
@@ -40,7 +40,7 @@ class Controller:
         as the first window to be presented."""
 
         self.icon = '../static/img/favicon/favicon.png'
-        self.showPathGenerator()
+        self.showManualWindow()
 
     def showLoginWindow(self):
         """Creates a new login window, and connects an

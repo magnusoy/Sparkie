@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<robot name="myfirst">
+  <link name="t265_link">
+    <visual>
+      <origin rpy="0 0 1.57" xyz="-0.23 0 .20"/>
+      <geometry>
+        <mesh filename="file:///C:/Users/Magnus/Desktop/SparkieAssembly.obj" scale=".01 .01 .01"/>
+      </geometry>
+       <material name="gray">
+        <color rgba="48 48 48 1.0"/>
+      </material>
+    </visual>
+  </link>
+</robot>
