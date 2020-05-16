@@ -12,6 +12,10 @@ from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 import actionlib
 from actionlib_msgs.msg import *
 
+def get_goal(file):
+    pass
+
+
 
 rospy.init_node('movebase_client_py', anonymous=True)
 move_base = actionlib.SimpleActionClient("move_base", MoveBaseAction)
@@ -20,6 +24,7 @@ move_base.wait_for_server()
 print('Connected to server')
 
 num_goal_reached = sys.argv[1]
+goal_file = sys.argv[2]
 
 if num_goal_reached == '0':
     goal = MoveBaseGoal()

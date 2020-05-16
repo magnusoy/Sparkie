@@ -52,6 +52,7 @@ class ManualWindow(QtWidgets.QDialog):
         super(ManualWindow, self).__init__()
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.ui = '../forms/manual.ui'
+        self.mission_dir = '../instance/missions'
         loadUi(self.ui, self)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
 
@@ -97,7 +98,7 @@ class ManualWindow(QtWidgets.QDialog):
 
         self.videoSourceComboBox.addItems(["Color", "Fisheye 1", "Fisheye 2","Infared 1", "Infared 2", ])
         self.selectMissionAreaComboBox.addItems(['', "Workshop", "University", "Demo 1","Demo 2", "Demo 3"])
-        self.selectMissionComboBox.addItems(['', "Apartment-Mission"])
+        self.find_missions()
 
         # RVIZ
         self.visual_frame = rviz.VisualizationFrame()
@@ -114,7 +115,8 @@ class ManualWindow(QtWidgets.QDialog):
         self.manager = self.visual_frame.getManager()
         self.grid_display = self.manager.getRootDisplayGroup().getDisplayAt(0)
 
-        self.plan = ['fire_extinguishers', '', 'manometers', '', '', '', 'exit_signs', 'valves']
+        self.plan = None
+        self.missions = []
         self.column_images = [self.topImageLabel, self.middelImageLabel, self.bottomImageLabel]
         self.column_image_counter = 0
 
@@ -173,6 +175,7 @@ class ManualWindow(QtWidgets.QDialog):
     def start_mission(self):
         choice = QtWidgets.QMessageBox.question(self, 'Warning', 'Start new mission?', QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No) 
         if choice == QtWidgets.QMessageBox.Yes:
+            self.load_mission()
             self.startMissionBtn.setDisabled(True)
             self.refreshSelectMissionAreaBtn.setDisabled(True)
             self.refreshSelectMissionBtn.setDisabled(True)
@@ -261,21 +264,34 @@ class ManualWindow(QtWidgets.QDialog):
             response = requests.get(URL)
             content = response.json()
             tag = 'N/A'
-            
             value = 'N/A'
-
+            warning = 'N/A'
             alarm = 'N/A'
-            
             value = 'N/A'
 
             if _class == 'manometers':
-                alarm = 'Alarm Low'
-                value = '0.0'
-                tag = 'DPG100-56'
+                value = float(content['value'])
+                warning_low = float(content['low_warning_limit'])
+                warning_high = float(content['high_warning_limit'])
+                alarm_low = float(content['low_alarm_limit'])
+                alarm_high = float(content['high_alarm_limit'])
+
+                if value > warning_high and value < alarm_high:
+                    warning = 'Warning high'
+                elif value < warning_low and value > alarm_low:
+                    warning = 'Warning low'
+                elif value > alarm_high:
+                    alarm = 'Alarm high'
+                elif value < alarm_low:
+                    alarm = 'Alarm low'
+                tag = content['tag']
                 
             if _class == 'valve':
-                value = 'Closed'
-                tag = 'PSV100-47'
+                normal_condition = content['normal_condition']
+                should_be = content['is_open']
+                tag = content['tag']
+                if value is not should_be:
+                    warning = 'Not in position'
 
             IMG = content['img'].encode('latin1')
             rgb_image = np.fromstring(IMG, dtype=np.uint8).reshape((480, 640, 3))
@@ -288,7 +304,7 @@ class ManualWindow(QtWidgets.QDialog):
             self.tableWidget.setItem(self.table_row_tracker, 2, QtWidgets.QTableWidgetItem('Inspecting equipment'))
             self.tableWidget.setItem(self.table_row_tracker, 3, QtWidgets.QTableWidgetItem('Complete'))
             self.tableWidget.setItem(self.table_row_tracker, 4, QtWidgets.QTableWidgetItem(value))
-            self.tableWidget.setItem(self.table_row_tracker, 5, QtWidgets.QTableWidgetItem('N/A'))
+            self.tableWidget.setItem(self.table_row_tracker, 5, QtWidgets.QTableWidgetItem(warning))
             self.tableWidget.setItem(self.table_row_tracker, 6, QtWidgets.QTableWidgetItem(alarm))
             self.runningTaskLabel.setText('Inspecting equipment')
             self.table_row_tracker += 1
@@ -298,14 +314,13 @@ class ManualWindow(QtWidgets.QDialog):
         else:
             time.sleep(2)
             self.post_goal()
-            print("nope")
 
     def post_goal(self):
         th = threading.Thread(target=self._post_goal)
         th.start()
 
     def _post_goal(self):
-        print('Posting new goal to client')
+        print('Posting new goal to agent')
         self.tableWidget.setItem(self.table_row_tracker, 0, QtWidgets.QTableWidgetItem(str(datetime.datetime.fromtimestamp(rospy.get_time()))))
         self.tableWidget.setItem(self.table_row_tracker, 1, QtWidgets.QTableWidgetItem('N/A'))
         self.tableWidget.setItem(self.table_row_tracker, 2, QtWidgets.QTableWidgetItem('Move to new waypoint'))
@@ -334,3 +349,14 @@ class ManualWindow(QtWidgets.QDialog):
     def pause_mission(self):
         #self.num_goal_reached += 1
         self.post_goal()
+    
+    def load_mission(self):
+        mission = self.missions[self.selectMissionComboBox.currentIndex()]
+        with open(mission, 'r') as file:
+            self.plan = file.read().split(',')
+    
+    def find_missions(self):
+        for file in os.listdir(self.mission_dir):
+            if file.endswith(".txt"):
+                self.missions.append(os.path.join(self.mission_dir, file))
+                self.selectMissionComboBox.addItem(file)
