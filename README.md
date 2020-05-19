@@ -25,7 +25,7 @@ Progress video 1           |  Progress video 2         |  Progress video 3      
 
 ## Report
 
-[Report, coming](https://www.overleaf.com/project)
+[Report](https://github.com/magnusoy/Sparkie/blob/master/resources/report.pdf)
 
 
 ## Built With
