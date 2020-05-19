@@ -20,7 +20,7 @@ __status__ = "Development"
 from python_qt_binding import QtGui
 
 # Importing local source
-from widgets.manual import ManualWindow
+from widgets.inspection import InspectionWindow
 
 
 class Controller:
@@ -35,7 +35,7 @@ class Controller:
         self.icon = '../static/img/favicon/favicon.png'
         self.showManualWindow()
 
-    def showManualWindow(self):
+    def InspectionWindow(self):
         """Creates a new manual window in a 
             maximized window."""
 

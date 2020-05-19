@@ -12,9 +12,28 @@ from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 import actionlib
 from actionlib_msgs.msg import *
 
-def get_goal(file):
-    pass
 
+def post_goal(filename):
+    """Read mission and extract goal"""
+    with open(filename, 'r') as file:
+        content = file.read()
+    json = json.loads(content)
+    goal = MoveBaseGoal()
+    goal.target_pose.header.frame_id = "map"
+    goal.target_pose.header.stamp = rospy.Time.now()
+    goal.target_pose.pose.position.x = json['x_lin']
+    goal.target_pose.pose.position.y = json['y_lin']
+    goal.target_pose.pose.orientation.z = json['z_ori']
+    goal.target_pose.pose.orientation.w = json['w_lin']
+    move_base.send_goal(goal)
+    print("Sending goal")
+    wait = move_base.wait_for_result()
+    if not wait:
+        rospy.logerr("Action server not available!")
+        rospy.signal_shutdown("Action server not available!")
+    else:
+        rospy.loginfo("Goal execution done!")
+        result_publisher.publish(1)
 
 
 rospy.init_node('movebase_client_py', anonymous=True)
@@ -26,6 +45,9 @@ print('Connected to server')
 num_goal_reached = sys.argv[1]
 goal_file = sys.argv[2]
 
+post_goal(goal_file)
+
+"""
 if num_goal_reached == '0':
     goal = MoveBaseGoal()
     goal.target_pose.header.frame_id = "map"
@@ -162,3 +184,4 @@ elif num_goal_reached == '7':
     else:
         rospy.loginfo("Goal execution done!")
         result_publisher.publish(1)
+"""

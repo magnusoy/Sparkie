@@ -43,13 +43,13 @@ import datetime
 roslib.load_manifest('rviz')
 
 
-class ManualWindow(QtWidgets.QDialog):
-    """doc"""
+class InspectionWindow(QtWidgets.QDialog):
+    """This window operates as the main interaction with the robot under inspection missions"""
 
     activate = QtCore.pyqtSignal(bool)
 
     def __init__(self):
-        super(ManualWindow, self).__init__()
+        super(InspectionWindow, self).__init__()
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.ui = '../forms/manual.ui'
         self.mission_dir = '../instance/missions'
@@ -167,12 +167,14 @@ class ManualWindow(QtWidgets.QDialog):
         self.show()
 
     def add_rviz_config(self):
+        """Add rviz configurations from external file"""
         reader = rviz.YamlConfigReader()
         config = rviz.Config()
         reader.readFile(config, "../instance/Sparkie.rviz")
         self.visual_frame.load(config)
 
     def start_mission(self):
+        """Start selected mission"""
         choice = QtWidgets.QMessageBox.question(self, 'Warning', 'Start new mission?', QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No) 
         if choice == QtWidgets.QMessageBox.Yes:
             self.load_mission()
@@ -207,6 +209,7 @@ class ManualWindow(QtWidgets.QDialog):
             pass
     
     def result_callback(self, data):
+        """Goal reached callback"""
         if data.data:
             self.runningTaskProgressBar.setValue(self.num_goal_reached)
             self.num_goal_reached += 1
@@ -223,6 +226,7 @@ class ManualWindow(QtWidgets.QDialog):
             self.table_row_tracker += 1
 
     def image_callback(self, data):
+        """Image callback"""
         #rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data) 
         rgb_image = CvBridge().imgmsg_to_cv2(data, desired_encoding="rgb8")
         height, width, channel = rgb_image.shape
@@ -231,6 +235,7 @@ class ManualWindow(QtWidgets.QDialog):
         self.videoframe.setPixmap(QtGui.QPixmap(qImg))
     
     def api_callback(self, data):
+        """API callback from cloud"""
         print("Robot in position")
         self.tableWidget.setItem(self.table_row_tracker, 0, QtWidgets.QTableWidgetItem(str(datetime.datetime.fromtimestamp(rospy.get_time()))))
         self.tableWidget.setItem(self.table_row_tracker, 1, QtWidgets.QTableWidgetItem('N/A'))
@@ -316,10 +321,12 @@ class ManualWindow(QtWidgets.QDialog):
             self.post_goal()
 
     def post_goal(self):
+        """Post new waypoint to subsystem"""
         th = threading.Thread(target=self._post_goal)
         th.start()
 
     def _post_goal(self):
+        """Post new waypoint to subsystem"""
         print('Posting new goal to agent')
         self.tableWidget.setItem(self.table_row_tracker, 0, QtWidgets.QTableWidgetItem(str(datetime.datetime.fromtimestamp(rospy.get_time()))))
         self.tableWidget.setItem(self.table_row_tracker, 1, QtWidgets.QTableWidgetItem('N/A'))
@@ -334,6 +341,7 @@ class ManualWindow(QtWidgets.QDialog):
         subprocess.call(command, shell=True)
 
     def power_on(self):
+        """Turn on interface"""
         active = self.powerBtn.isChecked()
         if active:
             self.activate.emit(True)
@@ -341,21 +349,23 @@ class ManualWindow(QtWidgets.QDialog):
             self.activate.emit(False)
 
     def close_window(self):
+        """Close window Ctrl+Q"""
         self.close()
 
     def turn_robot_off(self):
         pass
     
     def pause_mission(self):
-        #self.num_goal_reached += 1
-        self.post_goal()
+        pass
     
     def load_mission(self):
+        """Preload missions"""
         mission = self.missions[self.selectMissionComboBox.currentIndex()]
         with open(mission, 'r') as file:
             self.plan = file.read().split(',')
     
     def find_missions(self):
+        """Find missionfiles in mission directory"""
         for file in os.listdir(self.mission_dir):
             if file.endswith(".txt"):
                 self.missions.append(os.path.join(self.mission_dir, file))
