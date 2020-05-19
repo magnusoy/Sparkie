@@ -27,10 +27,12 @@ import pytesseract
 # Import utilites
 from object_detection.utils import label_map_util
 from object_detection.utils import visualization_utils as vis_util
+from object_detection.utils.tag_extractor import get_tag
+from object_detection.utils.gauge_value_extractor import calibrate_gauge, get_current_value
 
 
 class ObjectDetector(object):
-    """Performs object detection through webcamera."""
+    """Performs object detection"""
 
     def __init__(self, path_to_ckpt, path_to_labels):
         self.PATH_TO_CKPT = path_to_ckpt
@@ -99,7 +101,7 @@ class ObjectDetector(object):
             self.category_index,
             use_normalized_coordinates=True,
             line_thickness=3,
-            min_score_thresh=0.60)
+            min_score_thresh=0.80)
         print(_class)
         self.publish_result(frame, _class)
         if debug:
@@ -112,16 +114,12 @@ class ObjectDetector(object):
         data = json.loads(r.text)
         token = data['token']
         img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        tag = '000-23-TEST'
-        #tag = get_tag(img_rgb)
-        print(frame.shape)
-        print(tag)
         #img_encoded = cv2.imencode('.jpg', img_rgb)[1].tostring()
         img_encoded = img_rgb.tostring().decode('latin1')
         if _class == 'open_valve':
             payload = {
                 'img': img_encoded,
-                'tag': tag,
+                'tag': get_tag(img_rgb),
                 'is_open': True,
                 'normal_condition': True,
                 'warning': False
@@ -131,7 +129,7 @@ class ObjectDetector(object):
         elif _class == 'closed_valve':
             payload = {
                 'img': img_encoded,
-                'tag': 'PSV100-09',
+                'tag': get_tag(img_rgb),
                 'is_open': False,
                 'normal_condition': False,
                 'warning': False
@@ -140,10 +138,13 @@ class ObjectDetector(object):
                 'http://localhost:5000/valves/1?token={}'.format(token), json=payload)
 
         elif _class == 'Manometer':
+            value = -1.0
+            min_angle, max_angle, min_value, max_value, units, x, y, r = calibrate_gauge(img_rgb)
+            value = get_current_value(img_rgb, min_angle, max_angle, min_value, max_value, x, y, r)
             payload = {
                 'img': img_encoded,
-                'tag': tag,
-                'value': 2.0,
+                'tag': get_tag(img_rgb),
+                'value': value,
                 'low_warning_limit': 1.0,
                 'low_alarm_limit': 0.0,
                 'high_warning_limit': 3.0,
@@ -167,6 +168,3 @@ class ObjectDetector(object):
             }
             r = requests.put(
                 'http://localhost:5000/exit_signs/1?token={}'.format(token), json=payload)
-
-    def get_tag(self, frame):
-        return pytesseract.image_to_string(frame)
