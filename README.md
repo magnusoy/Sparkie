@@ -1,9 +1,6 @@
 # Sparkie, Autonomous inspections for process industry by a quadruped robot with use of neural networks
 We seek to prove that an autonomous industrial robot can optimize inspections operations in a process industry. With doing so, we wish to eliminate unnecessary human interaction, as this can be dangerous, complicated and expensive. In this paper, the emphasis is on design, machine learning, and finally the usability of the robot. During consideration of different choices,the priority will be on robustness, speed and accuracy.
 
-In development ...
-
-
 Front right view           |  Rear view                |  Side view
 :-------------------------:|:-------------------------:|:-------------------------:
 ![](docs/img/Sparkie-front-right-without-front-bumper-alpha.png)  |  ![](docs/img/Sparkie-rear-leg-mechanism-alpha.png)   |  ![](docs/img/Sparkie-open-side-view-alpha.png)
